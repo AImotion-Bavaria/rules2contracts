@@ -67,6 +67,12 @@ examples:
 	$(PY) monitor_demo.py
 	$(PY) autoware_example.py
 
+## README animations (needs matplotlib: pip install matplotlib)
+anim:
+	mkdir -p docs
+	$(PY) make_anim_repair_loop.py --out docs/repair_loop.gif
+	$(PY) make_anim_fault_localisation.py --out docs/fault_localisation.gif
+
 docker:
 	docker build -t rules2contracts .
 

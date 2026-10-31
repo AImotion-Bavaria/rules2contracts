@@ -9,6 +9,80 @@ re-monitor** the results reported in the paper without any model access, and
 everything needed to **re-run the synthesis** with your own API key or on
 your own architecture. It is anonymised for double-blind review.
 
+## Two animations (what the paper does, in motion)
+
+Both GIFs are generated from the recorded data in this package (`make anim`,
+scripts `make_anim_repair_loop.py` and `make_anim_fault_localisation.py`;
+they need `pip install matplotlib`). They are illustrations, not results:
+every number they show is in the result tables under `data/`.
+
+### 1. The verifier coaches the model — `docs/repair_loop.gif`
+
+![verifier-in-the-loop repair](docs/repair_loop.gif)
+
+One recorded synthesis run (`runs/R_G1/qwen3.6-27b/run_2`: the safe-distance
+rule, Qwen3.6-27B) as four slides, 4 s each:
+
+1. **Candidate 1.** The model's first rule document: system contract, three
+   service contracts (Localisation, Perception, Planning) and the discharge
+   order. The strip at the top shows where we are in the loop.
+2. **Verifier report for candidate 1.** The checks in pipeline order: YAML,
+   Schema, Syntax, V0 (architecture conformance), V1 (well-formedness), V2
+   (consistency) all pass; **V3(a) fails** — Planning's assumption
+   `G(v_ego >= 0 and d_lead >= 0)` is not discharged by the system assumption
+   and the guarantees of its predecessors. The counterexample trace below is
+   the proof: `v_true = 0` and `v_ego = −1/4` satisfies Localisation's
+   error-bound guarantee `|v_ego − v_true| ≤ EPS_V` and the system assumption,
+   yet violates what Planning assumed. This report, verbatim, is the repair
+   feedback the model receives (Sect. IV-B); nothing else is.
+3. **Candidate 2.** The revised document with the changed line highlighted:
+   the assumption now reads `v_ego >= 0 − EPS_V and d_lead >= 0 − EPS_D`, i.e.
+   the model has widened it by exactly the error bounds the counterexample
+   exposed.
+4. **Verifier report for candidate 2.** All checks pass: V3(a) and V3(b)
+   prove that the composition of the three service contracts refines the
+   system contract, V4 that the decomposition is not vacuous. The document is
+   VALID and compiles into one runtime monitor per contract.
+
+The same script animates any recorded run, e.g. a four-attempt failure:
+`python3 make_anim_repair_loop.py --run runs/R_G3/mistral-medium-3.5-128b/run_1`.
+
+### 2. The monitors localise the fault before the rule breaks — `docs/fault_localisation.gif`
+
+![fault localisation](docs/fault_localisation.gif)
+
+The episode of Fig. 6 (a recorded US-101 following situation from NGSIM,
+`data/fig_fault_localisation.dat`), played at the feature rate of 10 Hz:
+
+* **Top — the situation in the ego frame.** Ego (blue) at the origin, the
+  true lead vehicle (grey) at the recorded gap `d_gap`, and a ghost at
+  `d_lead`, the gap Perception reports. In the nominal part the ghost sits
+  within the contract bound `EPS_D = 2 m` of the true lead; when the
+  injected fault starts (orange ghost) Perception over-reports the gap by
+  `3·EPS_D = 6 m`. The status line gives the current values, the estimation
+  error against its bound, and whether the hazard lights are on.
+* **Middle — the signals.** True gap, perceived gap, and the rule threshold
+  `τ·v_true`. The orange band is the fault window. The rule premise becomes
+  true where the blue curve dips below the orange threshold; from there the
+  planner has three steps to raise the hazard. It never does — it sees a
+  comfortable (perceived) gap — so the system rule is violated; the red band
+  marks the violated interval.
+* **Bottom — what the monitors say.** Robustness of the Perception
+  guarantee `|d_lead − d_gap| ≤ EPS_D` (green) and of the system rule (red);
+  negative means violated. The Perception monitor turns negative at
+  **step 23**, the moment the fault starts; the rule breaks only at
+  **step 40**. The status panel shows the attribution: Perception's
+  guarantee is violated while its assumption holds, so Perception is
+  *culpable* (it broke its contract on its own, not because of bad input);
+  Localisation and Planning stay clean. A flat, world-level monitor could
+  report neither the culprit nor the 17 steps (1.7 s) of early warning.
+
+The monitor over the Perception guarantee compares a feature with an
+environment signal (`d_gap`), which is available here because the episode is
+a recording; in the vehicle it would need a reference sensor (Sect. V-H).
+Planning's contract, by contrast, ranges over features only and is
+evaluable online as is.
+
 ## What is in here
 
 | Path | Content |
@@ -29,6 +103,7 @@ your own architecture. It is anonymised for double-blind review.
 | `export_figure_data.py` · `make_fig_*.py` | Regenerate every number and every figure data file of the paper from the result tables |
 | `replay_checks.py` · `replay_synthesis.sh` · `diff_csv.py` | Reproduction helpers: re-check all recorded candidates; replay the recorded runs from the cache; compare regenerated with canonical tables |
 | `autoware_example.py` · `monitor_demo.py` | Self-contained worked examples (Python API, no run records needed) |
+| `make_anim_*.py` · `docs/*.gif` | The two README animations and the scripts that generate them from the recorded data |
 | `REPRODUCE.md` | Step-by-step reproduction with expected output and runtimes |
 
 ## Quick start
