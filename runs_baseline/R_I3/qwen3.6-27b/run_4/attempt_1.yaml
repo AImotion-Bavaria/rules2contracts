@@ -1,0 +1,11 @@
+rule_id: R_I3_flat
+description: No reversing on interstate: true longitudinal ego velocity must never drop below -0.3 m/s, with tracking assumption that backward motion implies reverse gear command.
+sampling_rate_hz: 10
+horizon: 8
+constants:
+  V_MIN: -0.3
+environment:
+  signals:
+    - {name: vel_long, sort: real}
+    - {name: gear_rev_cmd, sort: bool}
+formula: "G((vel_long >= V_MIN) and (vel_long < 0 -> gear_rev_cmd))"

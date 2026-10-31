@@ -1,0 +1,19 @@
+rule_id: R_G2_flat
+description: >
+  StVO §4(1): a vehicle shall not command an abrupt deceleration stronger
+  than 2.0 m/s^2 unless the gap to the preceding vehicle is critical
+  (below 20.0 m). Thresholds are widened by the stated measurement and
+  actuation tolerances so that the rule is checked conservatively against
+  the true physical quantities.
+sampling_rate_hz: 10
+horizon: 5
+constants:
+  A_THRESH: 2.0
+  A_TOL: 0.5
+  GAP_CRIT: 20.0
+  GAP_TOL: 2.0
+environment:
+  signals:
+    - {name: accel_cmd, sort: real}
+    - {name: gap_measured, sort: real}
+formula: "G((accel_cmd <= -(A_THRESH - A_TOL)) -> (gap_measured <= GAP_CRIT + GAP_TOL))"

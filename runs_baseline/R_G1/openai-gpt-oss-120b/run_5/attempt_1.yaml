@@ -1,0 +1,14 @@
+rule_id: R_G1_flat
+description: Safe distance to the preceding vehicle (StVO §4(1)) using time‑gap; if true gap < 1.8 s × true ego velocity, a hazard notification must be raised within 300 ms.
+sampling_rate_hz: 10
+horizon: 3
+constants:
+  TGAP: 1.8
+  GAP_ERR: 2.0
+  VEL_ERR: 0.5
+environment:
+  signals:
+    - {name: gap_true, sort: real}
+    - {name: vel_true, sort: real}
+    - {name: hazard, sort: bool}
+formula: "G((gap_true < TGAP * vel_true) -> F[0,3](hazard))"

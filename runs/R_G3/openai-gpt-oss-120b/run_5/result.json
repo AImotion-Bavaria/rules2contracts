@@ -1,0 +1,18 @@
+{
+  "rule": "R_G3",
+  "attempts": 2,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V0] VehicleDynamics: environment signal 'v_true' declared as output",
+        "[V0] VehicleDynamics: input 'v_cmd' \u2014 VehicleDynamics does not consume topic of Planning.trajectory per the documented architecture"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": []
+    }
+  ]
+}

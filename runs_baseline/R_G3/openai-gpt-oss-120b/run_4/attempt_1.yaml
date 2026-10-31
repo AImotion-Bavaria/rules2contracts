@@ -1,0 +1,10 @@
+rule_id: R_G3_flat
+description: Vehicles must not exceed the speed limit of the lane they occupy.
+sampling_rate_hz: 10
+horizon: 5
+constants: {}
+environment:
+  signals:
+    - {name: speed, sort: real}
+    - {name: lane_speed_limit, sort: real}
+formula: "G(speed <= lane_speed_limit)"

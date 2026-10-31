@@ -1,0 +1,12 @@
+rule_id: R_I1_flat
+description: Stopping on interstate main carriageway prohibited unless congestion or lead stationary.
+sampling_rate_hz: 10
+horizon: 10
+constants:
+  V_STANDSTILL: 0.5
+environment:
+  signals:
+    - {name: congestion, sort: bool}
+    - {name: lead_vel, sort: real}
+    - {name: ego_vel, sort: real}
+formula: "G((not congestion and lead_vel > V_STANDSTILL) -> ego_vel >= V_STANDSTILL)"

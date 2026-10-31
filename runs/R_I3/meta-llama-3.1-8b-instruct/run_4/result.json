@@ -1,0 +1,31 @@
+{
+  "rule": "R_I3",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SYNTAX] expected '(', got 'true' in: G(true)"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[SYNTAX] expected '(', got 'true' in: G(true)"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[SYNTAX] expected '(', got 'true' in: G(true)"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[SYNTAX] expected '(', got 'true' in: G(true)"
+      ]
+    }
+  ]
+}

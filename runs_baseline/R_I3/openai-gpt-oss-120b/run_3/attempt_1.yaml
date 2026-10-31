@@ -1,0 +1,11 @@
+rule_id: R_I3_flat
+description: No reversing manoeuvres are allowed on the interstate; the true longitudinal ego velocity must never drop below -0.3 m/s. Plant moves backwards only if reverse gear is commanded.
+sampling_rate_hz: 10
+horizon: 5
+constants:
+  V_NEG_LIMIT: -0.3
+environment:
+  signals:
+    - {name: v_long, sort: real}
+    - {name: reverse_cmd, sort: bool}
+formula: "G((v_long >= V_NEG_LIMIT) and (not reverse_cmd -> v_long >= 0))"

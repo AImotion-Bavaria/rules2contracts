@@ -1,0 +1,24 @@
+{
+  "rule": "R_G2",
+  "attempts": 3,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SCHEMA] horizon 1 too small: must be at least max future depth (0) + 4"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V3a] assumption of C_Control not discharged",
+        "    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4\n      a_cmd        0        0        0        0        0\n      a_plan    81/4     81/4     81/4     81/4    -81/4\n      d_lead    73/4     73/4     73/4     73/4     -1/4\n      d_true    37/2     37/2     37/2     37/2        0"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": []
+    }
+  ]
+}

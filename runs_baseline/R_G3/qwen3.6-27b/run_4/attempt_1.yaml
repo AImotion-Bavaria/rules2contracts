@@ -1,0 +1,11 @@
+rule_id: R_G3_flat
+description: The commanded velocity must not exceed the lane speed limit minus the tracking error bound to ensure the physical vehicle speed remains within the legal limit.
+sampling_rate_hz: 10
+horizon: 8
+constants:
+  TRACKING_ERR: 1.0
+environment:
+  signals:
+    - {name: v_cmd, sort: real}
+    - {name: v_limit, sort: real}
+formula: "G(v_cmd <= v_limit - TRACKING_ERR)"

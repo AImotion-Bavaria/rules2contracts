@@ -1,0 +1,39 @@
+{
+  "rule": "R_I1",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V0] Plant: output 'v_ego' is computed by Localization, not Plant",
+        "[V0] Plant: input 'v_cmd' \u2014 Plant does not consume topic of Planning.trajectory per the documented architecture",
+        "[V0] Plant: input 'v_lead' \u2014 Plant does not consume topic of Perception.predicted_objects per the documented architecture"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V0] Localization: input 'v_ego' \u2014 Localization does not consume topic of Localization.kinematic_state per the documented architecture",
+        "[V0] Plant: output 'v_ego' is computed by Localization, not Plant",
+        "[V0] Plant: input 'v_cmd' \u2014 Plant does not consume topic of Planning.trajectory per the documented architecture",
+        "[V0] Plant: input 'v_lead' \u2014 Plant does not consume topic of Perception.predicted_objects per the documented architecture",
+        "[SCHEMA] discharge_order ['Perception', 'Localization'] must list exactly the services of the decomposition ['Perception', 'Localization', 'Plant']"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[SCHEMA] malformed rule document: ValueError(\"unknown signal 'v_ego_cmd' in an interface declaration: declare it as an environment signal or use one of the architecture features\")"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[V0] Plant: environment signal 'v_ego_cmd' declared as output",
+        "[V0] Plant: input 'v_cmd' \u2014 Plant does not consume topic of Planning.trajectory per the documented architecture",
+        "[V0] Plant: input 'v_lead' \u2014 Plant does not consume topic of Perception.predicted_objects per the documented architecture"
+      ]
+    }
+  ]
+}

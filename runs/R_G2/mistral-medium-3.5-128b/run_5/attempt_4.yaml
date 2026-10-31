@@ -1,0 +1,57 @@
+rule_id: R_G2_llm
+description: >
+  Unnecessary braking prohibition (StVO §4(1)): A commanded deceleration
+  stronger than 2.0 m/s² is only permitted when the gap to the preceding
+  vehicle is critical (below 20.0 m). Perception estimates the gap with a
+  bounded error of 2.0 m, and the plant tracks the commanded acceleration
+  within 0.5 m/s².
+source_text: >
+  StVO §4(1): "Vehicles must not brake abruptly without reason."
+  Interpretation: Commanded deceleration > 2.0 m/s² requires critical gap
+  (d_lead_true < 20.0 m).
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  A_THRESH: 2.0
+  D_CRITICAL: 20.0
+  EPS_D: 2.0
+  EPS_A: 0.5
+  V_MIN: 0.0
+  V_MAX: 70.0
+  A_MIN: -10.0
+  A_MAX: 10.0
+  D_MIN: 0.0
+
+environment:
+  signals:
+    - {name: d_lead_true, sort: real}
+    - {name: a_ego_true, sort: real}
+
+system_contract:
+  interface: {inputs: [d_lead_true, a_ego_true], outputs: [a_cmd]}
+  assumption: "G(d_lead_true >= D_MIN and a_ego_true >= A_MIN and a_ego_true <= A_MAX)"
+  guarantee: "G((a_cmd <= -A_THRESH - EPS_A) -> (d_lead_true < D_CRITICAL + EPS_D))"
+
+decomposition:
+  discharge_order: [Localization, Perception, Planning, Control]
+  contracts:
+    - service: Localization
+      interface: {inputs: [a_ego_true], outputs: [a_ego, v_ego]}
+      assumption: "G(a_ego_true >= A_MIN and a_ego_true <= A_MAX)"
+      guarantee: "G(abs(a_ego - a_ego_true) <= 0.0 and v_ego >= V_MIN and v_ego <= V_MAX)"
+
+    - service: Perception
+      interface: {inputs: [d_lead_true], outputs: [d_lead]}
+      assumption: "G(d_lead_true >= D_MIN)"
+      guarantee: "G(d_lead >= D_MIN and abs(d_lead - d_lead_true) <= EPS_D)"
+
+    - service: Planning
+      interface: {inputs: [d_lead, v_ego, a_ego], outputs: [a_plan]}
+      assumption: "G(d_lead >= D_MIN and v_ego >= V_MIN and v_ego <= V_MAX and a_ego >= A_MIN and a_ego <= A_MAX)"
+      guarantee: "G((a_plan <= -A_THRESH - EPS_A) -> (d_lead <= D_CRITICAL - EPS_D))"
+
+    - service: Control
+      interface: {inputs: [a_plan, v_ego], outputs: [a_cmd]}
+      assumption: "G(a_plan >= A_MIN - EPS_A and a_plan <= A_MAX + EPS_A and v_ego >= V_MIN and v_ego <= V_MAX)"
+      guarantee: "G(a_cmd >= A_MIN and a_cmd <= A_MAX and abs(a_cmd - a_plan) <= EPS_A)"

@@ -1,0 +1,7 @@
+rule_id: R_G3_flat
+description: >
+  StVO §3(1)/§18 maximum speed: the true longitudinal speed of the ego vehicle
+  must never exceed the speed limit applicable to the lane it currently occupies.
+  A tracking tolerance of 1.0 m/s (plant follows the commanded velocity within
+  1.0 m/s) is admitted as an instantaneous band, and any excursion above the
+  posted limit must be eliminated within 1 

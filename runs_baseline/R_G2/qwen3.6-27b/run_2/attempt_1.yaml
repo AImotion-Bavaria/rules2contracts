@@ -1,0 +1,12 @@
+rule_id: R_G2_flat
+description: Vehicles must not brake abruptly without reason; commanded deceleration exceeding 2.0 m/s² is only allowed when the true gap to the preceding vehicle is below 20.0 m.
+sampling_rate_hz: 10
+horizon: 8
+constants:
+  DECEL_THRESH: 2.0
+  GAP_THRESH: 20.0
+environment:
+  signals:
+    - {name: acc_cmd, sort: real}
+    - {name: gap, sort: real}
+formula: "G((acc_cmd <= -DECEL_THRESH) -> (gap < GAP_THRESH))"

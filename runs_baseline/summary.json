@@ -1,0 +1,1362 @@
+[
+  {
+    "rule": "R_G1",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 3,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "mistral-medium-3.5-128b",
+    "run": 1,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "SYNTAX"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "mistral-medium-3.5-128b",
+    "run": 2,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "SYNTAX"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "mistral-medium-3.5-128b",
+    "run": 3,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "SYNTAX"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "mistral-medium-3.5-128b",
+    "run": 4,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "SYNTAX"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "mistral-medium-3.5-128b",
+    "run": 5,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "SYNTAX"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "openai-gpt-oss-120b",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "openai-gpt-oss-120b",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "openai-gpt-oss-120b",
+    "run": 3,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "openai-gpt-oss-120b",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "openai-gpt-oss-120b",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "qwen3.5-397b-a17b",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "qwen3.5-397b-a17b",
+    "run": 2,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "YAML"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "qwen3.5-397b-a17b",
+    "run": 3,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "YAML"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "qwen3.5-397b-a17b",
+    "run": 4,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "YAML"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "qwen3.5-397b-a17b",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "qwen3.6-27b",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "qwen3.6-27b",
+    "run": 2,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "YAML"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "qwen3.6-27b",
+    "run": 3,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "YAML"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "qwen3.6-27b",
+    "run": 4,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "YAML"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_G1",
+    "model": "qwen3.6-27b",
+    "run": 5,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "YAML"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 1,
+    "valid": false,
+    "attempts": 4,
+    "progression": [
+      [
+        "YAML"
+      ],
+      [
+        "YAML"
+      ],
+      [
+        "YAML"
+      ],
+      [
+        "YAML"
+      ]
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 2,
+    "valid": false,
+    "attempts": 4,
+    "progression": [
+      [
+        "YAML"
+      ],
+      [
+        "YAML"
+      ],
+      [
+        "YAML"
+      ],
+      [
+        "YAML"
+      ]
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 3,
+    "valid": false,
+    "attempts": 4,
+    "progression": [
+      [
+        "YAML"
+      ],
+      [
+        "YAML"
+      ],
+      [
+        "YAML"
+      ],
+      [
+        "YAML"
+      ]
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 5,
+    "valid": false,
+    "attempts": 4,
+    "progression": [
+      [
+        "YAML"
+      ],
+      [
+        "YAML"
+      ],
+      [
+        "YAML"
+      ],
+      [
+        "YAML"
+      ]
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "mistral-medium-3.5-128b",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "mistral-medium-3.5-128b",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "mistral-medium-3.5-128b",
+    "run": 3,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "mistral-medium-3.5-128b",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "mistral-medium-3.5-128b",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "openai-gpt-oss-120b",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "openai-gpt-oss-120b",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "openai-gpt-oss-120b",
+    "run": 3,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "openai-gpt-oss-120b",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "openai-gpt-oss-120b",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "qwen3.5-397b-a17b",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "qwen3.5-397b-a17b",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "qwen3.5-397b-a17b",
+    "run": 3,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "qwen3.5-397b-a17b",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "qwen3.5-397b-a17b",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "qwen3.6-27b",
+    "run": 1,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "YAML"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "qwen3.6-27b",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "qwen3.6-27b",
+    "run": 3,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "YAML"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "qwen3.6-27b",
+    "run": 4,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "YAML"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_G2",
+    "model": "qwen3.6-27b",
+    "run": 5,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "YAML"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 3,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "mistral-medium-3.5-128b",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "mistral-medium-3.5-128b",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "mistral-medium-3.5-128b",
+    "run": 3,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "mistral-medium-3.5-128b",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "mistral-medium-3.5-128b",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "openai-gpt-oss-120b",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "openai-gpt-oss-120b",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "openai-gpt-oss-120b",
+    "run": 3,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "openai-gpt-oss-120b",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "openai-gpt-oss-120b",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "qwen3.5-397b-a17b",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "qwen3.5-397b-a17b",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "qwen3.5-397b-a17b",
+    "run": 3,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "qwen3.5-397b-a17b",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "qwen3.5-397b-a17b",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "qwen3.6-27b",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "qwen3.6-27b",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "qwen3.6-27b",
+    "run": 3,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "qwen3.6-27b",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_G3",
+    "model": "qwen3.6-27b",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 3,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "SYNTAX"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 5,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "SYNTAX"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "mistral-medium-3.5-128b",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "mistral-medium-3.5-128b",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "mistral-medium-3.5-128b",
+    "run": 3,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "mistral-medium-3.5-128b",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "mistral-medium-3.5-128b",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "openai-gpt-oss-120b",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "openai-gpt-oss-120b",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "openai-gpt-oss-120b",
+    "run": 3,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "openai-gpt-oss-120b",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "openai-gpt-oss-120b",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "qwen3.5-397b-a17b",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "qwen3.5-397b-a17b",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "qwen3.5-397b-a17b",
+    "run": 3,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "qwen3.5-397b-a17b",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "qwen3.5-397b-a17b",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "qwen3.6-27b",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "qwen3.6-27b",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "qwen3.6-27b",
+    "run": 3,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "qwen3.6-27b",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I1",
+    "model": "qwen3.6-27b",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 3,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "meta-llama-3.1-8b-instruct",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "mistral-medium-3.5-128b",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "mistral-medium-3.5-128b",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "mistral-medium-3.5-128b",
+    "run": 3,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "mistral-medium-3.5-128b",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "mistral-medium-3.5-128b",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "openai-gpt-oss-120b",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "openai-gpt-oss-120b",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "openai-gpt-oss-120b",
+    "run": 3,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "openai-gpt-oss-120b",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "openai-gpt-oss-120b",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "qwen3.5-397b-a17b",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "qwen3.5-397b-a17b",
+    "run": 2,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "qwen3.5-397b-a17b",
+    "run": 3,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "YAML"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "qwen3.5-397b-a17b",
+    "run": 4,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "qwen3.5-397b-a17b",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "qwen3.6-27b",
+    "run": 1,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "qwen3.6-27b",
+    "run": 2,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "YAML"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "qwen3.6-27b",
+    "run": 3,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "YAML"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "qwen3.6-27b",
+    "run": 4,
+    "valid": true,
+    "attempts": 2,
+    "progression": [
+      [
+        "YAML"
+      ],
+      []
+    ]
+  },
+  {
+    "rule": "R_I3",
+    "model": "qwen3.6-27b",
+    "run": 5,
+    "valid": true,
+    "attempts": 1,
+    "progression": [
+      []
+    ]
+  }
+]

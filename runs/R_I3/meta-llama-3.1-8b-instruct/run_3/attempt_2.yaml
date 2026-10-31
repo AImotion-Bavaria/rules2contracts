@@ -1,0 +1,36 @@
+rule_id: R_I3_llm
+description: >
+  No reversing manoeuvres (StVO §18(7)): the true longitudinal ego velocity
+  must never drop below -0.3 m/s on the interstate.
+source_text: >
+  StVO §18(7): "Vor dem Fahrzeug, das einen Rückwärtsfahrberechtigung besitzt,
+  darf sich kein Fahrzeug mit einem Rückwärtsfahrberechtigung befinden."
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  V_MIN_REVERSE: -0.3  # minimum allowed longitudinal ego velocity [m/s]
+  HORIZON_STEPS: 8     # number of steps in the horizon
+
+environment:
+  signals:
+    - {name: v_true, sort: real}   # true ego longitudinal velocity [m/s]
+    - {name: gear_rev_cmd, sort: bool}  # reverse gear command
+
+system_contract:
+  interface: {inputs: [v_true, gear_rev_cmd], outputs: []}
+  assumption: "G(gear_rev_cmd -> F[0,${HORIZON_STEPS}](v_true < V_MIN_REVERSE))"
+  guarantee: "G(not gear_rev_cmd)"
+
+decomposition:
+  discharge_order: [Control, Localization]
+  contracts:
+    - service: Control
+      interface: {inputs: [gear_rev_cmd], outputs: []}
+      assumption: "G(not gear_rev_cmd)"
+      guarantee: "G(not gear_rev_cmd)"
+
+    - service: Localization
+      interface: {inputs: [], outputs: [v_ego]}
+      assumption: "G(true)"
+      guarantee: "G(abs(v_ego - v_true) <= 1.0)"

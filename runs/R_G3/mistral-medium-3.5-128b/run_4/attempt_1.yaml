@@ -1,0 +1,36 @@
+rule_id: R_G3_llm
+description: >
+  Maximum speed limit (StVO §3(1)/§18): The vehicle must not exceed the
+  speed limit of its current lane. The plant tracks the commanded velocity
+  with a bounded error, so the Planning output must respect a tightened threshold.
+source_text: >
+  StVO §3(1): "Wer ein Fahrzeug führt, darf nur so schnell fahren, dass
+  das Fahrzeug ständig beherrscht wird." and §18: lane-specific speed limits.
+  Interpreted as: v_true <= lane_speed_limit.
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  EPS_V: 1.0    # plant tracking error bound [m/s]
+
+environment:
+  signals:
+    - {name: lane_speed_limit, sort: real}   # current lane speed limit [m/s]
+
+system_contract:
+  interface: {inputs: [lane_speed_limit], outputs: [v_cmd]}
+  assumption: "G(lane_speed_limit >= 0)"
+  guarantee: "G(v_cmd <= lane_speed_limit - EPS_V)"
+
+decomposition:
+  discharge_order: [Planning, Control]
+  contracts:
+    - service: Planning
+      interface: {inputs: [lane_speed_limit], outputs: [v_cmd]}
+      assumption: "G(lane_speed_limit >= 0)"
+      guarantee: "G(v_cmd <= lane_speed_limit - EPS_V)"
+
+    - service: Control
+      interface: {inputs: [v_cmd], outputs: [a_cmd]}
+      assumption: "G(v_cmd >= 0)"
+      guarantee: "G(abs(v_ego - v_cmd) <= EPS_V)"

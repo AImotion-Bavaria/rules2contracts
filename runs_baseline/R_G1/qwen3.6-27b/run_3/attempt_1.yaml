@@ -1,0 +1,12 @@
+rule_id: R_G1_flat
+description: Safe distance to preceding vehicle (StVO §4(1)): hazard must be raised within 3 steps if true gap falls below 1.8s times true ego velocity.
+sampling_rate_hz: 10
+horizon: 5
+constants:
+  K_TIME_GAP: 1.8
+environment:
+  signals:
+    - {name: gap_true, sort: real}
+    - {name: vel_true, sort: real}
+    - {name: hazard, sort: bool}
+formula: "G((gap_true < K_TIME_GAP * vel_true) -> F[0,3](hazard))"

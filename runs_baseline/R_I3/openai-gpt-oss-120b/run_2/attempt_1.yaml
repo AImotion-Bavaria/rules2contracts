@@ -1,0 +1,11 @@
+rule_id: R_I3_flat
+description: No reversing manoeuvres are allowed; the true longitudinal ego velocity must never drop below -0.3 m/s. Additionally, the vehicle can move backwards only when the reverse gear is commanded.
+sampling_rate_hz: 10
+horizon: 10
+constants:
+  MIN_REVERSE_VEL: -0.3
+environment:
+  signals:
+    - {name: true_longitudinal_velocity, sort: real}
+    - {name: gear_reverse, sort: bool}
+formula: "G((true_longitudinal_velocity >= MIN_REVERSE_VEL) and ((true_longitudinal_velocity < 0) -> gear_reverse))"

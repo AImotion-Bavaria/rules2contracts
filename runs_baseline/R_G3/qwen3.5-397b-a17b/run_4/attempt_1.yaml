@@ -1,0 +1,11 @@
+rule_id: R_G3_flat
+description: Vehicles must not command a velocity exceeding the lane speed limit minus the maximum tracking error.
+sampling_rate_hz: 10
+horizon: 10
+constants:
+  TRACKING_ERROR_MAX: 1.0
+environment:
+  signals:
+    - {name: velocity_cmd, sort: real}
+    - {name: lane_speed_limit, sort: real}
+formula: "G(velocity_cmd <= lane_speed_limit - TRACKING_ERROR_MAX)"

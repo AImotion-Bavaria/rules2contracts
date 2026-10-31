@@ -1,0 +1,14 @@
+rule_id: R_G1_flat
+description: Safe distance to the preceding vehicle – if the estimated gap (minus its 2 m error bound) falls below 1.8 s times the estimated ego velocity (plus its 0.5 m/s error bound), a hazard notification must be raised within 300 ms (3 steps at 10 Hz).
+sampling_rate_hz: 10
+horizon: 3
+constants:
+  TIME_GAP: 1.8
+  GAP_ERR: 2.0
+  VEL_ERR: 0.5
+environment:
+  signals:
+    - {name: gap_est, sort: real}
+    - {name: vel_est, sort: real}
+    - {name: hazard, sort: bool}
+formula: "G(((gap_est - GAP_ERR) < TIME_GAP * (vel_est + VEL_ERR)) -> F[0,3](hazard))"

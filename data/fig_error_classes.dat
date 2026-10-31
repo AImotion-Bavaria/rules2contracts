@@ -1,0 +1,8 @@
+model YAML SCHEMA SYNTAX V0 V1 V3a V3b VALID
+Llama-3.1-8B 10 2 11 2 0 0 0 0
+Mistral-Med-3.5 0 4 4 0 8 4 5 0
+GPT-OSS-120B 0 1 11 5 0 6 2 0
+Claude-Sonnet-5 0 18 0 0 0 2 0 5
+Qwen3.6-27B 0 0 2 2 2 9 1 9
+Qwen3.5-397B 0 0 0 2 0 14 0 9
+Claude-Opus-5 0 0 0 0 0 9 0 16

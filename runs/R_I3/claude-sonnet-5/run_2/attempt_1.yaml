@@ -1,0 +1,36 @@
+rule_id: R_I3_llm
+description: >
+  StVO §18(7): reversing manoeuvres are prohibited on the interstate.
+  Formalized at feature level as a bound on the true (ground-truth)
+  longitudinal ego velocity, which must never drop below -0.3 m/s. The
+  plant only moves backwards if the reverse gear is commanded; this is
+  captured as a system-level tracking assumption linking the true
+  velocity (environment signal) to the reverse-gear command feature
+  computed by Control.
+source_text: >
+  "Wer ein Fahrzeug führt, darf ... auf Autobahnen ... nicht rückwärts
+  fahren, wenden oder ... im Rückwärtsgang länger fahren, als es sich
+  nicht vermeiden lässt." (StVO §18 Abs. 7)
+
+sampling_rate_hz: 10
+horizon: 1
+
+constants:
+  MIN_V: -0.3   # minimal tolerated true longitudinal velocity [m/s] (near-zero backward creep bound)
+
+environment:
+  signals:
+    - {name: v_true_ego, sort: real}   # true (ground-truth) longitudinal ego velocity [m/s]
+
+system_contract:
+  interface: {inputs: [v_true_ego], outputs: [gear_rev_cmd]}
+  assumption: "G((v_true_ego < MIN_V) -> gear_rev_cmd)"
+  guarantee: "G(v_true_ego >= MIN_V)"
+
+decomposition:
+  discharge_order: [Control]
+  contracts:
+    - service: Control
+      interface: {inputs: [v_ego, v_cmd, a_plan], outputs: [gear_rev_cmd]}
+      assumption: "G(v_cmd >= 0)"
+      guarantee: "G(not gear_rev_cmd)"

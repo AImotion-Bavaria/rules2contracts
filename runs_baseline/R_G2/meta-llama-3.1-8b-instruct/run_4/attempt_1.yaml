@@ -1,0 +1,17 @@
+rule_id: R_G2_flat
+description: A commanded deceleration stronger than 2.0 m/s^2 is only permitted when the gap to the preceding vehicle is critical.
+sampling_rate_hz: 10
+horizon: 8
+constants:
+  GAP_THRESHOLD: 20.0
+  GAP_ERROR: 2.0
+  DECEL_THRESHOLD: 2.0
+  DECEL_ERROR: 0.5
+environment:
+  signals:
+    - {name: gap, sort: real}
+    - {name: gap_error, sort: real}
+    - {name: decel_cmd, sort: real}
+    - {name: decel_error, sort: real}
+    - {name: preceding_vehicle_critical, sort: bool}
+formula: "G((decel_cmd >= DECEL_THRESHOLD + DECEL_ERROR) -> F[0,1]((gap <= GAP_THRESHOLD - GAP_ERROR) -> preceding_vehicle_critical))"

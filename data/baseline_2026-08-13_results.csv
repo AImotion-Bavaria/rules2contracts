@@ -1,0 +1,176 @@
+rule,model,run,valid,attempts,progression
+R_G1,meta-llama-3.1-8b-instruct,1,1,1,VALID
+R_G1,meta-llama-3.1-8b-instruct,2,1,1,VALID
+R_G1,meta-llama-3.1-8b-instruct,3,1,1,VALID
+R_G1,meta-llama-3.1-8b-instruct,4,1,1,VALID
+R_G1,meta-llama-3.1-8b-instruct,5,1,1,VALID
+R_G1,mistral-medium-3.5-128b,1,1,2,SYNTAX -> VALID
+R_G1,mistral-medium-3.5-128b,2,1,2,SYNTAX -> VALID
+R_G1,mistral-medium-3.5-128b,3,1,2,SYNTAX -> VALID
+R_G1,mistral-medium-3.5-128b,4,1,2,SYNTAX -> VALID
+R_G1,mistral-medium-3.5-128b,5,1,2,SYNTAX -> VALID
+R_G1,openai-gpt-oss-120b,1,1,1,VALID
+R_G1,openai-gpt-oss-120b,2,1,1,VALID
+R_G1,openai-gpt-oss-120b,3,1,1,VALID
+R_G1,openai-gpt-oss-120b,4,1,1,VALID
+R_G1,openai-gpt-oss-120b,5,1,1,VALID
+R_G1,qwen3.5-397b-a17b,1,1,1,VALID
+R_G1,qwen3.5-397b-a17b,2,1,2,YAML -> VALID
+R_G1,qwen3.5-397b-a17b,3,1,2,YAML -> VALID
+R_G1,qwen3.5-397b-a17b,4,1,2,YAML -> VALID
+R_G1,qwen3.5-397b-a17b,5,1,1,VALID
+R_G1,qwen3.6-27b,1,1,1,VALID
+R_G1,qwen3.6-27b,2,1,2,YAML -> VALID
+R_G1,qwen3.6-27b,3,1,2,YAML -> VALID
+R_G1,qwen3.6-27b,4,1,2,YAML -> VALID
+R_G1,qwen3.6-27b,5,1,2,YAML -> VALID
+R_G2,meta-llama-3.1-8b-instruct,1,0,4,YAML -> YAML -> YAML -> YAML
+R_G2,meta-llama-3.1-8b-instruct,2,0,4,YAML -> YAML -> YAML -> YAML
+R_G2,meta-llama-3.1-8b-instruct,3,0,4,YAML -> YAML -> YAML -> YAML
+R_G2,meta-llama-3.1-8b-instruct,4,1,1,VALID
+R_G2,meta-llama-3.1-8b-instruct,5,0,4,YAML -> YAML -> YAML -> YAML
+R_G2,mistral-medium-3.5-128b,1,1,1,VALID
+R_G2,mistral-medium-3.5-128b,2,1,1,VALID
+R_G2,mistral-medium-3.5-128b,3,1,1,VALID
+R_G2,mistral-medium-3.5-128b,4,1,1,VALID
+R_G2,mistral-medium-3.5-128b,5,1,1,VALID
+R_G2,openai-gpt-oss-120b,1,1,1,VALID
+R_G2,openai-gpt-oss-120b,2,1,1,VALID
+R_G2,openai-gpt-oss-120b,3,1,1,VALID
+R_G2,openai-gpt-oss-120b,4,1,1,VALID
+R_G2,openai-gpt-oss-120b,5,1,1,VALID
+R_G2,qwen3.5-397b-a17b,1,1,1,VALID
+R_G2,qwen3.5-397b-a17b,2,1,1,VALID
+R_G2,qwen3.5-397b-a17b,3,1,1,VALID
+R_G2,qwen3.5-397b-a17b,4,1,1,VALID
+R_G2,qwen3.5-397b-a17b,5,1,1,VALID
+R_G2,qwen3.6-27b,1,1,2,YAML -> VALID
+R_G2,qwen3.6-27b,2,1,1,VALID
+R_G2,qwen3.6-27b,3,1,2,YAML -> VALID
+R_G2,qwen3.6-27b,4,1,2,YAML -> VALID
+R_G2,qwen3.6-27b,5,1,2,YAML -> VALID
+R_G3,meta-llama-3.1-8b-instruct,1,1,1,VALID
+R_G3,meta-llama-3.1-8b-instruct,2,1,1,VALID
+R_G3,meta-llama-3.1-8b-instruct,3,1,1,VALID
+R_G3,meta-llama-3.1-8b-instruct,4,1,1,VALID
+R_G3,meta-llama-3.1-8b-instruct,5,1,1,VALID
+R_G3,mistral-medium-3.5-128b,1,1,1,VALID
+R_G3,mistral-medium-3.5-128b,2,1,1,VALID
+R_G3,mistral-medium-3.5-128b,3,1,1,VALID
+R_G3,mistral-medium-3.5-128b,4,1,1,VALID
+R_G3,mistral-medium-3.5-128b,5,1,1,VALID
+R_G3,openai-gpt-oss-120b,1,1,1,VALID
+R_G3,openai-gpt-oss-120b,2,1,1,VALID
+R_G3,openai-gpt-oss-120b,3,1,1,VALID
+R_G3,openai-gpt-oss-120b,4,1,1,VALID
+R_G3,openai-gpt-oss-120b,5,1,1,VALID
+R_G3,qwen3.5-397b-a17b,1,1,1,VALID
+R_G3,qwen3.5-397b-a17b,2,1,1,VALID
+R_G3,qwen3.5-397b-a17b,3,1,1,VALID
+R_G3,qwen3.5-397b-a17b,4,1,1,VALID
+R_G3,qwen3.5-397b-a17b,5,1,1,VALID
+R_G3,qwen3.6-27b,1,1,1,VALID
+R_G3,qwen3.6-27b,2,1,1,VALID
+R_G3,qwen3.6-27b,3,1,1,VALID
+R_G3,qwen3.6-27b,4,1,1,VALID
+R_G3,qwen3.6-27b,5,1,1,VALID
+R_I1,meta-llama-3.1-8b-instruct,1,1,1,VALID
+R_I1,meta-llama-3.1-8b-instruct,2,1,1,VALID
+R_I1,meta-llama-3.1-8b-instruct,3,1,2,SYNTAX -> VALID
+R_I1,meta-llama-3.1-8b-instruct,4,1,1,VALID
+R_I1,meta-llama-3.1-8b-instruct,5,1,2,SYNTAX -> VALID
+R_I1,mistral-medium-3.5-128b,1,1,1,VALID
+R_I1,mistral-medium-3.5-128b,2,1,1,VALID
+R_I1,mistral-medium-3.5-128b,3,1,1,VALID
+R_I1,mistral-medium-3.5-128b,4,1,1,VALID
+R_I1,mistral-medium-3.5-128b,5,1,1,VALID
+R_I1,openai-gpt-oss-120b,1,1,1,VALID
+R_I1,openai-gpt-oss-120b,2,1,1,VALID
+R_I1,openai-gpt-oss-120b,3,1,1,VALID
+R_I1,openai-gpt-oss-120b,4,1,1,VALID
+R_I1,openai-gpt-oss-120b,5,1,1,VALID
+R_I1,qwen3.5-397b-a17b,1,1,1,VALID
+R_I1,qwen3.5-397b-a17b,2,1,1,VALID
+R_I1,qwen3.5-397b-a17b,3,1,1,VALID
+R_I1,qwen3.5-397b-a17b,4,1,1,VALID
+R_I1,qwen3.5-397b-a17b,5,1,1,VALID
+R_I1,qwen3.6-27b,1,1,1,VALID
+R_I1,qwen3.6-27b,2,1,1,VALID
+R_I1,qwen3.6-27b,3,1,1,VALID
+R_I1,qwen3.6-27b,4,1,1,VALID
+R_I1,qwen3.6-27b,5,1,1,VALID
+R_I3,meta-llama-3.1-8b-instruct,1,1,1,VALID
+R_I3,meta-llama-3.1-8b-instruct,2,1,1,VALID
+R_I3,meta-llama-3.1-8b-instruct,3,1,1,VALID
+R_I3,meta-llama-3.1-8b-instruct,4,1,1,VALID
+R_I3,meta-llama-3.1-8b-instruct,5,1,1,VALID
+R_I3,mistral-medium-3.5-128b,1,1,1,VALID
+R_I3,mistral-medium-3.5-128b,2,1,1,VALID
+R_I3,mistral-medium-3.5-128b,3,1,1,VALID
+R_I3,mistral-medium-3.5-128b,4,1,1,VALID
+R_I3,mistral-medium-3.5-128b,5,1,1,VALID
+R_I3,openai-gpt-oss-120b,1,1,1,VALID
+R_I3,openai-gpt-oss-120b,2,1,1,VALID
+R_I3,openai-gpt-oss-120b,3,1,1,VALID
+R_I3,openai-gpt-oss-120b,4,1,1,VALID
+R_I3,openai-gpt-oss-120b,5,1,1,VALID
+R_I3,qwen3.5-397b-a17b,1,1,1,VALID
+R_I3,qwen3.5-397b-a17b,2,1,1,VALID
+R_I3,qwen3.5-397b-a17b,3,1,2,YAML -> VALID
+R_I3,qwen3.5-397b-a17b,4,1,1,VALID
+R_I3,qwen3.5-397b-a17b,5,1,1,VALID
+R_I3,qwen3.6-27b,1,1,1,VALID
+R_I3,qwen3.6-27b,2,1,2,YAML -> VALID
+R_I3,qwen3.6-27b,3,1,2,YAML -> VALID
+R_I3,qwen3.6-27b,4,1,2,YAML -> VALID
+R_I3,qwen3.6-27b,5,1,1,VALID
+R_G1,claude-sonnet-5,1,1,1,VALID
+R_G1,claude-sonnet-5,2,1,1,VALID
+R_G1,claude-sonnet-5,3,1,1,VALID
+R_G1,claude-sonnet-5,4,1,1,VALID
+R_G1,claude-sonnet-5,5,1,1,VALID
+R_G2,claude-sonnet-5,1,1,1,VALID
+R_G2,claude-sonnet-5,2,1,1,VALID
+R_G2,claude-sonnet-5,3,1,1,VALID
+R_G2,claude-sonnet-5,4,1,1,VALID
+R_G2,claude-sonnet-5,5,1,1,VALID
+R_G3,claude-sonnet-5,1,1,1,VALID
+R_G3,claude-sonnet-5,2,1,1,VALID
+R_G3,claude-sonnet-5,3,1,1,VALID
+R_G3,claude-sonnet-5,4,1,1,VALID
+R_G3,claude-sonnet-5,5,1,1,VALID
+R_I1,claude-sonnet-5,1,1,1,VALID
+R_I1,claude-sonnet-5,2,1,1,VALID
+R_I1,claude-sonnet-5,3,1,1,VALID
+R_I1,claude-sonnet-5,4,1,1,VALID
+R_I1,claude-sonnet-5,5,1,1,VALID
+R_I3,claude-sonnet-5,1,1,1,VALID
+R_I3,claude-sonnet-5,2,1,1,VALID
+R_I3,claude-sonnet-5,3,1,1,VALID
+R_I3,claude-sonnet-5,4,1,1,VALID
+R_I3,claude-sonnet-5,5,1,1,VALID
+R_G1,claude-opus-5,1,1,1,VALID
+R_G1,claude-opus-5,2,1,1,VALID
+R_G1,claude-opus-5,3,0,1,REFUSAL
+R_G1,claude-opus-5,4,1,1,VALID
+R_G1,claude-opus-5,5,1,1,VALID
+R_G2,claude-opus-5,1,0,1,REFUSAL
+R_G2,claude-opus-5,2,0,1,REFUSAL
+R_G2,claude-opus-5,3,0,1,REFUSAL
+R_G2,claude-opus-5,4,0,1,REFUSAL
+R_G2,claude-opus-5,5,0,1,REFUSAL
+R_G3,claude-opus-5,1,0,1,REFUSAL
+R_G3,claude-opus-5,2,1,1,VALID
+R_G3,claude-opus-5,3,0,1,REFUSAL
+R_G3,claude-opus-5,4,0,1,REFUSAL
+R_G3,claude-opus-5,5,1,1,VALID
+R_I1,claude-opus-5,1,0,1,REFUSAL
+R_I1,claude-opus-5,2,0,1,REFUSAL
+R_I1,claude-opus-5,3,0,1,REFUSAL
+R_I1,claude-opus-5,4,0,1,REFUSAL
+R_I1,claude-opus-5,5,0,1,REFUSAL
+R_I3,claude-opus-5,1,0,1,REFUSAL
+R_I3,claude-opus-5,2,0,1,REFUSAL
+R_I3,claude-opus-5,3,0,1,REFUSAL
+R_I3,claude-opus-5,4,0,1,REFUSAL
+R_I3,claude-opus-5,5,0,1,REFUSAL

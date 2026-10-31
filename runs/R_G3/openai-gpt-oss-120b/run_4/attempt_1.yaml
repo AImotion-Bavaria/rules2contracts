@@ -1,0 +1,37 @@
+rule_id: R_G3_llm
+description: >
+  Maximum speed limit (StVO §3(1)/§18): the vehicle must never travel faster than the
+  speed limit of its current lane. The lane speed limit is provided as an environment
+  signal. The vehicle dynamics track the commanded velocity within a bounded error of
+  1.0 m/s, therefore the planning module must command a velocity that leaves a safety
+  margin of EPS_V before the speed limit.
+source_text: >
+  StVO §3(1)/§18 – “Fahrzeuge dürfen nicht schneller fahren als die für die jeweilige Fahrspur
+  geltende Höchstgeschwindigkeit.” The plant tracks the commanded velocity within 1.0 m/s.
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  EPS_V: 1.0    # tracking error bound between commanded and true ego speed [m/s]
+
+environment:
+  signals:
+    - {name: speed_limit, sort: real}   # lane speed limit [m/s]
+    - {name: v_true, sort: real}        # true ego speed [m/s]
+
+system_contract:
+  interface: {inputs: [speed_limit, v_true], outputs: []}
+  assumption: "G(speed_limit >= 0)"
+  guarantee: "G(v_true <= speed_limit)"
+
+decomposition:
+  discharge_order: [Planning, VehicleDynamics]
+  contracts:
+    - service: Planning
+      interface: {inputs: [v_ego, speed_limit], outputs: [v_cmd]}
+      assumption: "G(v_ego >= 0 and speed_limit >= 0)"
+      guarantee: "G(v_cmd <= speed_limit - EPS_V)"
+    - service: VehicleDynamics
+      interface: {inputs: [v_cmd], outputs: [v_true]}
+      assumption: "G(v_cmd >= 0)"
+      guarantee: "G(abs(v_true - v_cmd) <= EPS_V)"

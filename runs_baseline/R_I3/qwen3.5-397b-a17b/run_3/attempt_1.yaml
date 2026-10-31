@@ -1,0 +1,11 @@
+rule_id: R_I3_flat
+description: StVO §18(7) prohibition of reversing on interstate. Feature interpretation: true longitudinal ego velocity must never drop below -0.3 m/s. Includes system assumption linking reverse gear command to backward motion.
+sampling_rate_hz: 10
+horizon: 10
+constants:
+  V_MIN_REV: -0.3
+environment:
+  signals:
+    - {name: v_ego_long, sort: real}
+    - {name: gear_reverse_cmd, sort: bool}
+formula: "G((v_ego_long < 0 -> gear_reverse_cmd) and (v_ego_long >= V_MIN_REV))"

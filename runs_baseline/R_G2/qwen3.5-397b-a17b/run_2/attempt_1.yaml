@@ -1,0 +1,16 @@
+rule_id: R_G2_flat
+description: StVO §4(1) unnecessary braking robust to perception and plant uncertainty.
+sampling_rate_hz: 10
+horizon: 100
+constants:
+  DECEL_THRESH_RAW: 2.0
+  GAP_THRESH_RAW: 20.0
+  UNCERTAINTY_ACC: 0.5
+  UNCERTAINTY_GAP: 2.0
+  DECEL_LIMIT: -1.5
+  GAP_LIMIT: 18.0
+environment:
+  signals:
+    - {name: acc_cmd, sort: real}
+    - {name: gap_est, sort: real}
+formula: "G((acc_cmd < DECEL_LIMIT) -> (gap_est < GAP_LIMIT))"

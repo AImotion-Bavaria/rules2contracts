@@ -1,0 +1,17 @@
+# OpenAI-compatible chat-completions endpoint used for the synthesis runs.
+# The experiments in the paper used an academic inference service for the
+# open-weight models and the vendor API for the proprietary models.
+# The API key is NOT stored here: export LLM_API_KEY=... before running
+# llm_pipeline.py. Replaying the recorded runs needs no key (see REPRODUCE.md).
+endpoint: https://example.invalid/v1
+api_key: ${LLM_API_KEY}
+
+# Model ids used in the paper (as served by the respective endpoint).
+models:
+  - qwen3.5-397b-a17b            # Qwen3.5-397B-A17B (MoE)
+  - qwen3.6-27b                  # Qwen3.6-27B (dense)
+  - openai-gpt-oss-120b          # GPT-OSS-120B
+  - mistral-medium-3.5-128b      # Mistral-Medium-3.5
+  - meta-llama-3.1-8b-instruct   # Llama-3.1-8B-Instruct
+  - claude-opus-5                # Claude Opus 5 (vendor API)
+  - claude-sonnet-5              # Claude Sonnet 5 (vendor API)

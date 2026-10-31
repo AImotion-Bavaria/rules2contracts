@@ -1,0 +1,19 @@
+{
+  "rule": "R_I3",
+  "attempts": 2,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V3a] assumption of C_Localization not discharged",
+        "[V3a] assumption of C_Planning not discharged",
+        "    Counterexample trace (A_Localization not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      gear_rev_cmd    True    False    False    False    False    False    False    False     True\n      v_cmd        0        0        0        0        0        0        0        0        0\n      v_ego        0        0        0        0        0        0        0        0        0\n      v_true     -51       51       51       51       51       51       51       51      -51\n    Counterexample trace (A_Planning not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      gear_rev_cmd   False     True     True    False    False     True     True    False     True\n      v_cmd        0        0        0        0        0        0        0        0        0\n      v_ego  2001/40 -2001/40 -2001/40  2001/40  2001/40 -2001/40 -2001/40  2001/40 -2001/40\n      v_true 1001/20 -1997/40 -1997/40  1001/20  4001/80      -50      -50  1001/20      -50"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": []
+    }
+  ]
+}

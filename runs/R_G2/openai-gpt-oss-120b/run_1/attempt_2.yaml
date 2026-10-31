@@ -1,0 +1,42 @@
+rule_id: R_G2_llm
+description: >-
+  Unnecessary braking (StVO §4(1)): a commanded deceleration stronger than
+  2.0 m/s² is only permitted when the longitudinal gap to the preceding vehicle
+  is critical (below 20.0 m). Perception estimates the gap with a bounded error
+  of ±2.0 m and the plant tracks the commanded acceleration within ±0.5 m/s²,
+  therefore the thresholds are tightened in the contract.
+source_text: >-
+  StVO §4(1) “Fahrzeuge dürfen nicht ohne Grund abrupt bremsen.” Interpreted as:
+  a deceleration > 2.0 m/s² may only be commanded if the gap to the lead vehicle
+  is < 20.0 m. Perception gap error = 2.0 m, plant acceleration tracking error
+  = 0.5 m/s².
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  DECEL_THRESH: 2.0      # [m/s^2] deceleration threshold
+  GAP_CRIT: 20.0         # [m] critical gap
+  EPS_D: 2.0             # [m] perception gap error bound
+  EPS_A: 0.5             # [m/s^2] plant acceleration tracking error bound
+
+environment:
+  signals:
+    - {name: d_true, sort: real}   # true longitudinal gap to lead vehicle [m]
+
+system_contract:
+  interface: {inputs: [d_true], outputs: [a_cmd, d_lead]}
+  assumption: "G(d_true >= 0)"
+  guarantee: "G((a_cmd <= -(DECEL_THRESH - EPS_A)) -> (d_lead <= GAP_CRIT - EPS_D))"
+
+decomposition:
+  discharge_order: [Perception, Planning]
+  contracts:
+    - service: Perception
+      interface: {inputs: [d_true], outputs: [d_lead]}
+      assumption: "G(d_true >= 0)"
+      guarantee: "G(abs(d_lead - d_true) <= EPS_D)"
+
+    - service: Planning
+      interface: {inputs: [d_lead], outputs: [a_cmd]}
+      assumption: "G(d_lead >= 0)"
+      guarantee: "G((a_cmd <= -(DECEL_THRESH - EPS_A)) -> (d_lead <= GAP_CRIT - EPS_D))"

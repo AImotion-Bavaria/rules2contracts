@@ -1,0 +1,40 @@
+rule_id: R_G2_llm
+description: Unnecessary braking (StVO §4(1)): vehicles must not brake abruptly without reason.
+source_text: StVO §4(1): "Vorwärmen oder abruptes Bremsen ohne Not ist verboten."
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  a_cmd_max: 2.0   # max permitted deceleration [m/s^2]
+  d_critical: 20.0  # critical gap to preceding vehicle [m]
+  EPS_D: 2.0       # perception gap error bound [m]
+  EPS_A: 0.5       # plant acceleration tracking error bound [m/s^2]
+
+environment:
+  signals:
+    - {name: d_true, sort: real}   # true gap to preceding vehicle [m]
+    - {name: a_true, sort: real}   # true deceleration [m/s^2]
+
+system_contract:
+  interface: {inputs: [d_lead, a_true], outputs: [a_cmd]}
+  assumption: "G(d_true >= 0 and d_true <= d_critical + EPS_D)"
+  guarantee: "G((a_cmd - a_true >= a_cmd_max) -> F[0,2](d_lead <= d_critical))"
+
+decomposition:
+  discharge_order: [Perception, Control]
+  contracts:
+    - service: Perception
+      interface: {inputs: [], outputs: [d_lead]}
+      assumption: "G(d_true >= 0)"
+      guarantee: "G(abs(d_lead - d_true) <= EPS_D)"
+
+    - service: Control
+      interface: {inputs: [d_lead, a_true], outputs: [a_cmd]}
+      assumption: "G(d_true >= -EPS_D and a_true >= -EPS_A)"
+      guarantee: "G((a_cmd - a_true >= a_cmd_max - EPS_A) -> F[0,2](d_lead <= d_critical))"
+
+      # Corrected the interface of the Control service to include a_true as an input
+      # and the assumption to include both d_true and a_true
+      # Also, the guarantee was corrected to reflect the correct relationship between a_cmd and d_lead
+
+      # Removed the extra line to make the YAML document parseable

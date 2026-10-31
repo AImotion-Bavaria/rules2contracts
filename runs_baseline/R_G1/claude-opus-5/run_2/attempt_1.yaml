@@ -1,0 +1,23 @@
+rule_id: R_G1_flat
+description: >-
+  StVO §4(1), time-gap interpretation over the true physical world state: whenever the
+  true bumper-to-bumper gap to the preceding vehicle is smaller than TAU_S times the true
+  ego velocity, a hazard notification must be raised within 300 ms (3 steps at 10 Hz).
+  Sensing context (not part of the obligation, recorded as parameters): the gap is observed
+  with bounded error EPS_GAP_M = 2.0 m and the ego velocity with bounded error
+  EPS_V_MPS = 0.5 m/s, so a compliant implementation must trigger conservatively enough to
+  cover these bounds.
+sampling_rate_hz: 10
+horizon: 8
+constants:
+  TAU_S: 1.8
+  EPS_GAP_M: 2.0
+  EPS_V_MPS: 0.5
+  V_MIN_MPS: 0.1
+environment:
+  signals:
+    - {name: gap_true_m, sort: real}
+    - {name: v_ego_true_mps, sort: real}
+    - {name: preceding_vehicle_present, sort: bool}
+    - {name: hazard_notification, sort: bool}
+formula: "G((preceding_vehicle_present and (v_ego_true_mps >= V_MIN_MPS) and (gap_true_m < TAU_S * v_ego_true_mps)) -> F[0,3](hazard_notification))"

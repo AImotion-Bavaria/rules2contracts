@@ -1,0 +1,23 @@
+{
+  "rule": "R_I3",
+  "attempts": 3,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SYNTAX] expected '(', got 'True' in: G(True)"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V1] C_Control: assumption references non-input ports: ['gear_rev_cmd']"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": []
+    }
+  ]
+}

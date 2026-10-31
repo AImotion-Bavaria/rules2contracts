@@ -1,0 +1,17 @@
+rule_id: R_G1_flat
+description: Safe distance to the preceding vehicle (StVO §4(1)) – time-gap interpretation with perception/localization errors
+sampling_rate_hz: 10
+horizon: 3
+constants:
+  MIN_GAP_S: 1.8
+  PERCEPTION_ERROR_M: 2.0
+  LOCALIZATION_ERROR_MPS: 0.5
+  REACTION_STEPS: 3
+environment:
+  signals:
+    - {name: true_gap, sort: real}
+    - {name: true_ego_velocity, sort: real}
+    - {name: perceived_gap, sort: real}
+    - {name: perceived_ego_velocity, sort: real}
+    - {name: hazard_notification, sort: bool}
+formula: "G((abs(perceived_gap - true_gap) <= PERCEPTION_ERROR_M and abs(perceived_ego_velocity - true_ego_velocity) <= LOCALIZATION_ERROR_MPS and true_gap < MIN_GAP_S * true_ego_velocity) -> F[0,REACTION_STEPS](hazard_notification))"

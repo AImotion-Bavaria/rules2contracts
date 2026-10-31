@@ -1,0 +1,33 @@
+{
+  "rule": "R_I1",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V0] Localization: input 'v_cmd' \u2014 Localization does not consume topic of Planning.trajectory per the documented architecture",
+        "[V0] Localization: input 'v_ego' \u2014 Localization does not consume topic of Localization.kinematic_state per the documented architecture"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V0] Localization: input 'a_ego' \u2014 Localization does not consume topic of Localization.acceleration per the documented architecture",
+        "[V0] Localization: input 'v_ego' \u2014 Localization does not consume topic of Localization.kinematic_state per the documented architecture"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[V0] Localization: input 'a_ego' \u2014 Localization does not consume topic of Localization.acceleration per the documented architecture"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[V1] C_Localization: assumption references non-input ports: ['v_ego']"
+      ]
+    }
+  ]
+}

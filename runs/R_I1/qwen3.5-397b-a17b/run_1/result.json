@@ -1,0 +1,25 @@
+{
+  "rule": "R_I1",
+  "attempts": 3,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V3a] assumption of C_Perception not discharged",
+        "[V3a] assumption of C_Planning not discharged",
+        "    Counterexample trace (A_Perception not discharged):\n      t            0        1        2        3        4        5\n      congestion   False    False    False    False    False    False\n      v_cmd        0        0      1/2        0      1/2      1/2\n      v_ego_true    -1/2     -1/2        0     -1/2        0        0\n      v_lead       0        0        0        0        0        0\n      v_lead_true    -1/2      3/2     -1/2     -1/2     -1/2     -1/2\n    Counterexample trace (A_Planning not discharged):\n      t            0        1        2        3        4        5\n      congestion   False    False    False    False    False    False\n      v_cmd        0      1/8      1/8    -1/16      1/8        0\n      v_ego_true    -1/8        0        0        0        0     -1/8\n      v_lead       1    25/16     -1/8     -1/8     -1/8     -1/8\n      v_lead_true     3/2      3/2        0    -3/16        0        0"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[SYNTAX] expected '(', got 'true' in: G(true)"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": []
+    }
+  ]
+}

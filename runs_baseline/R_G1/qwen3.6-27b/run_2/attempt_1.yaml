@@ -1,0 +1,14 @@
+rule_id: R_G1_flat
+description: Safe distance to preceding vehicle (StVO §4(1)): hazard notification required if true time-gap falls below 1.8 s.
+sampling_rate_hz: 10
+horizon: 5
+constants:
+  T_GAP: 1.8
+  ERR_GAP: 2.0
+  ERR_VEL: 0.5
+environment:
+  signals:
+    - {name: gap_true, sort: real}
+    - {name: vel_true, sort: real}
+    - {name: hazard_notif, sort: bool}
+formula: "G((gap_true < T_GAP * vel_true) -> F[0,3](hazard_notif))"

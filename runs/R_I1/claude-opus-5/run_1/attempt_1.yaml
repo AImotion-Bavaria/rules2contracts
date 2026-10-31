@@ -1,0 +1,66 @@
+rule_id: R_I1_llm
+description: >
+  Prohibition of stopping on the main carriageway of an interstate
+  (StVO §12(1) in conjunction with §18(8)). Stopping is only admissible if
+  traffic is congested or the directly leading vehicle is itself standing.
+  Feature-level reading: while the ego vehicle is on the main carriageway of
+  an interstate, no congestion is present, and the true velocity of the
+  directly leading vehicle is clearly above the standstill threshold
+  V_STOP = 0.5 m/s, the true ego velocity must stay at or above V_STOP,
+  i.e. the ego vehicle must keep moving. Perception estimates the lead
+  velocity with an error bound of EPS_VLEAD = 0.5 m/s, so the Planning
+  trigger threshold is lowered by that bound; the closed loop tracks the
+  commanded velocity within EPS_TRACK = 1.0 m/s, so the commanded velocity
+  is raised by that bound.
+source_text: >
+  StVO §12(1): "Das Halten ist unzulaessig ... " ; StVO §18(8): "Auf
+  Autobahnen und Kraftfahrstrassen ist das Halten, auch auf Seitenstreifen,
+  verboten." Interpretation used here: stopping on the main carriageway of
+  an interstate is prohibited unless traffic is congested or the directly
+  leading vehicle is stationary.
+sampling_rate_hz: 10
+horizon: 10
+
+constants:
+  V_STOP: 0.5        # standstill threshold [m/s]
+  V_LEAD_MOVE: 3.0   # lead velocity clearly above standstill [m/s]
+  EPS_VLEAD: 0.5     # perception lead-velocity error bound [m/s]
+  EPS_TRACK: 1.0     # closed-loop velocity tracking error bound [m/s]
+  V_MAX: 70.0        # max considered velocity [m/s]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}        # true ego velocity [m/s]
+    - {name: v_lead_true, sort: real}   # true velocity of directly leading vehicle [m/s]
+    - {name: congestion, sort: bool}    # traffic congestion (Stau) present
+    - {name: on_interstate, sort: bool} # ego on main carriageway of an interstate
+
+system_contract:
+  interface:
+    inputs: [v_true, v_lead_true, congestion, on_interstate]
+    outputs: [v_lead, v_cmd, a_cmd, gear_rev_cmd]
+  assumption: >
+    G(v_true >= 0 and v_true <= V_MAX and v_lead_true >= 0 and
+    v_lead_true <= V_MAX and
+    ((v_cmd >= V_STOP + EPS_TRACK and not gear_rev_cmd) -> v_true >= v_cmd - EPS_TRACK))
+  guarantee: >
+    G((on_interstate and not congestion and v_lead_true >= V_LEAD_MOVE) ->
+    v_true >= V_STOP)
+
+decomposition:
+  discharge_order: [Perception, Planning, Control]
+  contracts:
+    - service: Perception
+      interface: {inputs: [v_lead_true], outputs: [v_lead]}
+      assumption: "G(v_lead_true >= 0 and v_lead_true <= V_MAX)"
+      guarantee: "G(abs(v_lead - v_lead_true) <= EPS_VLEAD)"
+
+    - service: Planning
+      interface: {inputs: [v_lead], outputs: [v_cmd]}
+      assumption: "G(v_lead >= 0 - EPS_VLEAD and v_lead <= V_MAX + EPS_VLEAD)"
+      guarantee: "G((v_lead >= V_LEAD_MOVE - EPS_VLEAD) -> v_cmd >= V_STOP + EPS_TRACK)"
+
+    - service: Control
+      interface: {inputs: [v_cmd, v_ego], outputs: [a_cmd, gear_rev_cmd]}
+      assumption: "G(v_cmd >= 0 and v_cmd <= V_MAX and v_ego >= 0 - EPS_TRACK)"
+      guarantee: "G((v_cmd >= V_STOP + EPS_TRACK) -> (not gear_rev_cmd and a_cmd >= 0))"

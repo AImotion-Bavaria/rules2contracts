@@ -1,0 +1,34 @@
+rule_id: R_G2_llm
+description: Unnecessary braking (StVO §4(1)): vehicles must not brake abruptly without reason.
+source_text: StVO §4(1): "Vorwärmen ist unzulässig."
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  a_max: 2.0       # max permitted deceleration [m/s^2]
+  d_crit: 20.0     # critical gap to preceding vehicle [m]
+  EPS_D: 2.0       # perception gap error bound [m]
+  EPS_A: 0.5       # plant acceleration tracking error bound [m/s^2]
+
+environment:
+  signals:
+    - {name: d_true, sort: real}   # true gap to preceding vehicle [m]
+    - {name: a_true, sort: real}   # true deceleration [m/s^2]
+
+system_contract:
+  interface: {inputs: [d_true, a_true], outputs: [a_cmd]}
+  assumption: "G(d_true >= 0 and d_true <= 100.0 and a_true >= -10.0 and a_true <= 10.0)"
+  guarantee: "G((a_true >= a_max) -> F[0,2](d_true <= d_crit))"
+
+decomposition:
+  discharge_order: [Perception, Control]
+  contracts:
+    - service: Perception
+      interface: {inputs: [d_true], outputs: [d_lead]}
+      assumption: "G(d_true >= 0 and d_true <= 100.0)"
+      guarantee: "G(abs(d_lead - d_true) <= EPS_D)"
+
+    - service: Control
+      interface: {inputs: [d_lead, a_ego], outputs: [a_cmd]}
+      assumption: "G(d_lead >= 0 - EPS_D and a_ego >= -10.0 - EPS_A)"
+      guarantee: "G((a_cmd - a_ego >= a_max - EPS_A) -> F[0,2](d_lead <= d_crit))"

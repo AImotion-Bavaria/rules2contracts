@@ -1,0 +1,31 @@
+rule_id: R_I3_llm
+description: No reversing manoeuvres on the interstate (StVO §18(7))
+source_text: StVO §18(7)
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  V_MIN_REVERSE: -0.3   # minimum longitudinal ego velocity [m/s] to avoid reversing manoeuvre
+
+environment:
+  signals:
+    - {name: v_true, sort: real}   # true ego longitudinal velocity [m/s]
+    - {name: gear_rev_cmd, sort: bool}   # reverse gear command
+
+system_contract:
+  interface: {inputs: [v_true, gear_rev_cmd], outputs: []}
+  assumption: "G(gear_rev_cmd -> v_true < V_MIN_REVERSE)"
+  guarantee: "G(not gear_rev_cmd)"
+
+decomposition:
+  discharge_order: [Control, Localization]
+  contracts:
+    - service: Localization
+      interface: {inputs: [], outputs: [v_ego]}
+      assumption: "G(abs(v_ego - v_true) <= EPS_V)"
+      guarantee: "G(abs(v_ego - v_true) <= EPS_V)"
+
+    - service: Control
+      interface: {inputs: [v_ego, v_cmd, d_lead, v_lead], outputs: [gear_rev_cmd]}
+      assumption: "G(abs(v_cmd - v_ego) <= EPS_A and d_lead >= 0 and v_lead >= 0)"
+      guarantee: "G(not gear_rev_cmd or v_ego >= V_MIN_REVERSE)"

@@ -1,0 +1,52 @@
+rule_id: R_G3_llm
+description: >
+  Maximum speed limit (StVO §3(1) / §18): the vehicle must never travel
+  faster than the speed limit applicable to the lane it is currently
+  driving in. The true ego velocity is the regulated quantity; the
+  architecture only has the localization estimate v_ego and the Planning
+  velocity command v_cmd. The plant/Control loop tracks the commanded
+  velocity within EPS_TRACK = 1.0 m/s, so Planning must command at most
+  v_limit - EPS_TRACK; Localization contributes a bounded velocity
+  estimation error EPS_V that is compensated in the Control-side
+  deceleration trigger.
+source_text: >
+  StVO §3(1): "Die Geschwindigkeit ist [...] den Straßen-, Verkehrs-,
+  Sicht- und Wetterverhältnissen anzupassen." StVO §41 Anlage 2 Zeichen
+  274 / §18(5): zulässige Höchstgeschwindigkeit. Interpretation used
+  here: the actual driving speed must not exceed the posted speed limit
+  of the currently occupied lane at any time.
+sampling_rate_hz: 10
+horizon: 20
+
+constants:
+  EPS_TRACK: 1.0    # plant/control velocity tracking error bound [m/s]
+  EPS_V: 0.3        # localization velocity estimation error bound [m/s]
+  V_MAX: 70.0       # max considered velocity / speed limit [m/s]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}    # true ego velocity [m/s]
+    - {name: v_limit, sort: real}   # speed limit of the currently occupied lane [m/s]
+
+system_contract:
+  interface: {inputs: [v_true, v_limit], outputs: [v_cmd, a_cmd, v_ego]}
+  assumption: "G(v_true >= 0 and v_true <= V_MAX and v_limit >= 0 and v_limit <= V_MAX and abs(v_true - v_cmd) <= EPS_TRACK)"
+  guarantee: "G(v_true <= v_limit)"
+
+decomposition:
+  discharge_order: [Localization, Planning, Control]
+  contracts:
+    - service: Localization
+      interface: {inputs: [v_true], outputs: [v_ego]}
+      assumption: "G(v_true >= 0 and v_true <= V_MAX)"
+      guarantee: "G(abs(v_ego - v_true) <= EPS_V)"
+
+    - service: Planning
+      interface: {inputs: [v_ego, v_limit], outputs: [v_cmd, a_plan]}
+      assumption: "G(v_ego >= 0 - EPS_V and v_ego <= V_MAX + EPS_V and v_limit >= 0 and v_limit <= V_MAX)"
+      guarantee: "G(v_cmd <= v_limit - EPS_TRACK and (v_ego >= v_limit - EPS_TRACK - EPS_V -> a_plan <= 0))"
+
+    - service: Control
+      interface: {inputs: [v_ego, v_cmd, a_plan], outputs: [a_cmd]}
+      assumption: "G(v_ego >= 0 - EPS_V and v_cmd <= V_MAX and v_cmd >= 0 - EPS_TRACK)"
+      guarantee: "G((v_ego - v_cmd >= EPS_V -> a_cmd <= 0) and (a_plan <= 0 -> a_cmd <= 0))"

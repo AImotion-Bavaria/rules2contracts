@@ -1,0 +1,52 @@
+# Rule contract document — the LLM output format (hand-written blueprint).
+# Rule R_G1 "safe distance to preceding vehicle" (interstate rule corpus,
+# Maierhofer et al., IV 2021), traced back to StVO §4(1).
+
+rule_id: R_G1
+description: >
+  Safe distance to the preceding vehicle: the ego vehicle must keep a
+  distance that allows stopping even if the preceding vehicle brakes
+  suddenly. Formalized here via the recommended time-gap interpretation
+  (tau = 1.8 s): if the gap falls below tau * v_ego, a hazard notification
+  must be raised within 300 ms (reaction budget of the notification chain).
+source_text: >
+  StVO §4(1): "Der Abstand zu einem vorausfahrenden Fahrzeug muss in der
+  Regel so groß sein, dass auch dann hinter ihm gehalten werden kann, wenn
+  es plötzlich gebremst wird."
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  TAU: 1.8      # time-gap threshold [s]
+  EPS_V: 0.5    # localization velocity error bound [m/s]
+  EPS_D: 2.0    # perception gap error bound [m]
+  V_MAX: 70.0   # max considered ego velocity [m/s]
+  D_MAX: 200.0  # max considered gap [m]
+
+environment:
+  signals:
+    - {name: d_gap, sort: real}    # true gap to lead vehicle [m]
+    - {name: v_true, sort: real}   # true ego velocity [m/s]
+
+system_contract:
+  interface: {inputs: [d_gap, v_true], outputs: [hazard_on]}
+  assumption: "G(d_gap >= 0 and d_gap <= D_MAX and v_true >= 0 and v_true <= V_MAX)"
+  guarantee: "G((d_gap <= TAU * v_true) -> F[0,3](hazard_on))"
+
+decomposition:
+  discharge_order: [Localization, Perception, Planning]
+  contracts:
+    - service: Localization
+      interface: {inputs: [v_true], outputs: [v_ego]}
+      assumption: "G(v_true >= 0 and v_true <= V_MAX)"
+      guarantee: "G(abs(v_ego - v_true) <= EPS_V)"
+
+    - service: Perception
+      interface: {inputs: [d_gap], outputs: [d_lead]}
+      assumption: "G(d_gap >= 0 and d_gap <= D_MAX)"
+      guarantee: "G(abs(d_lead - d_gap) <= EPS_D)"
+
+    - service: Planning
+      interface: {inputs: [d_lead, v_ego], outputs: [hazard_on]}
+      assumption: "G(d_lead >= 0 - EPS_D and v_ego >= 0 - EPS_V)"
+      guarantee: "G((d_lead <= TAU * (v_ego + EPS_V) + EPS_D) -> F[0,3](hazard_on))"

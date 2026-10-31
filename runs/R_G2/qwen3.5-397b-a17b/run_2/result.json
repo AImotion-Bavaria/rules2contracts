@@ -1,0 +1,25 @@
+{
+  "rule": "R_G2",
+  "attempts": 3,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V3a] assumption of C_Planning not discharged",
+        "[V3a] assumption of C_Control not discharged",
+        "    Counterexample trace (A_Planning not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd        0        0        0        0        0        0        0        0        0\n      a_plan       0        0        0        0        0        0        0        0        0\n      d_lead    -1/4     -1/4     -1/4      1/8      1/8     -1/4     -1/4      1/8      1/8\n      d_true       0        0        0        0        0        0        0        0        0\n    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd        0        0        0        0        0        0        0        0        0\n      a_plan    -7/4     -7/4     -7/4     -7/4     -7/4     -7/4     -7/4     -7/4     -7/4\n      d_lead       0        0      1/8        0     -1/4     -1/4      1/8      1/8        0\n      d_true     1/4      1/4        0      1/4        0        0        0        0      1/4"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[SYNTAX] expected '(', got 'true' in: G(true)"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": []
+    }
+  ]
+}

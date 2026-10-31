@@ -1,0 +1,43 @@
+rule_id: R_G3_llm
+description: >
+  Maximum speed limit compliance (StVO §3(1)/§18): The vehicle must not
+  exceed the speed limit of the current lane. The system ensures the
+  commanded velocity respects the limit minus a tracking error margin,
+  relying on a plant model that bounds the deviation between commanded
+  and true velocity. Localization provides ego velocity estimates with
+  bounded error, consumed by Planning for state awareness.
+source_text: >
+  StVO §3(1) / §18: "The vehicle driver must not drive faster than the
+  speed limit of their current lane. The speed must be adapted to the
+  road, traffic, and visibility conditions." Formalized here as the
+  hard constraint on longitudinal velocity relative to the lane limit.
+sampling_rate_hz: 10
+horizon: 10
+
+constants:
+  TRACK_ERR: 1.0    # Plant tracking error bound [m/s]
+  EPS_V: 0.5        # Localization velocity error bound [m/s]
+  V_MAX: 70.0       # Max considered velocity [m/s]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}   # True ego velocity [m/s]
+    - {name: v_limit, sort: real}  # Lane speed limit [m/s]
+
+system_contract:
+  interface: {inputs: [v_true, v_limit], outputs: [v_cmd]}
+  assumption: "G(v_true >= 0 and v_true <= V_MAX and v_limit >= 0 and abs(v_true - v_cmd) <= TRACK_ERR)"
+  guarantee: "G(v_true <= v_limit)"
+
+decomposition:
+  discharge_order: [Localization, Planning]
+  contracts:
+    - service: Localization
+      interface: {inputs: [v_true], outputs: [v_ego]}
+      assumption: "G(v_true >= 0 and v_true <= V_MAX)"
+      guarantee: "G(abs(v_ego - v_true) <= EPS_V)"
+
+    - service: Planning
+      interface: {inputs: [v_ego, v_limit], outputs: [v_cmd]}
+      assumption: "G(v_ego >= 0 - EPS_V and v_limit >= 0)"
+      guarantee: "G(v_cmd <= v_limit - TRACK_ERR)"

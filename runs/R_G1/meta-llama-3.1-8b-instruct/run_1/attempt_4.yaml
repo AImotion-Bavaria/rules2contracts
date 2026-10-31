@@ -1,0 +1,44 @@
+rule_id: R_G1_llm
+description: Safe distance to the preceding vehicle (StVO §4(1))
+source_text: >
+  StVO §4(1): "Der Abstand zu einem vorausfahrenden Fahrzeug muss in der Regel so groß sein, dass auch dann hinter ihm gehalten werden kann, wenn es plötzlich gebremst wird."
+sampling_rate_hz: 10
+horizon: 6
+
+constants:
+  T_MIN: 1.8
+  EPS_D: 2.0
+  EPS_V: 0.5
+
+environment:
+  signals:
+    - {name: d_true, sort: real}   # true gap to preceding vehicle [m]
+    - {name: v_true, sort: real}   # true ego velocity [m/s]
+
+system_contract:
+  interface: {inputs: [d_true, v_true], outputs: [hazard_on]}
+  assumption: "G(d_true >= 0 and v_true >= 0)"
+  guarantee: "G((d_true / v_true < T_MIN) -> F[0,3](hazard_on))"
+
+decomposition:
+  discharge_order: [Perception, Localization]
+  contracts:
+    - service: Perception
+      interface: {inputs: [], outputs: [d_lead]}
+      assumption: "G(true)"
+      guarantee: "G(abs(d_lead - d_true) <= EPS_D)"
+
+    - service: Localization
+      interface: {inputs: [], outputs: [v_ego]}
+      assumption: "G(true)"
+      guarantee: "G(abs(v_ego - v_true) <= EPS_V)"
+
+    - service: Hazard
+      interface: {inputs: [d_lead, v_ego], outputs: [hazard_on]}
+      assumption: "G(d_lead >= 0 and v_ego >= 0)"
+      guarantee: "G((d_lead / (v_ego + EPS_V) < T_MIN) -> F[0,3](hazard_on))"
+
+    - service: Hazard
+      interface: {inputs: [d_true, v_true], outputs: [hazard_on]}
+      assumption: "G(true)"
+      guarantee: "G((d_true / v_true < T_MIN) -> F[0,3](hazard_on))"

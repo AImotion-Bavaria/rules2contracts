@@ -1,0 +1,17 @@
+{
+  "rule": "R_G1",
+  "attempts": 2,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SCHEMA] horizon 6 too small: must be at least max future depth (3) + 4"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": []
+    }
+  ]
+}

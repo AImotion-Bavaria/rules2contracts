@@ -1,0 +1,42 @@
+rule_id: R_I3_llm
+description: >
+  StVO §18(7): reversing manoeuvres are prohibited on the interstate.
+  Formalized at feature level as a lower bound on the true longitudinal
+  ego velocity: it must never drop below -0.3 m/s (a small tolerance for
+  sensor/actuation noise around a full stop, but excluding genuine
+  backward travel). The plant only moves backwards if the reverse gear is
+  commanded, so the system assumption is a tracking/plant model tying
+  gear_rev_cmd to v_true_ego; the service decomposition shows Planning
+  never requests negative velocity and Control never engages reverse gear
+  on the interstate.
+source_text: >
+  StVO §18(7): "Rückwärtsfahren [...] auf der Autobahn [...] sind
+  unzulässig."
+sampling_rate_hz: 10
+horizon: 4
+
+constants:
+  V_MIN: -0.3    # minimal tolerated true longitudinal velocity [m/s]
+  V_MAX: 70.0     # domain bound on considered velocities [m/s]
+
+environment:
+  signals:
+    - {name: v_true_ego, sort: real}   # true longitudinal ego velocity [m/s]
+
+system_contract:
+  interface: {inputs: [v_true_ego], outputs: [gear_rev_cmd]}
+  assumption: "G(not gear_rev_cmd -> v_true_ego >= V_MIN)"
+  guarantee: "G(v_true_ego >= V_MIN)"
+
+decomposition:
+  discharge_order: [Planning, Control]
+  contracts:
+    - service: Planning
+      interface: {inputs: [v_ego], outputs: [v_cmd]}
+      assumption: "G(v_ego >= 0 - V_MAX and v_ego <= V_MAX)"
+      guarantee: "G(v_cmd >= 0)"
+
+    - service: Control
+      interface: {inputs: [v_cmd], outputs: [gear_rev_cmd]}
+      assumption: "G(v_cmd >= 0)"
+      guarantee: "G(not gear_rev_cmd)"

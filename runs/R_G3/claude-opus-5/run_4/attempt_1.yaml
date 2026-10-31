@@ -1,0 +1,55 @@
+rule_id: R_G3_llm
+description: >
+  Maximum speed limit (StVO §3(1) / §18): the ego vehicle must never exceed the
+  speed limit applicable to the lane it currently occupies. The limit of the
+  current lane is taken from the environment (map / traffic-sign abstraction) and
+  is available to Planning as a route attribute. Planning must therefore command a
+  velocity that stays below the posted limit by at least the plant tracking error
+  EPS_TRACK, so that the true vehicle velocity — which follows the commanded
+  velocity within EPS_TRACK — never exceeds the limit. Localization estimates the
+  ego velocity only up to EPS_V, so every monitoring/deceleration trigger that is
+  evaluated on the estimate v_ego is tightened by EPS_V; Control must react with a
+  non-positive (braking) acceleration command whenever the estimate indicates that
+  the true speed is already above the commanded speed.
+source_text: >
+  StVO §3(1): "Die Geschwindigkeit ist ... so einzurichten, dass das Fahrzeug
+  ständig beherrscht wird ..."; StVO §18 / Zeichen 274: "Es darf nicht schneller
+  als die für den befahrenen Fahrstreifen zulässige Höchstgeschwindigkeit gefahren
+  werden." — Operationalized: the true ego velocity must at all times stay at or
+  below the speed limit of the currently driven lane.
+sampling_rate_hz: 10
+horizon: 30
+
+constants:
+  EPS_V: 0.5          # localization velocity estimation error bound [m/s]
+  EPS_TRACK: 1.0      # plant tracking error |v_true - v_cmd| [m/s]
+  V_LIMIT_MAX: 70.0   # maximum considered lane speed limit [m/s]
+  A_DEC: 1.0          # minimum braking deceleration on overspeed [m/s^2]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}    # true ego velocity [m/s]
+    - {name: v_limit, sort: real}   # speed limit of the currently driven lane [m/s]
+
+system_contract:
+  interface: {inputs: [v_true, v_limit], outputs: [v_cmd, a_plan, a_cmd]}
+  assumption: "G(v_true >= 0 and v_limit >= 0 and v_limit <= V_LIMIT_MAX and abs(v_true - v_cmd) <= EPS_TRACK)"
+  guarantee: "G(v_true <= v_limit)"
+
+decomposition:
+  discharge_order: [Localization, Planning, Control]
+  contracts:
+    - service: Localization
+      interface: {inputs: [v_true], outputs: [v_ego, a_ego]}
+      assumption: "G(v_true >= 0)"
+      guarantee: "G(abs(v_ego - v_true) <= EPS_V)"
+
+    - service: Planning
+      interface: {inputs: [v_ego, v_limit], outputs: [v_cmd, a_plan]}
+      assumption: "G(v_limit >= 0 and v_limit <= V_LIMIT_MAX and v_ego >= 0 - EPS_V)"
+      guarantee: "G(v_cmd <= v_limit - EPS_TRACK and (v_ego >= v_limit - EPS_TRACK - EPS_V -> a_plan <= 0))"
+
+    - service: Control
+      interface: {inputs: [v_ego, v_cmd, a_plan], outputs: [a_cmd]}
+      assumption: "G(v_cmd >= 0 - EPS_TRACK and v_cmd <= V_LIMIT_MAX and v_ego >= 0 - EPS_V)"
+      guarantee: "G((v_ego - v_cmd >= EPS_V -> a_cmd <= 0 - A_DEC) and (a_plan <= 0 -> a_cmd <= 0))"

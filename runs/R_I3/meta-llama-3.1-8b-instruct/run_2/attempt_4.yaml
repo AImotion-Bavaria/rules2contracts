@@ -1,0 +1,32 @@
+rule_id: R_I3_llm
+description: >
+  No reversing manoeuvres (StVO §18(7)): the true longitudinal ego velocity
+  must never drop below -0.3 m/s.
+source_text: StVO §18(7)
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  V_MIN_REVERSE: -0.3   # minimum longitudinal ego velocity [m/s]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}   # true ego longitudinal velocity [m/s]
+
+system_contract:
+  interface: {inputs: [v_true, gear_rev_cmd], outputs: []}
+  assumption: "G(v_true >= V_MIN_REVERSE -> gear_rev_cmd)"
+  guarantee: "G(not gear_rev_cmd)"
+
+decomposition:
+  discharge_order: [Control]
+  contracts:
+    - service: Control
+      interface: {inputs: [v_ego, v_cmd, gear_rev_cmd], outputs: [a_cmd]}
+      assumption: "G(v_ego >= 0 and v_cmd >= 0)"
+      guarantee: "G(a_cmd >= 0)"
+
+    - service: Localization
+      interface: {inputs: [], outputs: [v_ego]}
+      assumption: "G(abs(v_ego - v_true) <= 1.0)"
+      guarantee: "G(abs(v_ego - v_true) <= 1.0)"

@@ -1,0 +1,58 @@
+rule_id: R_I1_llm
+description: >
+  Prohibition of stopping on the main carriageway of an interstate
+  (StVO §12(1) in conjunction with §18(8)). Stopping is only admissible
+  in congestion or when the directly leading vehicle is itself standing.
+  Feature-level reading: whenever no congestion is present and the true
+  velocity of the directly leading vehicle is clearly above the standstill
+  threshold V_STAND = 0.5 m/s (i.e. at least V_CLEAR = 2.0 m/s, so that the
+  bounded perception error cannot mask a moving lead vehicle), the ego
+  vehicle must itself keep moving, i.e. its true velocity must stay at or
+  above V_STAND. Perception estimates the lead velocity with an error bound
+  of EPS_VL = 0.5 m/s, therefore the Planning trigger threshold is relaxed
+  by that bound; the plant tracks the commanded velocity within
+  EPS_TRACK = 1.0 m/s, therefore the commanded velocity must exceed the
+  required true velocity by that bound. The chain
+  Perception -> Planning -> plant model discharges the system guarantee;
+  no further sub-contract is needed.
+source_text: >
+  StVO §12(1): "Das Halten ist unzulaessig ... "; StVO §18(8): "Auf
+  Autobahnen und Kraftfahrstrassen ist das Halten, auch auf
+  Seitenstreifen, verboten." Halten (stopping) on the main carriageway is
+  thus prohibited; standing still because of congestion or because the
+  directly preceding vehicle stands still does not constitute "Halten".
+sampling_rate_hz: 10
+horizon: 20
+
+constants:
+  V_STAND: 0.5      # standstill threshold on true ego velocity [m/s]
+  V_CLEAR: 2.0      # "clearly above standstill" threshold on true lead velocity [m/s]
+  EPS_VL: 0.5       # perception lead-velocity error bound [m/s]
+  EPS_TRACK: 1.0    # plant velocity tracking error bound |v_true - v_cmd| [m/s]
+  V_MAX: 70.0       # max considered velocity [m/s]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}        # true ego velocity [m/s]
+    - {name: v_lead_true, sort: real}   # true velocity of directly leading vehicle [m/s]
+    - {name: congestion, sort: bool}    # congestion (Stau) present on the carriageway
+
+system_contract:
+  interface:
+    inputs: [v_true, v_lead_true, congestion]
+    outputs: [v_lead, v_cmd]
+  assumption: "G(v_true >= 0 and v_true <= V_MAX and v_lead_true >= 0 and v_lead_true <= V_MAX and abs(v_true - v_cmd) <= EPS_TRACK)"
+  guarantee: "G((not congestion and v_lead_true >= V_CLEAR) -> v_true >= V_STAND)"
+
+decomposition:
+  discharge_order: [Perception, Planning]
+  contracts:
+    - service: Perception
+      interface: {inputs: [v_lead_true], outputs: [v_lead]}
+      assumption: "G(v_lead_true >= 0 and v_lead_true <= V_MAX)"
+      guarantee: "G(abs(v_lead - v_lead_true) <= EPS_VL)"
+
+    - service: Planning
+      interface: {inputs: [v_lead, congestion], outputs: [v_cmd]}
+      assumption: "G(v_lead >= 0 - EPS_VL and v_lead <= V_MAX + EPS_VL)"
+      guarantee: "G((not congestion and v_lead >= V_CLEAR - EPS_VL) -> v_cmd >= V_STAND + EPS_TRACK)"

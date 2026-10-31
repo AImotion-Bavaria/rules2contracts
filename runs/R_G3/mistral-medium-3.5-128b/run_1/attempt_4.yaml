@@ -1,0 +1,41 @@
+rule_id: R_G3_llm
+description: >
+  Maximum speed limit (StVO §3(1)/§18): The vehicle must not exceed the speed limit of its current lane.
+source_text: >
+  StVO §3(1): "Wer ein Fahrzeug führt, darf nur so schnell fahren, dass das Fahrzeug ständig beherrscht wird."
+  StVO §18: Lane-specific speed limits must be obeyed.
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  TRACKING_ERROR: 1.0
+  EPS_V: 0.5
+  V_MIN: -2.0
+
+environment:
+  signals:
+    - {name: v_true, sort: real}
+    - {name: speed_limit, sort: real}
+
+system_contract:
+  interface: {inputs: [v_true, speed_limit], outputs: [v_cmd]}
+  assumption: "G(speed_limit >= 0 and v_true >= V_MIN)"
+  guarantee: "G(v_true <= speed_limit + TRACKING_ERROR + EPS_V)"
+
+decomposition:
+  discharge_order: [Localization, Planning, Control]
+  contracts:
+    - service: Localization
+      interface: {inputs: [v_true], outputs: [v_ego]}
+      assumption: "G(v_true >= V_MIN)"
+      guarantee: "G(abs(v_ego - v_true) <= EPS_V)"
+
+    - service: Planning
+      interface: {inputs: [v_ego, speed_limit], outputs: [v_cmd]}
+      assumption: "G(speed_limit >= 0 and v_ego >= V_MIN - EPS_V)"
+      guarantee: "G(v_cmd <= speed_limit and v_cmd >= V_MIN)"
+
+    - service: Control
+      interface: {inputs: [v_cmd, v_ego], outputs: [a_cmd]}
+      assumption: "G(v_cmd >= V_MIN)"
+      guarantee: "G(abs(v_ego - v_cmd) <= TRACKING_ERROR)"

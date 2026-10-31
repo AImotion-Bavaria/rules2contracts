@@ -1,0 +1,31 @@
+{
+  "rule": "R_I3",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SYNTAX] temporal bound 'horizon' is not an integer step literal \u2014 the fragment requires numeric bounds, e.g. F[0,3] in: G(gear_rev_cmd -> F[0,horizon](v_true < V_MIN_REVERSE))"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[SYNTAX] illegal character '$' at position 22 in: G(gear_rev_cmd -> F[0,${HORIZON_STEPS}](v_true < V_MIN_REVERSE))"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[YAML] not parseable as YAML: while parsing a flow node\nexpected the node content, but found '<stream end>'\n  in \"<unicode string>\", line 1769, column 19:\n          interface: {\n                      ^"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[SYNTAX] illegal character '$' at position 22 in: G(gear_rev_cmd -> F[0,${HORIZON_STEPS}](v_true < V_MIN_REVERSE))"
+      ]
+    }
+  ]
+}

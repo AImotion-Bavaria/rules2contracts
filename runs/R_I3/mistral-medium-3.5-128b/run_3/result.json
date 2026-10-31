@@ -1,0 +1,31 @@
+{
+  "rule": "R_I3",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SYNTAX] trailing tokens ['and', 'G', '(', '(', 'not', 'gear_rev_cmd', ')', '->', '(', 'v_true', '>=', '0', ')', ')'] in: G((gear_rev_cmd) -> (v_true <= 0)) and G((not gear_rev_cmd) -> (v_true >= 0))"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[SYNTAX] expected '(', got 'True' in: G(True)"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[SYNTAX] expected '(', got 'True' in: G(True)"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[V1] C_Control: guarantee references ports outside the service signature: ['v_true']"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+rule_id: R_G1_llm
+description: >
+  Safe distance to the preceding vehicle (StVO §4(1)): the distance to a
+  lead vehicle must be large enough that the ego vehicle can still stop
+  behind it even if the lead vehicle brakes suddenly. Implemented as a
+  time‑gap rule: when the true gap falls below 1.8 s × true ego speed, a
+  hazard notification must be raised within 300 ms (3 steps at 10 Hz).
+source_text: >
+  StVO §4(1) – “Der Abstand zu einem vorausfahrenden Fahrzeug muss in der
+  Regel so groß sein, dass auch dann hinter ihm gehalten werden kann, wenn
+  es plötzlich gebremst wird.”  Time‑gap interpretation: if the true gap
+  d_true < 1.8 · v_true, then hazard_on must become true within 300 ms.
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  T_GAP: 1.8        # time‑gap factor [s]
+  EPS_D: 2.0        # perception gap error bound [m]
+  EPS_V: 0.5        # localization velocity error bound [m/s]
+  MARGIN: 2.9       # EPS_D + T_GAP*EPS_V = 2.0 + 1.8*0.5 [m]
+
+environment:
+  signals:
+    - {name: d_true, sort: real}   # true longitudinal gap to lead vehicle [m]
+    - {name: v_true, sort: real}   # true ego velocity [m/s]
+
+system_contract:
+  interface: {inputs: [d_true, v_true], outputs: [hazard_on]}
+  assumption: "G(d_true >= 0 and v_true >= 0)"
+  guarantee: "G((d_true < T_GAP * v_true) -> F[0,3](hazard_on))"
+
+decomposition:
+  discharge_order: [Perception, Localization, Planning]
+  contracts:
+    - service: Perception
+      interface: {inputs: [d_true], outputs: [d_lead]}
+      assumption: "G(d_true >= 0)"
+      guarantee: "G(abs(d_lead - d_true) <= EPS_D)"
+
+    - service: Localization
+      interface: {inputs: [v_true], outputs: [v_ego]}
+      assumption: "G(v_true >= 0)"
+      guarantee: "G(abs(v_ego - v_true) <= EPS_V)"
+
+    - service: Planning
+      interface: {inputs: [v_ego, d_lead], outputs: [hazard_on]}
+      assumption: "G(v_ego >= 0 and d_lead >= 0)"
+      guarantee: "G((d_lead < T_GAP * v_ego - MARGIN) -> F[0,3](hazard_on))"

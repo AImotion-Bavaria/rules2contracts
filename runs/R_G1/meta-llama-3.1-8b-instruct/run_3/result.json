@@ -1,0 +1,33 @@
+{
+  "rule": "R_G1",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SCHEMA] horizon 6 too small: must be at least max future depth (3) + 4"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V3b] composition of guarantees does NOT entail the system-level guarantee",
+        "    Counterexample trace (system rule violated despite all sub-contracts):\n      t            0        1        2        3        4        5        6        7        8        9       10\n      d_lead    -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4      1/8        0     -1/4\n      d_true       0        0        0        0        0        0        0        0        0      1/4        0\n      hazard_on   False    False    False    False    False    False    False    False    False    False    False\n      v_ego     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4      1/8        0        0\n      v_true       0        0        0        0        0        0        0        0        0      1/4      1/4"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[V3b] composition of guarantees does NOT entail the system-level guarantee",
+        "    Counterexample trace (system rule violated despite all sub-contracts):\n      t            0        1        2        3        4        5        6        7        8        9       10\n      d_lead       0        0        0        0        0        0      3/8        0     -1/4     -1/4        0\n      d_true     1/4      1/4      1/4      1/4      1/4      1/4      1/4      1/4        0        0      1/4\n      hazard_on   False    False    False    False    False    False    False    False    False    False    False\n      v_ego      1/8     -1/4     -1/4      1/8     -1/4     -1/4     -1/4      1/8        0        0        0\n      v_true       0        0        0        0        0        0        0        0      1/4      1/4      1/4"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[V1] C_Perception: guarantee references ports outside the service signature: ['d_true', 'v_true']"
+      ]
+    }
+  ]
+}

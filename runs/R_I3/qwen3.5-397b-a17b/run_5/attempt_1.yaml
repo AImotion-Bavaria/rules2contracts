@@ -1,0 +1,45 @@
+rule_id: R_I3_llm
+description: >
+  No reversing on interstate (StVO §18(7)): The vehicle must not perform
+  reversing manoeuvres. At feature level, the true longitudinal velocity
+  must not drop below -0.3 m/s. Safety is ensured by prohibiting reverse
+  gear commands, relying on the plant model that backward motion requires
+  reverse gear.
+source_text: >
+  StVO §18(7): "Reversing and turning are prohibited on the interstate."
+  Interpretation: True longitudinal velocity v_true >= -0.3 m/s.
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  EPS_V: 0.5
+  V_REV_LIMIT: -0.3
+  V_MIN_PLAN: 0.0
+  V_MAX: 70.0
+
+environment:
+  signals:
+    - {name: v_true, sort: real}
+
+system_contract:
+  interface: {inputs: [v_true], outputs: [gear_rev_cmd]}
+  assumption: "G(v_true < 0 -> gear_rev_cmd)"
+  guarantee: "G(v_true >= V_REV_LIMIT)"
+
+decomposition:
+  discharge_order: [Localization, Planning, Control]
+  contracts:
+    - service: Localization
+      interface: {inputs: [v_true], outputs: [v_ego]}
+      assumption: "G(v_true >= -5.0 and v_true <= V_MAX)"
+      guarantee: "G(abs(v_ego - v_true) <= EPS_V)"
+
+    - service: Planning
+      interface: {inputs: [v_ego], outputs: [v_cmd]}
+      assumption: "G(v_ego >= -5.0)"
+      guarantee: "G(v_cmd >= V_MIN_PLAN)"
+
+    - service: Control
+      interface: {inputs: [v_ego, v_cmd], outputs: [gear_rev_cmd]}
+      assumption: "G(v_cmd >= V_MIN_PLAN)"
+      guarantee: "G(v_cmd >= V_MIN_PLAN -> not gear_rev_cmd)"

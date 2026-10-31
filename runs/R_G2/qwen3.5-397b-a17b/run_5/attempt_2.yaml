@@ -1,0 +1,48 @@
+rule_id: R_G2_llm
+description: >
+  StVO §4(1) Unnecessary braking: Commanded deceleration stronger than 2.0 m/s^2
+  is only permitted when the gap to the preceding vehicle is critical (below 20.0 m).
+  Margins compensate for perception error (2.0 m) and plant tracking error (0.5 m/s^2).
+  Planning guarantees global bounds on acceleration to discharge Control assumptions.
+source_text: >
+  StVO §4(1): "Vehicles must not brake abruptly without reason." Formal interpretation:
+  If the true gap to the lead vehicle is 20.0 m or more, the commanded longitudinal
+  acceleration must not be less than -2.0 m/s^2.
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  D_LIMIT: 20.0       # Critical gap threshold [m]
+  A_LIMIT: 2.0        # Max allowed deceleration magnitude [m/s^2]
+  EPS_D: 2.0          # Perception gap error bound [m]
+  EPS_A: 0.5          # Control tracking error bound [m/s^2]
+  D_SAFE: 18.0        # Compensated gap threshold for Planning (D_LIMIT - EPS_D)
+  A_SAFE: 1.5         # Compensated accel threshold for Planning (A_LIMIT - EPS_A)
+  A_PLAN_MAX: 8.0     # Global bound on planned acceleration [m/s^2]
+
+environment:
+  signals:
+    - {name: d_true, sort: real}
+
+system_contract:
+  interface: {inputs: [d_true], outputs: [a_cmd]}
+  assumption: "G(d_true >= 0)"
+  guarantee: "G(d_true >= D_LIMIT -> a_cmd >= -A_LIMIT)"
+
+decomposition:
+  discharge_order: [Perception, Planning, Control]
+  contracts:
+    - service: Perception
+      interface: {inputs: [d_true], outputs: [d_lead]}
+      assumption: "G(d_true >= 0)"
+      guarantee: "G(abs(d_lead - d_true) <= EPS_D)"
+
+    - service: Planning
+      interface: {inputs: [d_lead], outputs: [a_plan]}
+      assumption: "G(d_lead >= 0 - EPS_D)"
+      guarantee: "G((a_plan >= -A_PLAN_MAX and a_plan <= A_PLAN_MAX) and (d_lead >= D_SAFE -> a_plan >= -A_SAFE))"
+
+    - service: Control
+      interface: {inputs: [a_plan], outputs: [a_cmd]}
+      assumption: "G(a_plan >= -A_PLAN_MAX and a_plan <= A_PLAN_MAX)"
+      guarantee: "G(abs(a_cmd - a_plan) <= EPS_A)"

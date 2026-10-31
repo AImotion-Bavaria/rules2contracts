@@ -1,0 +1,24 @@
+{
+  "rule": "R_G1",
+  "attempts": 3,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SYNTAX] temporal bound 'REACTION_STEPS' is not an integer step literal \u2014 the fragment requires numeric bounds, e.g. F[0,3] in: G((true_gap < TIME_GAP * v_true) -> F[0,REACTION_STEPS](hazard_on))"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V3b] composition of guarantees does NOT entail the system-level guarantee",
+        "    Counterexample trace (system rule violated despite all sub-contracts):\n      t            0        1        2        3        4        5        6        7        8\n      d_lead       0     -1/4     -1/4     -1/4     -1/4        0        0        0        0\n      hazard_on    True    False    False    False    False    False    False    False    False\n      true_gap     1/4        0        0        0        0      1/4      1/4      1/4      1/4\n      v_ego      7/4     -1/9        0     -1/9        0     1/36        0      1/8      1/8\n      v_true    13/8     5/36      1/4     5/36      1/4     5/18      1/4        0        0"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": []
+    }
+  ]
+}

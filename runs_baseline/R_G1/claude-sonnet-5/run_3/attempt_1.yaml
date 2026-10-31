@@ -1,0 +1,15 @@
+rule_id: R_G1_flat
+description: >
+  Safe following distance (StVO §4(1)): whenever the true gap to the
+  preceding vehicle falls below the time-gap threshold (1.8 s times true
+  ego velocity), a hazard notification must be raised within 300 ms.
+sampling_rate_hz: 10
+horizon: 3
+constants:
+  TIME_GAP: 1.8
+environment:
+  signals:
+    - {name: true_gap, sort: real}
+    - {name: true_velocity, sort: real}
+    - {name: hazard, sort: bool}
+formula: "G((true_gap < TIME_GAP * true_velocity) -> F[0,3](hazard))"

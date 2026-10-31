@@ -1,0 +1,18 @@
+{
+  "rule": "R_G1",
+  "attempts": 2,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SYNTAX] temporal bound 'NOTIFICATION_DEADLINE_STEPS' is not an integer step literal \u2014 the fragment requires numeric bounds, e.g. F[0,3] in: G(((true_gap < (MIN_GAP_S * true_ego_velocity)) and (abs(perceived_gap - true_gap) <= MAX_GAP_ERROR_M) and (abs(perceived_velocity - true_ego_velocity) <= MAX_VEL_ERROR_MPS)) -> F[0,NOTIFICATION_DEADLINE_STEPS](hazard_notification))"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": []
+    }
+  ],
+  "baseline": true
+}

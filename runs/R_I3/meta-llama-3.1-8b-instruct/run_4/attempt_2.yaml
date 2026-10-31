@@ -1,0 +1,34 @@
+rule_id: R_I3_llm
+description: >
+  No reversing manoeuvres (StVO §18(7)): the true longitudinal ego velocity
+  must never drop below -0.3 m/s.
+source_text: >
+  StVO §18(7): "Anfahrt rückwärts ist auf den Fernstraßen verboten."
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  V_MIN_REVERSE: -0.3  # min allowed longitudinal ego velocity [m/s]
+  V_MAX: 70.0  # max considered velocity [m/s]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}   # true ego longitudinal velocity [m/s]
+
+system_contract:
+  interface: {inputs: [v_true, gear_rev_cmd], outputs: []}
+  assumption: "G(gear_rev_cmd -> v_true <= V_MIN_REVERSE)"
+  guarantee: "G(v_true > V_MIN_REVERSE)"
+
+decomposition:
+  discharge_order: [Control, Localization]
+  contracts:
+    - service: Localization
+      interface: {inputs: [], outputs: [v_true]}
+      assumption: "G(true)"
+      guarantee: "G(F[0,horizon](v_true >= -V_MAX))"
+
+    - service: Control
+      interface: {inputs: [v_true], outputs: [gear_rev_cmd]}
+      assumption: "G(v_true >= -V_MAX)"
+      guarantee: "G(gear_rev_cmd -> v_true <= V_MIN_REVERSE)"

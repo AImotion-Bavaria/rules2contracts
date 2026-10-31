@@ -1,0 +1,34 @@
+{
+  "rule": "R_I1",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SYNTAX] expected '(', got 'congestion' in: G(congestion == true or congestion == false) and G(v_lead_true >= 0 and v_lead_true <= V_MAX) and G(v_true >= 0 and v_true <= V_MAX) and G(abs(v_true - v_cmd) <= PLANT_EPS)"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[SYNTAX] expected '(', got 'congestion' in: G(v_lead >= 0 and v_lead <= V_MAX and (congestion == true or congestion == false))"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[V0] Control: environment signal 'v_true' declared as output"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[V3a] assumption of C_Planning not discharged",
+        "[V3a] assumption of C_Control not discharged",
+        "[V3b] composition of guarantees does NOT entail the system-level guarantee",
+        "    Counterexample trace (A_Planning not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      congestion   False    False    False    False    False    False    False    False    False\n      v_cmd        0        0        0        0        0        0        0        0        0\n      v_lead   279/4     -1/4     -1/4    281/4    279/4     -1/4     -1/4     -1/4     -1/4\n      v_lead_true      70        0        0       70       70        0        0        0        0\n      v_true       0        0        0        0        0        0        0        0        0\n    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      congestion   False     True     True    False    False     True    False    False    False\n      v_cmd     -1/8     -5/8     -5/8     -5/8     -5/8     -5/8     -1/8    561/8    561/8\n      v_lead     9/8      9/8      9/8        0        0      9/8      9/8      9/8      9/8\n      v_lead_true     5/4      5/8      5/4      1/8      1/8      5/4      5/4      5/4      5/4\n      v_true       0        0        0        0        0        0        0        0        0\n    Counterexample trace (system rule violated despite all sub-contracts):\n      t            0        1        2        3        4        5        6        7        8\n      congestion   False    False    False    False    False    False    False    False    False\n      v_cmd     -1/8      1/4      1/4      1/4      1/4      1/4      1/4      1/4      1/4\n      v_lead     5/4      5/4      5/4      5/4      5/4      5/4      5/4      5/4      5/4\n      v_lead_true     3/2      3/2      3/2      3/2      3/2      3/2      3/2      3/2      3/2\n      v_true       0        0        0        0        0        0        0        0        0"
+      ]
+    }
+  ]
+}

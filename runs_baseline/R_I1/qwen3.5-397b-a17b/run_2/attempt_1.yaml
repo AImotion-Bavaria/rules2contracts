@@ -1,0 +1,13 @@
+rule_id: R_I1_flat
+description: Stopping on interstate main carriageway prohibited unless congested or lead vehicle stationary, with perception margin.
+sampling_rate_hz: 10
+horizon: 10
+constants:
+  V_STANDSTILL: 0.5
+  PERCEPTION_ERROR: 0.5
+environment:
+  signals:
+    - {name: congestion, sort: bool}
+    - {name: lead_velocity, sort: real}
+    - {name: ego_velocity, sort: real}
+formula: "G((not congestion and lead_velocity > V_STANDSTILL + PERCEPTION_ERROR) -> ego_velocity >= V_STANDSTILL)"

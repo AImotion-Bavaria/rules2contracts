@@ -1,0 +1,33 @@
+{
+  "rule": "R_I1",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SYNTAX] expected '(', got 'true' in: G(true)"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V0] VehicleDynamics: environment signal 'v_ego_true' declared as output",
+        "[V0] VehicleDynamics: input 'v_cmd' \u2014 VehicleDynamics does not consume topic of Planning.trajectory per the documented architecture"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[V0] Plant: environment signal 'v_ego_true' declared as output",
+        "[V0] Plant: input 'v_cmd' \u2014 Plant does not consume topic of Planning.trajectory per the documented architecture"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[SYNTAX] expected '(', got 'true' in: G(true)"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+rule_id: R_G3_flat
+description: Vehicles must not drive faster than the speed limit of their current lane.
+sampling_rate_hz: 10
+horizon: 8
+constants:
+  SPEED_LIMIT_TOLERANCE: 1.0
+environment:
+  signals:
+    - {name: lane_speed_limit, sort: real}
+    - {name: commanded_velocity, sort: real}
+    - {name: true_velocity, sort: real}
+formula: "G((true_velocity - lane_speed_limit) <= SPEED_LIMIT_TOLERANCE)"

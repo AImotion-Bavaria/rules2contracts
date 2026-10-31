@@ -1,0 +1,18 @@
+{
+  "rule": "R_I1",
+  "attempts": 2,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V3a] assumption of C_Control not discharged",
+        "    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8        9       10\n      a_cmd        0        0        0        0        0        0        0        0        0        0        0\n      congestion   False    False    False    False    False    False    False    False    False    False    False\n      gear_rev_cmd    True     True    False     True    False    False     True     True     True    False    False\n      on_interstate   False    False    False    False    False    False    False    False    False    False    False\n      v_cmd    281/4    281/4    281/4    281/4    281/4     -1/4    281/4    281/4    281/4     -1/4      5/4\n      v_ego     -5/4     -5/4     -5/4     -5/4     -5/4     -5/4     -5/4     -5/4     -5/4     -5/4     -5/4\n      v_lead    -1/4      1/8     -1/4      1/8        0      1/8        0        0      1/8        0        0\n      v_lead_true       0        0        0        0      1/4        0      1/4      1/4        0      1/4      1/4\n      v_true       0        0    277/4        0    277/4        0        0        0        0        0        0"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": []
+    }
+  ]
+}

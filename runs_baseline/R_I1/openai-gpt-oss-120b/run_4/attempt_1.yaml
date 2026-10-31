@@ -1,0 +1,13 @@
+rule_id: R_I1_flat
+description: Stopping on the main carriageway of an interstate is prohibited unless there is congestion or the directly leading vehicle is stationary. When there is no congestion and the lead vehicle is clearly moving, the ego vehicle must keep moving.
+sampling_rate_hz: 10
+horizon: 5
+constants:
+  V_LEAD_MIN: 1.0
+  V_EGO_MIN: 0.5
+environment:
+  signals:
+    - {name: congestion, sort: bool}
+    - {name: lead_vel, sort: real}
+    - {name: ego_vel, sort: real}
+formula: "G(((not congestion) and (lead_vel >= V_LEAD_MIN)) -> (ego_vel >= V_EGO_MIN))"

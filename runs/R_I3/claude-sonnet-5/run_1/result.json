@@ -1,0 +1,30 @@
+{
+  "rule": "R_I3",
+  "attempts": 4,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SCHEMA] horizon 1 too small: must be at least max future depth (0) + 4"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V3a] assumption of C_Planning not discharged",
+        "    Counterexample trace (A_Planning not discharged):\n      t            0        1        2        3        4\n      gear_rev_cmd    True     True     True     True     True\n      v_cmd        0        0        0        0        0\n      v_ego       71       71       71       71       71\n      v_true_ego  -13/10   -13/10   -13/10   -13/10   -13/10"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[SYNTAX] trailing tokens ['and', 'G', '(', 'not', 'gear_rev_cmd', '->', 'v_true_ego', '>=', 'V_MIN', ')'] in: G(v_true_ego >= 0 - V_MAX and v_true_ego <= V_MAX) and G(not gear_rev_cmd -> v_true_ego >= V_MIN)\n"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": []
+    }
+  ]
+}

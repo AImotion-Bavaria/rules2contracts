@@ -1,0 +1,33 @@
+{
+  "rule": "R_I3",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SYNTAX] unexpected end of formula: {}"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[SYNTAX] expected '(', got 'abs' in: G(abs(v_ego - v_true) <= EPS_V)"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[SYNTAX] expected '(', got 'v_true' in: G(v_true >= 0 and v_true <= V_MAX)"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[V0] Control: environment signal 'gear_rev_cmd' declared as output",
+        "[V0] Control: input 'd_lead' \u2014 Control does not consume topic of Perception.predicted_objects per the documented architecture",
+        "[V0] Control: input 'v_lead' \u2014 Control does not consume topic of Perception.predicted_objects per the documented architecture"
+      ]
+    }
+  ]
+}

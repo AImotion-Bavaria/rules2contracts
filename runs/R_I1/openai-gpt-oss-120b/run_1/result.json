@@ -1,0 +1,32 @@
+{
+  "rule": "R_I1",
+  "attempts": 4,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V0] VehicleDynamics: environment signal 'v_true' declared as output",
+        "[V0] VehicleDynamics: input 'v_cmd' \u2014 VehicleDynamics does not consume topic of Planning.trajectory per the documented architecture"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[SYNTAX] trailing tokens ['and', 'G', '(', 'v_true', '>=', '0', ')'] in: G(abs(v_true - v_cmd) <= EPS_VTRACK) and G(v_true >= 0)"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[V3a] assumption of C_Planning not discharged",
+        "[V3b] composition of guarantees does NOT entail the system-level guarantee",
+        "    Counterexample trace (A_Planning not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      congestion   False    False    False    False    False    False    False    False    False\n      v_cmd        0        0        0        0        0        0        0        0        0\n      v_ego     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4\n      v_lead    -1/4     -1/4     -1/4      1/8     -1/4      1/8     -1/4      1/8     -1/4\n      v_lead_true       0        0        0        0        0        0        0        0        0\n      v_true       0        0        0        0        0        0        0        0        0\n    Counterexample trace (system rule violated despite all sub-contracts):\n      t            0        1        2        3        4        5        6        7        8\n      congestion   False    False    False    False    False     True    False     True     True\n      v_cmd      3/2      3/2      3/2      3/2        0        0      3/2        0        0\n      v_ego        0        0     1/16     -1/8     1/16        0     1/16     -1/8     -1/8\n      v_lead     1/2      1/2      1/2      1/8        0    11/16      1/8      1/2      1/2\n      v_lead_true     5/8      5/8      5/8      5/8      1/2      5/8      5/8      5/8      5/8\n      v_true     1/8      1/8        0        0        0      1/8        0        0        0"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": []
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+# Rule R_I3 "no reversing and turning" (interstate rule corpus, Maierhofer
+# et al., IV 2021), traced back to StVO §18(7). Feature-level scope:
+# reversing only — the U-turn half of the predicate requires lane-topology
+# reasoning and is a documented exclusion. The plant moves backwards only
+# if the reverse gear is commanded (tracking assumption), so the rule
+# anchors at the Control gear command.
+
+rule_id: R_I3
+description: >
+  No reversing: the ego vehicle must not perform a reversing manoeuvre on
+  the interstate. Formalized at feature level: the true longitudinal
+  velocity must never drop below -V_TOL, which the plant guarantees as long
+  as the reverse gear is never commanded (system-level tracking
+  assumption); hence Control must never command the reverse gear.
+source_text: >
+  StVO §18(7); Maierhofer et al. (IV 2021), R_I3:
+  "G(not makes_u_turn(x_ego) and not reverses(x_ego))" — U-turn part out of
+  feature-vocabulary scope (lane topology), documented exclusion.
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  V_TOL: 0.3   # tolerance for backwards drift [m/s] (e.g. on inclines)
+
+environment:
+  signals:
+    - {name: v_true, sort: real}   # true longitudinal ego velocity [m/s], signed
+
+system_contract:
+  interface: {inputs: [v_true], outputs: [gear_rev_cmd]}
+  assumption: "G((not gear_rev_cmd) -> v_true >= 0 - V_TOL)"
+  guarantee: "G(v_true >= 0 - V_TOL)"
+
+decomposition:
+  discharge_order: [Control]
+  contracts:
+    - service: Control
+      interface: {inputs: [], outputs: [gear_rev_cmd]}
+      assumption: "G(0 <= 1)"
+      guarantee: "G(not gear_rev_cmd)"

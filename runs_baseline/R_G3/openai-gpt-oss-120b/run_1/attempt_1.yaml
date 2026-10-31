@@ -1,0 +1,11 @@
+rule_id: R_G3_flat
+description: Vehicles must not exceed the speed limit of the lane they are in; the commanded velocity is tracked within a tolerance of 1.0 m/s.
+sampling_rate_hz: 10
+horizon: 5
+constants:
+  ERR: 1.0
+environment:
+  signals:
+    - {name: v_cmd, sort: real}
+    - {name: v_limit, sort: real}
+formula: "G(v_cmd <= v_limit - ERR)"

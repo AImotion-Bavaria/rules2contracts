@@ -1,0 +1,11 @@
+rule_id: R_I3_flat
+description: No reversing on interstate (v >= -0.3) under gear-tracking assumption.
+sampling_rate_hz: 10
+horizon: 1
+constants:
+  VEL_MIN: -0.3
+environment:
+  signals:
+    - {name: velocity_ego_long, sort: real}
+    - {name: gear_command_reverse, sort: bool}
+formula: "G(((velocity_ego_long < 0) -> gear_command_reverse) -> (velocity_ego_long >= VEL_MIN))"

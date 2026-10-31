@@ -1,0 +1,66 @@
+rule_id: R_G2_llm
+description: >
+  Prohibition of abrupt braking without reason (StVO §4(1)), read at feature
+  level: a deceleration stronger than A_BRAKE = 2.0 m/s^2 may only be realized
+  by the vehicle when the true longitudinal gap to the preceding vehicle is
+  critical (below D_CRIT = 20.0 m). Perception estimates the gap with a bounded
+  error of EPS_D = 2.0 m, the plant tracks the commanded acceleration within
+  EPS_A = 0.5 m/s^2, and Control tracks the planned acceleration within
+  EPS_C = 0.2 m/s^2. Every error bound is compensated by tightening the
+  triggering deceleration threshold (towards zero) and the gap threshold
+  (towards smaller gaps). Planning additionally guarantees that its commanded
+  acceleration stays inside the physical actuation envelope, which discharges
+  the Control assumption.
+source_text: >
+  StVO §4 Abs. 1 Satz 2: "Wer vorausfährt, darf nicht ohne zwingenden Grund
+  stark bremsen." (A driver ahead must not brake abruptly without a compelling
+  reason.) Operationalization: a commanded deceleration stronger than
+  2.0 m/s^2 is only permitted when the gap to the preceding vehicle is below
+  20.0 m.
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  A_BRAKE: 2.0      # strong-braking threshold on deceleration magnitude [m/s^2]
+  D_CRIT: 20.0      # critical true gap to lead vehicle [m]
+  EPS_D: 2.0        # perception gap error bound [m]
+  EPS_A: 0.5        # plant tracking error bound |a_true - a_cmd| [m/s^2]
+  EPS_C: 0.2        # control tracking error bound (a_cmd >= a_plan - EPS_C) [m/s^2]
+  D_MAX: 200.0      # max considered gap [m]
+  A_MAX_DEC: 8.0    # physical deceleration limit [m/s^2]
+  A_MAX_ACC: 4.0    # physical acceleration limit [m/s^2]
+  V_MAX: 70.0       # max considered velocity [m/s]
+
+environment:
+  signals:
+    - {name: d_true, sort: real}   # true longitudinal gap to nearest lead object in ego lane [m]
+    - {name: a_true, sort: real}   # true realized longitudinal acceleration of ego [m/s^2]
+    - {name: v_true, sort: real}   # true ego velocity [m/s]
+
+system_contract:
+  interface: {inputs: [d_true, a_true, v_true], outputs: [a_cmd, a_plan, d_lead]}
+  assumption: >
+    G(d_true >= 0 and d_true <= D_MAX and v_true >= 0 and v_true <= V_MAX
+      and a_true >= 0 - A_MAX_DEC and a_true <= A_MAX_ACC
+      and abs(a_true - a_cmd) <= EPS_A)
+  guarantee: "G((a_true <= 0 - A_BRAKE) -> d_true <= D_CRIT)"
+
+decomposition:
+  discharge_order: [Perception, Planning, Control]
+  contracts:
+    - service: Perception
+      interface: {inputs: [d_true, v_true], outputs: [d_lead, v_lead]}
+      assumption: "G(d_true >= 0 and d_true <= D_MAX and v_true >= 0 and v_true <= V_MAX)"
+      guarantee: "G(abs(d_lead - d_true) <= EPS_D)"
+
+    - service: Planning
+      interface: {inputs: [d_lead, v_lead, v_ego, a_ego], outputs: [a_plan, v_cmd]}
+      assumption: "G(d_lead >= 0 - EPS_D and d_lead <= D_MAX + EPS_D)"
+      guarantee: >
+        G(a_plan >= 0 - A_MAX_DEC and a_plan <= A_MAX_ACC
+          and ((a_plan <= 0 - A_BRAKE + EPS_A + EPS_C) -> d_lead <= D_CRIT - EPS_D))
+
+    - service: Control
+      interface: {inputs: [a_plan, v_cmd, v_ego], outputs: [a_cmd]}
+      assumption: "G(a_plan >= 0 - A_MAX_DEC and a_plan <= A_MAX_ACC)"
+      guarantee: "G(a_cmd >= a_plan - EPS_C)"

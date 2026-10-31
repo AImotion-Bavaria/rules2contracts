@@ -1,0 +1,19 @@
+rule_id: R_G2_flat
+description: >
+  StVO §4(1) unnecessary-braking rule: a commanded deceleration stronger than
+  2.0 m/s^2 is only permitted while the gap to the preceding vehicle is
+  critical (below 20.0 m). Perception gap error (2.0 m) and plant
+  acceleration-tracking error (0.5 m/s^2) are absorbed as tolerance margins.
+sampling_rate_hz: 20
+horizon: 5
+constants:
+  DECEL_THRESHOLD: 2.0
+  GAP_CRITICAL: 20.0
+  GAP_ERR: 2.0
+  ACC_ERR: 0.5
+environment:
+  signals:
+    - {name: accel_cmd, sort: real}
+    - {name: accel_actual, sort: real}
+    - {name: gap_measured, sort: real}
+formula: "G(((accel_cmd <= -(DECEL_THRESHOLD)) and (accel_actual <= -(DECEL_THRESHOLD - ACC_ERR))) -> (gap_measured <= GAP_CRITICAL + GAP_ERR))"

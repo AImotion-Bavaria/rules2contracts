@@ -1,0 +1,18 @@
+{
+  "rule": "R_I1",
+  "attempts": 2,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SYNTAX] illegal character '~' at position 3 in: G((~congestion & lead_velocity > V_STANDSTILL + V_ERROR_BOUND) -> F[0,8](ego_velocity >= V_STANDSTILL))"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": []
+    }
+  ],
+  "baseline": true
+}

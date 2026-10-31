@@ -1,0 +1,42 @@
+# Architecture-violating variant of R_G1 (for demonstration): Planning
+# declares v_lead as an input, but per the documented Autoware architecture
+# it consumes that information via /perception/object_recognition/objects —
+# fine — however here it also declares producing d_lead itself, which is
+# computed by Perception. Expected: V0 fails (architecture conformance).
+
+rule_id: R_G1_illegal
+description: >
+  Same rule as R_G1, but the decomposition assigns the d_lead feature as an
+  output of Planning although the architecture computes it in Perception.
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  TAU: 1.8
+  EPS_V: 0.5
+  EPS_D: 2.0
+  V_MAX: 70.0
+  D_MAX: 200.0
+
+environment:
+  signals:
+    - {name: d_gap, sort: real}
+    - {name: v_true, sort: real}
+
+system_contract:
+  interface: {inputs: [d_gap, v_true], outputs: [hazard_on]}
+  assumption: "G(d_gap >= 0 and d_gap <= D_MAX and v_true >= 0 and v_true <= V_MAX)"
+  guarantee: "G((d_gap <= TAU * v_true) -> F[0,3](hazard_on))"
+
+decomposition:
+  discharge_order: [Localization, Planning]
+  contracts:
+    - service: Localization
+      interface: {inputs: [v_true], outputs: [v_ego]}
+      assumption: "G(v_true >= 0 and v_true <= V_MAX)"
+      guarantee: "G(abs(v_ego - v_true) <= EPS_V)"
+
+    - service: Planning
+      interface: {inputs: [d_gap, v_ego], outputs: [d_lead, hazard_on]}
+      assumption: "G(d_gap >= 0 and v_ego >= 0 - EPS_V)"
+      guarantee: "G(abs(d_lead - d_gap) <= EPS_D and ((d_lead <= TAU * (v_ego + EPS_V) + EPS_D) -> F[0,3](hazard_on)))"

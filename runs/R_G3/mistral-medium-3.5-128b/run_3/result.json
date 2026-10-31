@@ -1,0 +1,26 @@
+{
+  "rule": "R_G3",
+  "attempts": 3,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SCHEMA] malformed rule document: ValueError(\"unknown signal 'v_true' in an interface declaration: declare it as an environment signal or use one of the architecture features\")"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V3a] assumption of C_Localization not discharged",
+        "[V3a] assumption of C_Planning not discharged",
+        "[V3a] assumption of C_Control not discharged",
+        "    Counterexample trace (A_Localization not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      v_cmd        0        0        0        0        0        0        0        0        0\n      v_ego        0        0        0        0        0        0        0        0        0\n      v_limit       0        0        0        0        0        0        0        0        0\n      v_true      -1       -1       -1       -1       -1       -1       -1       -1       -1\n    Counterexample trace (A_Planning not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      v_cmd        0        0        0        0        0        0        0        0        0\n      v_ego       -1       -1       -1       -1       -1       -1       -1       -1       -1\n      v_limit       0        0        0        0        0        0        0        0        0\n      v_true      -1       -1       -1       -1       -1       -1       -1       -1       -1\n    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      v_cmd     -1/2     -1/2     -1/2     -1/2     -1/2     -1/2     -1/2     -1/2     -1/2\n      v_ego        0        0        0        0        0        0        0        0        0\n      v_limit       0        0        0        0        0        0        0        0        0\n      v_true       0        0        0        0        0        0        0        0        0"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": []
+    }
+  ]
+}

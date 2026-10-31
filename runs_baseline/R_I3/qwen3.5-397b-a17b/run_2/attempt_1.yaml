@@ -1,0 +1,11 @@
+rule_id: R_I3_flat
+description: StVO §18(7) No reversing on interstate. Feature interpretation requires true longitudinal velocity to remain above reverse threshold. Context assumes plant backward motion implies reverse gear command.
+sampling_rate_hz: 10
+horizon: 10
+constants:
+  V_REVERSE_LIMIT: -0.3
+environment:
+  signals:
+    - {name: velocity_ego, sort: real}
+    - {name: gear_command, sort: real}
+formula: "G(velocity_ego >= V_REVERSE_LIMIT)"

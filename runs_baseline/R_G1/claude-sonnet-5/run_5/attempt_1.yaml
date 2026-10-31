@@ -1,0 +1,21 @@
+rule_id: R_G1_flat
+description: >
+  StVO §4(1) safe-distance rule (time-gap interpretation): whenever the true
+  gap to the preceding vehicle falls below 1.8 s times the true ego velocity,
+  a hazard notification must be raised within 300 ms (3 steps at 10 Hz).
+  Perception estimates the gap with bounded error 2.0 m; Localization
+  estimates ego velocity with bounded error 0.5 m/s (context only).
+sampling_rate_hz: 10
+horizon: 3
+constants:
+  TIME_GAP: 1.8
+  GAP_ERROR_BOUND: 2.0
+  VEL_ERROR_BOUND: 0.5
+environment:
+  signals:
+    - {name: true_gap, sort: real}
+    - {name: true_velocity, sort: real}
+    - {name: est_gap, sort: real}
+    - {name: est_velocity, sort: real}
+    - {name: hazard, sort: bool}
+formula: "G((true_gap < TIME_GAP * true_velocity) -> F[0,3](hazard))"

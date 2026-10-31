@@ -1,0 +1,57 @@
+rule_id: R_I3_llm
+description: >
+  No reversing on the interstate (StVO §18(7)). Interpreted at feature level:
+  the true longitudinal ego velocity must never drop below -V_REV_MIN
+  (-0.3 m/s), i.e. no backward motion beyond a rolling tolerance. The plant
+  moves backwards only if the reverse gear was commanded within the actuation
+  delay window (TAU_REV = 2 steps at 10 Hz); this link between the Control
+  feature gear_rev_cmd and the environment signal v_true is the system-level
+  tracking assumption. The decomposition is acyclic: Localization bounds the
+  velocity estimation error (its assumption uses only the upper bound
+  v_true <= V_MAX supplied by the system assumption, so it is not circular),
+  Planning unconditionally never emits a negative target velocity — the
+  EPS_V error bound is compensated in Planning's assumption interval for
+  v_ego, so a noisy estimate can never justify a negative command — and
+  Control never engages the reverse gear while the commanded velocity is
+  non-negative. Hence gear_rev_cmd is globally false, and by the
+  contrapositive of the tracking assumption (O[0,2](gear_rev_cmd) is false)
+  the true velocity stays at or above -V_REV_MIN.
+source_text: >
+  StVO §18 Absatz 7: "Wenden und Rückwärtsfahren sind verboten." (Auf
+  Autobahnen und Kraftfahrstraßen ist das Rückwärtsfahren untersagt.)
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  V_REV_MIN: 0.3     # tolerated backward-rolling magnitude [m/s]
+  EPS_V: 0.5         # localization velocity error bound [m/s]
+  V_MAX: 70.0        # max considered forward velocity [m/s]
+  TAU_REV: 2         # gear actuation / motion-onset delay [steps]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}        # true longitudinal ego velocity [m/s]
+    - {name: on_interstate, sort: bool} # ego is on Autobahn / Kraftfahrstraße
+
+system_contract:
+  interface: {inputs: [v_true, on_interstate], outputs: [v_cmd, gear_rev_cmd]}
+  assumption: "G(v_true <= V_MAX and on_interstate and (v_true < 0 - V_REV_MIN -> O[0,2](gear_rev_cmd)))"
+  guarantee: "G(v_true >= 0 - V_REV_MIN)"
+
+decomposition:
+  discharge_order: [Localization, Planning, Control]
+  contracts:
+    - service: Localization
+      interface: {inputs: [v_true], outputs: [v_ego]}
+      assumption: "G(v_true <= V_MAX)"
+      guarantee: "G(abs(v_ego - v_true) <= EPS_V and v_ego <= V_MAX + EPS_V)"
+
+    - service: Planning
+      interface: {inputs: [v_ego], outputs: [v_cmd, a_plan]}
+      assumption: "G(v_ego <= V_MAX + EPS_V)"
+      guarantee: "G(v_cmd >= 0)"
+
+    - service: Control
+      interface: {inputs: [v_ego, v_cmd, a_plan], outputs: [gear_rev_cmd, a_cmd]}
+      assumption: "G(v_cmd >= 0)"
+      guarantee: "G(v_cmd >= 0 -> not gear_rev_cmd)"

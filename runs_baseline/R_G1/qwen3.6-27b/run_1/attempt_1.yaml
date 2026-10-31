@@ -1,0 +1,12 @@
+rule_id: R_G1_flat
+description: Safe distance to preceding vehicle (StVO §4(1)) - time-gap interpretation.
+sampling_rate_hz: 10
+horizon: 10
+constants:
+  TIME_GAP_FACTOR: 1.8
+environment:
+  signals:
+    - {name: gap_true, sort: real}
+    - {name: vel_true, sort: real}
+    - {name: hazard_notif, sort: bool}
+formula: "G((gap_true < TIME_GAP_FACTOR * vel_true) -> F[0,3](hazard_notif))"

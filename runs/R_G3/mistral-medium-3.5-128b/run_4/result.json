@@ -1,0 +1,31 @@
+{
+  "rule": "R_G3",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V1] C_Control: guarantee references ports outside the service signature: ['v_ego']"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V1] C_Control: guarantee references ports outside the service signature: ['v_true']"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[V1] C_Control: guarantee references ports outside the service signature: ['v_ego']"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[V0] Control: output 'v_ego' is computed by Localization, not Control"
+      ]
+    }
+  ]
+}

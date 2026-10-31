@@ -1,0 +1,17 @@
+{
+  "rule": "R_G2",
+  "attempts": 2,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V0] Control: input 'd_lead' \u2014 Control does not consume topic of Perception.predicted_objects per the documented architecture"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": []
+    }
+  ]
+}

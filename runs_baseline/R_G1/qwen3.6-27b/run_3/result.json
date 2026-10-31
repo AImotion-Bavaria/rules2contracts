@@ -1,0 +1,18 @@
+{
+  "rule": "R_G1",
+  "attempts": 2,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[YAML] not parseable as YAML: mapping values are not allowed here\n  in \"<unicode string>\", line 2, column 61:\n     ... o preceding vehicle (StVO \u00a74(1)): hazard must be raised within 3 ... \n                                         ^"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": []
+    }
+  ],
+  "baseline": true
+}

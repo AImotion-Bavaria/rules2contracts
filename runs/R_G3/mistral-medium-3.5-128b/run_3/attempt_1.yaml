@@ -1,0 +1,37 @@
+rule_id: R_G3_llm
+description: >
+  Maximum speed limit (StVO §3(1)/§18): The vehicle must not exceed the speed limit of its current lane.
+source_text: >
+  StVO §3(1)/§18: "Wer ein Fahrzeug führt, darf nur so schnell fahren, dass das Fahrzeug ständig beherrscht werden kann. [...] Innerhalb geschlossener Ortschaften [...] gilt für alle Fahrzeuge eine Höchstgeschwindigkeit von 50 km/h, sofern nicht durch Verkehrszeichen eine andere Geschwindigkeit vorgeschrieben ist."
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  TRACKING_ERROR: 1.0   # plant tracking error bound [m/s]
+
+environment:
+  signals:
+    - {name: v_limit, sort: real}   # speed limit of current lane [m/s]
+
+system_contract:
+  interface: {inputs: [v_limit], outputs: [v_cmd, v_ego]}
+  assumption: "G(v_limit >= 0)"
+  guarantee: "G(v_ego <= v_limit + TRACKING_ERROR)"
+
+decomposition:
+  discharge_order: [Planning, Control, Localization]
+  contracts:
+    - service: Planning
+      interface: {inputs: [v_ego, v_limit], outputs: [v_cmd]}
+      assumption: "G(v_ego >= 0 and v_limit >= 0)"
+      guarantee: "G(v_cmd <= v_limit)"
+
+    - service: Control
+      interface: {inputs: [v_ego, v_cmd], outputs: [a_cmd]}
+      assumption: "G(v_cmd >= 0)"
+      guarantee: "G(abs(v_ego - v_cmd) <= TRACKING_ERROR)"
+
+    - service: Localization
+      interface: {inputs: [v_true], outputs: [v_ego]}
+      assumption: "G(v_true >= 0)"
+      guarantee: "G(abs(v_ego - v_true) <= 0)"

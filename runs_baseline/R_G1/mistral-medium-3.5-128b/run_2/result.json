@@ -1,0 +1,18 @@
+{
+  "rule": "R_G1",
+  "attempts": 2,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SYNTAX] temporal bound 'REACTION_STEPS' is not an integer step literal \u2014 the fragment requires numeric bounds, e.g. F[0,3] in: G((true_gap < MIN_GAP_TIME * true_ego_velocity) -> F[0,REACTION_STEPS](hazard_notification))"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": []
+    }
+  ],
+  "baseline": true
+}

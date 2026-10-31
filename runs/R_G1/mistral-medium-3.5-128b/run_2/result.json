@@ -1,0 +1,37 @@
+{
+  "rule": "R_G1",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V3b] composition of guarantees does NOT entail the system-level guarantee",
+        "    Counterexample trace (system rule violated despite all sub-contracts):\n      t            0        1        2        3        4        5        6        7        8\n      d_lead   -1/20    -1/20     -1/4     -1/4        0        0        0     -1/4     -1/4\n      d_true     1/5      1/5        0        0      1/4      1/4      1/4        0        0\n      hazard_on   False    False    False    False    False    False    False     True    False\n      v_ego        0        0    19/72     -1/9     1/36      7/4        0     -1/4      1/8\n      v_true     1/4      1/4     5/36     5/36     5/18        2      1/4        0        0"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V3a] assumption of C_Planning not discharged",
+        "[V3b] composition of guarantees does NOT entail the system-level guarantee",
+        "    Counterexample trace (A_Planning not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      d_lead    -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4      1/8\n      d_true       0        0        0        0        0        0        0        0        0\n      hazard_on   False    False    False    False    False    False    False    False    False\n      v_ego     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4\n      v_true       0        0        0        0        0        0        0        0        0\n    Counterexample trace (system rule violated despite all sub-contracts):\n      t            0        1        2        3        4        5        6        7        8\n      d_lead    -1/4      1/8     -1/4     -1/4     -1/4        0        0        0      1/8\n      d_true       0        0        0        0        0      1/4      1/4      1/4        0\n      hazard_on   False    False    False    False    False    False    False    False    False\n      v_ego     -1/9        0    19/72    19/72     -1/9     1/36     -1/4      1/8     -1/4\n      v_true    5/36      1/4     5/36     5/36     5/36     5/18        0        0        0"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[V3a] assumption of C_Planning not discharged",
+        "[V3b] composition of guarantees does NOT entail the system-level guarantee",
+        "    Counterexample trace (A_Planning not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      d_lead       0        0        0        0        0        0        0     1/16        0\n      d_true     1/8      1/8      1/8      1/8      1/8      1/8      1/8        0      1/8\n      hazard_on   False    False    False    False    False    False    False    False    False\n      v_ego     -1/8     -1/8     -1/8     -1/8     -1/8    141/2     -1/8     -1/8     -1/8\n      v_true       0        0        0        0        0       70        0        0        0\n    Counterexample trace (system rule violated despite all sub-contracts):\n      t            0        1        2        3        4        5        6        7        8\n      d_lead       0      1/8        0        0        0        0        0        0        0\n      d_true     1/4        0      1/4      1/4      1/4      1/4      1/4      1/4      1/4\n      hazard_on   False    False    False    False    False    False    False    False    False\n      v_ego     1/36    19/72    29/72     1/36     1/36     1/36        0     -1/4        0\n      v_true    5/18     5/36     5/18     5/18     5/18     5/18      1/4        0      1/4"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[V3b] composition of guarantees does NOT entail the system-level guarantee",
+        "    Counterexample trace (system rule violated despite all sub-contracts):\n      t            0        1        2        3        4        5        6        7        8\n      d_lead       0        0        0        0        0     1/16        0        0        0\n      d_true     1/8      1/8      1/8      1/8      1/8        0      1/8      1/8      1/8\n      hazard_on    True    False    False    False    False     True    False    False    False\n      v_ego   121/72   29/144   29/144     1/72     1/72  247/144        0        0        0\n      v_true   85/72     5/36     5/36     5/36     5/36  265/144      1/8      1/8      1/8"
+      ]
+    }
+  ]
+}

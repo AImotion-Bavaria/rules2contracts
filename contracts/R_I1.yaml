@@ -1,0 +1,52 @@
+# Rule R_I1 "stopping" (interstate rule corpus, Maierhofer et al., IV 2021),
+# traced back to StVO §12(1)/§18(8). Feature-level scope: stopping on the
+# main carriageway is prohibited unless there is congestion or the leading
+# vehicle is (nearly) stationary. Congestion is modelled as an environment
+# signal (its detection is out of the feature vocabulary); the lead-vehicle
+# state enters via the perceived lead velocity with a bounded error.
+
+rule_id: R_I1
+description: >
+  Stopping prohibition: the ego vehicle must not come to a standstill on the
+  main carriageway unless there is congestion or the directly leading
+  vehicle is stationary. Formalized at feature level: whenever there is no
+  congestion and the true lead velocity is clearly above the standstill
+  threshold, the ego vehicle must keep moving. The plant tracks the
+  commanded velocity within DELTA_V; perception estimates the lead velocity
+  with a bounded error EPS_VL.
+source_text: >
+  StVO §12(1), §18(8); Maierhofer et al. (IV 2021), R_I1:
+  "G(not (in_congestion or exist_standing_leading_vehicle) ->
+  not in_standstill(x_ego))".
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  V_STOP: 0.5    # standstill threshold [m/s]
+  EPS_VL: 0.5    # perception lead-velocity error bound [m/s]
+  DELTA_V: 1.0   # plant velocity-tracking tolerance [m/s]
+  V_MAX: 70.0    # max considered velocity [m/s]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}       # true ego velocity [m/s]
+    - {name: v_lead_true, sort: real}  # true lead-vehicle velocity [m/s]
+    - {name: congestion, sort: bool}   # congestion indicator (environment)
+
+system_contract:
+  interface: {inputs: [v_true, v_lead_true, congestion], outputs: [v_cmd]}
+  assumption: "G(v_lead_true >= 0 and v_lead_true <= V_MAX and abs(v_true - v_cmd) <= DELTA_V)"
+  guarantee: "G((not congestion and v_lead_true >= V_STOP + 2 * EPS_VL) -> v_true >= V_STOP)"
+
+decomposition:
+  discharge_order: [Perception, Planning]
+  contracts:
+    - service: Perception
+      interface: {inputs: [v_lead_true], outputs: [v_lead]}
+      assumption: "G(v_lead_true >= 0 and v_lead_true <= V_MAX)"
+      guarantee: "G(abs(v_lead - v_lead_true) <= EPS_VL)"
+
+    - service: Planning
+      interface: {inputs: [v_lead, congestion], outputs: [v_cmd]}
+      assumption: "G(v_lead >= 0 - EPS_VL)"
+      guarantee: "G((not congestion and v_lead >= V_STOP + EPS_VL) -> v_cmd >= V_STOP + DELTA_V)"

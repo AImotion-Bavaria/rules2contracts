@@ -1,0 +1,36 @@
+{
+  "rule": "R_I3",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V3a] assumption of C_Control not discharged",
+        "[V3b] composition of guarantees does NOT entail the system-level guarantee",
+        "    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      gear_rev_cmd   False    False    False    False    False    False    False    False    False\n      v_true  -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10\n    Counterexample trace (system rule violated despite all sub-contracts):\n      t            0        1        2        3        4        5        6        7        8\n      gear_rev_cmd   False    False    False    False    False    False    False    False    False\n      v_true  -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V3a] assumption of C_Control not discharged",
+        "[V3b] composition of guarantees does NOT entail the system-level guarantee",
+        "    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      gear_rev_cmd   False    False    False    False    False    False    False    False    False\n      v_true  -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10\n    Counterexample trace (system rule violated despite all sub-contracts):\n      t            0        1        2        3        4        5        6        7        8\n      gear_rev_cmd   False    False    False    False    False    False    False    False    False\n      v_true  -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[SYNTAX] expected '(', got 'True' in: G(True)"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[V3b] composition of guarantees does NOT entail the system-level guarantee",
+        "    Counterexample trace (system rule violated despite all sub-contracts):\n      t            0        1        2        3        4        5        6        7        8\n      gear_rev_cmd    True     True     True     True     True     True    False     True     True\n      v_true  -13/10   -13/10   -13/10   -13/10   -13/10   -13/10        1   -13/10   -13/10"
+      ]
+    }
+  ]
+}

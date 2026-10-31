@@ -1,0 +1,48 @@
+rule_id: R_G2_llm
+description: >
+  Unnecessary braking (StVO §4(1)): A vehicle must not brake abruptly without reason.
+  At feature level, a commanded deceleration stronger than 2.0 m/s² is only permitted
+  when the gap to the preceding vehicle is critical (below 20.0 m). Perception gap
+  estimation error and plant tracking error are accounted for in thresholds.
+source_text: >
+  StVO §4(1): "Es darf nicht ohne triftigen Grund so langsam gefahren werden,
+  dass der Verkehrsfluss behindert wird. Das gilt auch für das Abbremsen."
+  Interpreted as: abrupt braking (a_cmd < -2.0 m/s²) is only allowed if d_true is critical (< 20.0 m).
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  A_BRAKE_THRESH: -2.0    # deceleration threshold [m/s²]
+  D_CRITICAL: 20.0        # critical gap threshold [m]
+  EPS_D: 2.0              # perception gap estimation error bound [m]
+  EPS_A: 0.5              # plant tracking error bound [m/s²]
+  A_MIN: -10.0            # minimum possible acceleration [m/s²]
+  A_MAX: 10.0             # maximum possible acceleration [m/s²]
+
+environment:
+  signals:
+    - {name: d_true, sort: real}
+    - {name: a_true, sort: real}
+
+system_contract:
+  interface: {inputs: [d_true], outputs: [a_cmd]}
+  assumption: "G(d_true >= 0 and a_true >= A_MIN and a_true <= A_MAX)"
+  guarantee: "G((a_cmd <= A_BRAKE_THRESH + EPS_A) -> (d_true <= D_CRITICAL + EPS_D))"
+
+decomposition:
+  discharge_order: [Perception, Planning, Control]
+  contracts:
+    - service: Perception
+      interface: {inputs: [d_true], outputs: [d_lead]}
+      assumption: "G(d_true >= 0)"
+      guarantee: "G(abs(d_lead - d_true) <= EPS_D and d_lead >= 0)"
+
+    - service: Planning
+      interface: {inputs: [d_lead], outputs: [a_plan]}
+      assumption: "G(d_lead >= 0)"
+      guarantee: "G((a_plan <= A_BRAKE_THRESH) -> (d_lead <= D_CRITICAL) and a_plan >= A_MIN and a_plan <= A_MAX)"
+
+    - service: Control
+      interface: {inputs: [a_plan], outputs: [a_cmd]}
+      assumption: "G(a_plan >= A_MIN and a_plan <= A_MAX)"
+      guarantee: "G(abs(a_cmd - a_plan) <= EPS_A)"

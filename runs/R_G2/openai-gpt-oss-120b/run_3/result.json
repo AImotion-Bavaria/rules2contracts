@@ -1,0 +1,33 @@
+{
+  "rule": "R_G2",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V0] Control: input 'd_lead' \u2014 Control does not consume topic of Perception.predicted_objects per the documented architecture",
+        "[V0] Plant: environment signal 'a_true' declared as output",
+        "[V0] Plant: input 'a_cmd' \u2014 Plant does not consume topic of Control.control_cmd per the documented architecture"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[SYNTAX] trailing tokens ['and', 'G', '(', 'abs', '(', 'a_true', '-', 'a_cmd', ')', '<=', 'EPS_A', ')'] in: G(d_true >= 0) and G(abs(a_true - a_cmd) <= EPS_A)"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[SYNTAX] trailing tokens ['and', 'G', '(', 'a_ego', '>=', '-', '10', 'and', 'a_ego', '<=', '10', ')', 'and', 'G', '(', 'd_lead', '>=', '0', ')'] in: G(v_ego >= 0) and G(a_ego >= -10 and a_ego <= 10) and G(d_lead >= 0)"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[SYNTAX] illegal character '=' at position 8 in: G(a_cmd = a_plan)"
+      ]
+    }
+  ]
+}

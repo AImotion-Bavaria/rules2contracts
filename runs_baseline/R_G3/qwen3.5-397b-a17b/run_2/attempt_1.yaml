@@ -1,0 +1,11 @@
+rule_id: R_G3_flat
+description: Vehicle commanded speed plus tracking tolerance must not exceed the lane speed limit.
+sampling_rate_hz: 10
+horizon: 10
+constants:
+  TRACKING_TOLERANCE: 1.0
+environment:
+  signals:
+    - {name: v_cmd, sort: real}
+    - {name: v_limit, sort: real}
+formula: "G(abs(v_cmd) + TRACKING_TOLERANCE <= v_limit)"

@@ -1,0 +1,11 @@
+{
+  "rule": "R_G1",
+  "attempts": 1,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": []
+    }
+  ]
+}

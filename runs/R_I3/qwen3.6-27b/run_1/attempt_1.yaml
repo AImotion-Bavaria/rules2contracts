@@ -1,0 +1,39 @@
+rule_id: R_I3_llm
+description: >
+  No reversing on interstate (StVO §18(7)): reversing manoeuvres are prohibited.
+  At the feature level, the true longitudinal ego velocity must never drop
+  below -0.3 m/s. The system guarantees this by ensuring the reverse gear is
+  never commanded, relying on a plant tracking assumption that links gear
+  command to true velocity.
+source_text: >
+  StVO §18(7): "Das Rückwärtsfahren ist auf Autobahnen verboten."
+  Interpretation: v_true >= -0.3 m/s at all times.
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  V_MAX: 50.0        # max considered absolute velocity [m/s]
+  EPS_V: 0.5         # localization velocity error bound [m/s]
+  V_REV_THRESH: -0.3 # minimum allowed true velocity [m/s]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}
+
+system_contract:
+  interface: {inputs: [v_true], outputs: [gear_rev_cmd]}
+  assumption: "G(v_true >= -V_MAX and v_true <= V_MAX and (not gear_rev_cmd -> v_true >= V_REV_THRESH))"
+  guarantee: "G(v_true >= V_REV_THRESH)"
+
+decomposition:
+  discharge_order: [Localization, Control]
+  contracts:
+    - service: Localization
+      interface: {inputs: [v_true], outputs: [v_ego]}
+      assumption: "G(v_true >= -V_MAX and v_true <= V_MAX)"
+      guarantee: "G(abs(v_ego - v_true) <= EPS_V)"
+
+    - service: Control
+      interface: {inputs: [v_ego], outputs: [gear_rev_cmd]}
+      assumption: "G(v_ego >= -V_MAX - EPS_V)"
+      guarantee: "G(not gear_rev_cmd)"

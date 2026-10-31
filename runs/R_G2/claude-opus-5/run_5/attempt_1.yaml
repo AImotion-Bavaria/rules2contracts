@@ -1,0 +1,55 @@
+rule_id: R_G2_llm
+description: >
+  Prohibition of unnecessary abrupt braking (StVO §4(1)). At feature level:
+  a deceleration stronger than A_BRAKE = 2.0 m/s^2 (commanded by Control, or
+  realised by the plant) is only admissible if the true longitudinal gap to
+  the preceding vehicle is critical, i.e. below D_CRIT = 20.0 m. Perception
+  estimates the gap only up to EPS_D = 2.0 m, so the Planning trigger gap
+  must be tightened to D_CRIT - EPS_D; the plant tracks the commanded
+  acceleration up to EPS_A = 0.5 m/s^2 and Control tracks the planned
+  acceleration up to EPS_C = 0.2 m/s^2, so the deceleration threshold used
+  inside Planning must be relaxed (made weaker) by EPS_A + EPS_C.
+source_text: >
+  StVO §4(1): "Der Abstand zu einem vorausfahrenden Fahrzeug muss in der
+  Regel so gross sein, dass auch dann hinter diesem gehalten werden kann,
+  wenn es ploetzlich gebremst wird. Wer vorausfaehrt, darf nicht ohne
+  zwingenden Grund stark bremsen."
+sampling_rate_hz: 10
+horizon: 10
+
+constants:
+  A_BRAKE: 2.0    # abrupt-braking threshold on deceleration [m/s^2]
+  D_CRIT: 20.0    # critical true gap to lead vehicle [m]
+  EPS_D: 2.0      # perception gap error bound [m]
+  EPS_A: 0.5      # plant acceleration tracking error bound [m/s^2]
+  EPS_C: 0.2      # control tracking error bound w.r.t. planned accel [m/s^2]
+  A_MAX: 8.0      # magnitude bound on admissible accelerations [m/s^2]
+  D_MAX: 200.0    # max considered gap [m]
+
+environment:
+  signals:
+    - {name: d_true, sort: real}   # true longitudinal gap to lead vehicle [m]
+    - {name: a_true, sort: real}   # true (realised) ego longitudinal acceleration [m/s^2]
+
+system_contract:
+  interface: {inputs: [d_true, a_true], outputs: [a_cmd]}
+  assumption: "G(d_true >= 0 and d_true <= D_MAX and a_true >= 0 - A_MAX and a_true <= A_MAX and abs(a_true - a_cmd) <= EPS_A)"
+  guarantee: "G(((a_cmd <= 0 - A_BRAKE) -> (d_true <= D_CRIT)) and ((a_true <= 0 - A_BRAKE) -> (d_true <= D_CRIT)))"
+
+decomposition:
+  discharge_order: [Perception, Planning, Control]
+  contracts:
+    - service: Perception
+      interface: {inputs: [d_true], outputs: [d_lead]}
+      assumption: "G(d_true >= 0 and d_true <= D_MAX)"
+      guarantee: "G(abs(d_lead - d_true) <= EPS_D)"
+
+    - service: Planning
+      interface: {inputs: [d_lead], outputs: [a_plan]}
+      assumption: "G(d_lead >= 0 - EPS_D and d_lead <= D_MAX + EPS_D)"
+      guarantee: "G((a_plan >= 0 - A_MAX) and (a_plan <= A_MAX) and ((a_plan <= 0 - A_BRAKE + EPS_A + EPS_C) -> (d_lead <= D_CRIT - EPS_D)))"
+
+    - service: Control
+      interface: {inputs: [a_plan], outputs: [a_cmd]}
+      assumption: "G(a_plan >= 0 - A_MAX and a_plan <= A_MAX)"
+      guarantee: "G(abs(a_cmd - a_plan) <= EPS_C)"

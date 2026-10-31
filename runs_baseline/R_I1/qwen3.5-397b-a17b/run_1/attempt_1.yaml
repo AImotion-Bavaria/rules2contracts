@@ -1,0 +1,12 @@
+rule_id: R_I1_flat
+description: On interstates, stopping is prohibited unless congested or lead vehicle is stationary; physically, if not congested and lead moves, ego must move.
+sampling_rate_hz: 10
+horizon: 10
+constants:
+  V_STANDSTILL: 0.5
+environment:
+  signals:
+    - {name: congestion, sort: bool}
+    - {name: lead_velocity, sort: real}
+    - {name: ego_velocity, sort: real}
+formula: "G(((not congestion) and (lead_velocity > V_STANDSTILL)) -> (ego_velocity >= V_STANDSTILL))"

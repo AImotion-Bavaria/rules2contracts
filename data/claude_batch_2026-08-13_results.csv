@@ -1,0 +1,51 @@
+rule,model,run,valid,attempts,progression
+R_G1,claude-opus-5,1,1,1,VALID
+R_G1,claude-opus-5,2,1,1,VALID
+R_G1,claude-opus-5,3,1,1,VALID
+R_G1,claude-opus-5,4,1,1,VALID
+R_G1,claude-opus-5,5,1,1,VALID
+R_G1,claude-sonnet-5,1,1,1,VALID
+R_G1,claude-sonnet-5,2,1,1,VALID
+R_G1,claude-sonnet-5,3,1,3,SCHEMA -> V3a -> VALID
+R_G1,claude-sonnet-5,4,1,1,VALID
+R_G1,claude-sonnet-5,5,1,2,SCHEMA -> VALID
+R_G2,claude-opus-5,1,1,2,V3a -> VALID
+R_G2,claude-opus-5,2,1,2,V3a -> VALID
+R_G2,claude-opus-5,3,1,2,V3a -> VALID
+R_G2,claude-opus-5,4,1,2,V3a -> VALID
+R_G2,claude-opus-5,5,1,1,VALID
+R_G2,claude-sonnet-5,1,1,3,SCHEMA -> V3a -> VALID
+R_G2,claude-sonnet-5,2,1,3,SCHEMA -> V3a -> VALID
+R_G2,claude-sonnet-5,3,1,2,V3a -> VALID
+R_G2,claude-sonnet-5,4,1,2,V3a -> VALID
+R_G2,claude-sonnet-5,5,1,3,SCHEMA -> V3a -> VALID
+R_G3,claude-opus-5,1,1,1,VALID
+R_G3,claude-opus-5,2,1,1,VALID
+R_G3,claude-opus-5,3,1,1,VALID
+R_G3,claude-opus-5,4,1,1,VALID
+R_G3,claude-opus-5,5,1,1,VALID
+R_G3,claude-sonnet-5,1,1,2,SCHEMA -> VALID
+R_G3,claude-sonnet-5,2,1,2,SCHEMA -> VALID
+R_G3,claude-sonnet-5,3,1,2,SCHEMA -> VALID
+R_G3,claude-sonnet-5,4,1,2,SCHEMA -> VALID
+R_G3,claude-sonnet-5,5,1,2,SCHEMA -> VALID
+R_I1,claude-opus-5,1,1,2,V3a -> VALID
+R_I1,claude-opus-5,2,1,1,VALID
+R_I1,claude-opus-5,3,1,1,VALID
+R_I1,claude-opus-5,4,1,2,V3a -> VALID
+R_I1,claude-opus-5,5,1,2,V3a -> VALID
+R_I1,claude-sonnet-5,1,1,2,SCHEMA -> VALID
+R_I1,claude-sonnet-5,2,1,2,SCHEMA -> VALID
+R_I1,claude-sonnet-5,3,1,1,VALID
+R_I1,claude-sonnet-5,4,1,2,SCHEMA -> VALID
+R_I1,claude-sonnet-5,5,1,1,VALID
+R_I3,claude-opus-5,1,1,1,VALID
+R_I3,claude-opus-5,2,1,2,V3a -> VALID
+R_I3,claude-opus-5,3,1,1,VALID
+R_I3,claude-opus-5,4,1,1,VALID
+R_I3,claude-opus-5,5,1,2,V3a -> VALID
+R_I3,claude-sonnet-5,1,1,4,SCHEMA -> V3a -> SYNTAX -> VALID
+R_I3,claude-sonnet-5,2,1,3,SCHEMA -> V3a -> VALID
+R_I3,claude-sonnet-5,3,1,3,SCHEMA -> V3a -> VALID
+R_I3,claude-sonnet-5,4,1,3,SCHEMA -> V3a -> VALID
+R_I3,claude-sonnet-5,5,1,3,SCHEMA -> V3a -> VALID

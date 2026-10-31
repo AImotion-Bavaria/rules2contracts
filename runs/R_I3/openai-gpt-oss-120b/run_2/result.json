@@ -1,0 +1,24 @@
+{
+  "rule": "R_I3",
+  "attempts": 3,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SYNTAX] illegal character '=' at position 17 in: G(((gear_rev_cmd = true) -> v_true <= V_REV_MAX) and ((gear_rev_cmd = false) -> v_true >= V_REV_MAX))"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V3a] assumption of C_Control not discharged",
+        "    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      gear_rev_cmd   False     True     True     True     True     True     True    False     True\n      v_ego   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10\n      v_true       1       -1       -1       -1       -1       -1       -1        1       -1"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": []
+    }
+  ]
+}

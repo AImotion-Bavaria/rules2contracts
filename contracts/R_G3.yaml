@@ -1,0 +1,39 @@
+# Rule R_G3 "maximum speed limit" (interstate rule corpus, Maierhofer et al.,
+# IV 2021), traced back to StVO §3(1)/§18. Feature-level instance of the
+# keeps_lane_speed_limit predicate; the fov/type/braking speed limits are
+# out of scope of the feature vocabulary (documented exclusion).
+
+rule_id: R_G3
+description: >
+  Maximum speed limit: the vehicle must not exceed the speed limit of the
+  current lane. The plant tracks the commanded velocity within DELTA_V
+  (system-level assumption), so Planning must command at most the limit
+  minus that tracking tolerance.
+source_text: >
+  StVO §3(1)/§18(5), traffic sign 274; Maierhofer et al. (IV 2021), R_G3:
+  "G(keeps_lane_speed_limit(x_ego) ∧ ...)" — vehicles must not drive faster
+  than the allowed maximum velocity of their lane.
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  DELTA_V: 1.0   # plant velocity-tracking tolerance [m/s]
+  V_MAX: 70.0    # max considered velocity [m/s]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}   # true ego velocity [m/s]
+    - {name: v_lim, sort: real}    # speed limit of current lane [m/s]
+
+system_contract:
+  interface: {inputs: [v_true, v_lim], outputs: [v_cmd]}
+  assumption: "G(v_lim >= 0 and v_lim <= V_MAX and abs(v_true - v_cmd) <= DELTA_V)"
+  guarantee: "G(v_true <= v_lim)"
+
+decomposition:
+  discharge_order: [Planning]
+  contracts:
+    - service: Planning
+      interface: {inputs: [v_lim], outputs: [v_cmd]}
+      assumption: "G(v_lim >= 0 and v_lim <= V_MAX)"
+      guarantee: "G(v_cmd <= v_lim - DELTA_V)"

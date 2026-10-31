@@ -1,0 +1,41 @@
+rule_id: R_G2_llm
+description: Unnecessary braking (StVO §4(1)): vehicles must not brake abruptly without reason.
+source_text: StVO §4(1): "Vorwärmen ohne Grund ist verboten."
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  a_max: 2.0       # max permitted deceleration [m/s^2]
+  d_crit: 20.0     # critical gap to preceding vehicle [m]
+  EPS_D: 2.0       # perception gap error bound [m]
+  EPS_A: 0.5       # plant tracking error bound [m/s^2]
+
+environment:
+  signals:
+    - {name: d_true, sort: real}   # true gap to preceding vehicle [m]
+    - {name: a_cmd, sort: real}   # commanded deceleration [m/s^2]
+
+system_contract:
+  interface: {inputs: [d_true, a_cmd], outputs: [hazard_on]}
+  assumption: "G(d_true >= 0 and d_true <= d_crit)"
+  guarantee: "G((a_cmd >= a_max) -> F[0,2](hazard_on))"
+
+decomposition:
+  discharge_order: [Perception, Control]
+  contracts:
+    - service: Perception
+      interface: {inputs: [], outputs: [d_lead]}
+      assumption: "G(true)"
+      guarantee: "G(abs(d_lead - d_true) <= EPS_D)"
+
+    - service: Control
+      interface: {inputs: [d_lead], outputs: [a_cmd, hazard_on]}
+      assumption: "G(d_lead >= d_crit - EPS_D)"
+      guarantee: "G((a_cmd - a_cmd_true >= a_max - EPS_A) -> F[0,2](hazard_on))"
+
+# Added the missing 'environment' signal for a_cmd_true
+environment:
+  signals:
+    - {name: d_true, sort: real}   # true gap to preceding vehicle [m]
+    - {name: a_cmd, sort: real}   # commanded deceleration [m/s^2]
+    - {name: a_cmd_true, sort: real}   # true commanded deceleration [m/s^2]

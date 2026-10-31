@@ -1,0 +1,120 @@
+# Autoware component-level service signatures (aSOA view)
+# =========================================================
+# Extracted from the official Autoware interface documentation
+# (autowarefoundation.github.io / tier4.github.io mirrors), accessed 2026-08-07.
+#
+# Scope decision (2026-08-07): component granularity — the seven documented
+# top-level components. Topic-based data interfaces only; ROS services and
+# API endpoints are out of scope for contract anchoring (they carry
+# configuration, not the safety-relevant data flow).
+#
+# Each port: {name, topic, msg, peer} — `peer` is the documented counterpart
+# component. Ports are the aSOA typed ports (ICSA 2017, Def. 1); a component
+# is an aSOA (sub)system with a service interface (Def. 5).
+
+meta:
+  source_urls:
+    perception: https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-interfaces/components/perception/
+    planning: https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-interfaces/components/planning/
+    vehicle_interface: https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-interfaces/components/vehicle-interface/
+    control: https://tier4.github.io/autoware-documentation/latest/design/autoware-interfaces/components/control/
+    localization: https://tier4.github.io/autoware-documentation/latest/design/autoware-interfaces/components/localization/
+  accessed: "2026-08-07"
+  granularity: component
+  notes: >
+    Message type names follow the documentation snapshot (autoware_auto_* /
+    autoware_* naming differs between Autoware versions; normalize when
+    pinning a concrete release for the evaluation).
+
+components:
+
+  Sensing:
+    inputs: []   # physical sensors, outside the software architecture boundary
+    outputs:
+      - {name: lidar_pointcloud, topic: /sensing/lidar/concatenated/pointcloud, msg: sensor_msgs/PointCloud2, peer: Perception}
+      - {name: camera_image, topic: "/sensing/camera/camera*/image_rect_color", msg: sensor_msgs/Image, peer: Perception}
+      - {name: radar_objects, topic: /sensing/radar/detected_objects, msg: autoware_auto_perception_msgs/DetectedObject, peer: Perception}
+
+  Map:
+    inputs: []
+    outputs:
+      - {name: vector_map, topic: /map/vector_map, msg: autoware_auto_mapping_msgs/HADMapBin, peer: [Perception, Planning]}
+      - {name: pointcloud_map, topic: /map/pointcloud_map, msg: sensor_msgs/PointCloud2, peer: Localization}
+
+  Localization:
+    inputs:
+      - {name: lidar_scan, topic: /sensing/lidar/concatenated/pointcloud, msg: sensor_msgs/PointCloud2, peer: Sensing}
+      - {name: pointcloud_map, topic: /map/pointcloud_map, msg: sensor_msgs/PointCloud2, peer: Map}
+      - {name: imu, topic: /sensing/imu/imu_data, msg: sensor_msgs/Imu, peer: Sensing}
+      - {name: vehicle_velocity, topic: /vehicle/status/velocity_status, msg: autoware_auto_vehicle_msgs/VelocityReport, peer: VehicleInterface}
+    outputs:
+      - {name: kinematic_state, topic: /localization/kinematic_state, msg: nav_msgs/Odometry, peer: [Planning, Control, Perception]}
+      - {name: acceleration, topic: /localization/acceleration, msg: geometry_msgs/AccelWithCovarianceStamped, peer: Planning}
+
+  Perception:
+    inputs:
+      - {name: lidar_pointcloud, topic: /sensing/lidar/concatenated/pointcloud, msg: sensor_msgs/PointCloud2, peer: Sensing}
+      - {name: camera_image, topic: "/sensing/camera/camera*/image_rect_color", msg: sensor_msgs/Image, peer: Sensing}
+      - {name: radar_objects, topic: /sensing/radar/detected_objects, msg: autoware_auto_perception_msgs/DetectedObject, peer: Sensing}
+      - {name: vector_map, topic: /map/vector_map, msg: autoware_auto_mapping_msgs/HADMapBin, peer: Map}
+      - {name: kinematic_state, topic: /localization/kinematic_state, msg: nav_msgs/Odometry, peer: Localization}
+    outputs:
+      - {name: predicted_objects, topic: /perception/object_recognition/objects, msg: autoware_auto_perception_msgs/PredictedObjects, peer: Planning}
+      - {name: obstacle_pointcloud, topic: /perception/obstacle_segmentation/pointcloud, msg: sensor_msgs/PointCloud2, peer: Planning}
+      - {name: occupancy_grid, topic: /perception/occupancy_grid_map/map, msg: nav_msgs/OccupancyGrid, peer: Planning}
+      - {name: traffic_signals, topic: /perception/traffic_light_recognition/traffic_signals, msg: autoware_perception_msgs/TrafficSignalArray, peer: Planning}
+
+  Planning:
+    inputs:
+      - {name: vector_map, topic: /map/vector_map, msg: autoware_auto_mapping_msgs/HADMapBin, peer: Map}
+      - {name: kinematic_state, topic: /localization/kinematic_state, msg: nav_msgs/Odometry, peer: Localization}
+      - {name: acceleration, topic: /localization/acceleration, msg: geometry_msgs/AccelWithCovarianceStamped, peer: Localization}
+      - {name: predicted_objects, topic: /perception/object_recognition/objects, msg: autoware_auto_perception_msgs/PredictedObjects, peer: Perception}
+      - {name: obstacle_pointcloud, topic: /perception/obstacle_segmentation/pointcloud, msg: sensor_msgs/PointCloud2, peer: Perception}
+      - {name: occupancy_grid, topic: /perception/occupancy_grid_map/map, msg: nav_msgs/OccupancyGrid, peer: Perception}
+      - {name: traffic_signals, topic: /perception/traffic_light_recognition/traffic_signals, msg: autoware_perception_msgs/TrafficSignalArray, peer: Perception}
+    outputs:
+      - {name: trajectory, topic: /planning/trajectory, msg: autoware_auto_planning_msgs/Trajectory, peer: Control}
+      - {name: turn_indicators_cmd, topic: /planning/turn_indicators_cmd, msg: autoware_auto_vehicle_msgs/TurnIndicatorsCommand, peer: Control}
+      - {name: hazard_lights_cmd, topic: /planning/hazard_lights_cmd, msg: autoware_auto_vehicle_msgs/HazardLightsCommand, peer: Control}
+
+  Control:
+    inputs:
+      - {name: kinematic_state, topic: /localization/kinematic_state, msg: nav_msgs/Odometry, peer: Localization}
+      - {name: trajectory, topic: /planning/trajectory, msg: autoware_auto_planning_msgs/Trajectory, peer: Planning}
+      - {name: steering_status, topic: /vehicle/status/steering_status, msg: autoware_auto_vehicle_msgs/SteeringReport, peer: VehicleInterface}
+      - {name: actuation_status, topic: /vehicle/status/actuation_status, msg: tier4_vehicle_msgs/ActuationStatusStamped, peer: VehicleInterface}
+    outputs:
+      - {name: control_cmd, topic: /control/command/control_cmd, msg: autoware_auto_control_msgs/AckermannControlCommand, peer: VehicleInterface}
+      - {name: gear_cmd, topic: /control/command/gear_cmd, msg: autoware_auto_vehicle_msgs/GearCommand, peer: VehicleInterface}
+
+  VehicleInterface:
+    inputs:
+      - {name: control_cmd, topic: /control/command/control_cmd, msg: autoware_auto_control_msgs/AckermannControlCommand, peer: Control}
+      - {name: gear_cmd, topic: /control/command/gear_cmd, msg: autoware_auto_vehicle_msgs/GearCommand, peer: Control}
+      - {name: hazard_lights_cmd, topic: /control/command/hazard_lights_cmd, msg: autoware_auto_vehicle_msgs/HazardLightsCommand, peer: Control}
+      - {name: turn_indicators_cmd, topic: /control/command/turn_indicators_cmd, msg: autoware_auto_vehicle_msgs/TurnIndicatorsCommand, peer: Control}
+    outputs:
+      - {name: velocity_status, topic: /vehicle/status/velocity_status, msg: autoware_auto_vehicle_msgs/VelocityReport, peer: [Localization, Control]}
+      - {name: steering_status, topic: /vehicle/status/steering_status, msg: autoware_auto_vehicle_msgs/SteeringReport, peer: Control}
+      - {name: actuation_status, topic: /vehicle/status/actuation_status, msg: tier4_vehicle_msgs/ActuationStatusStamped, peer: Control}
+      - {name: control_mode, topic: /vehicle/status/control_mode, msg: autoware_auto_vehicle_msgs/ControlModeReport, peer: Control}
+
+# ---------------------------------------------------------------------------
+# Feature abstraction layer
+# ---------------------------------------------------------------------------
+# STL atoms range over *features* derived from message payloads, not over raw
+# ROS messages. Each feature names the port it is derived from and a sampling
+# rate. This is the vocabulary the LLM pipeline must use when anchoring
+# traffic-rule contracts to the architecture.
+
+features:
+  - {name: v_ego, unit: m/s, port: Localization.kinematic_state, extract: "twist.linear.x", rate_hz: 10}
+  - {name: a_ego, unit: m/s^2, port: Localization.acceleration, extract: "accel.linear.x", rate_hz: 10}
+  - {name: d_lead, unit: m, port: Perception.predicted_objects, extract: "longitudinal gap to nearest lead object in ego lane", rate_hz: 10}
+  - {name: v_lead, unit: m/s, port: Perception.predicted_objects, extract: "longitudinal velocity of nearest lead object", rate_hz: 10}
+  - {name: v_cmd, unit: m/s, port: Planning.trajectory, extract: "commanded velocity at first trajectory point", rate_hz: 10}
+  - {name: a_plan, unit: m/s^2, port: Planning.trajectory, extract: "commanded acceleration at first trajectory point (TrajectoryPoint.acceleration_mps2)", rate_hz: 10}
+  - {name: a_cmd, unit: m/s^2, port: Control.control_cmd, extract: "longitudinal.acceleration", rate_hz: 10}
+  - {name: hazard_on, unit: bool, port: Planning.hazard_lights_cmd, extract: "command == ENABLE", rate_hz: 10}
+  - {name: gear_rev_cmd, unit: bool, port: Control.gear_cmd, extract: "command == REVERSE", rate_hz: 10}

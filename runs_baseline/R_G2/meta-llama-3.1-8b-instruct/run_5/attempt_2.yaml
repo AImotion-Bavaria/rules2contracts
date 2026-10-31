@@ -1,0 +1,15 @@
+rule_id: R_G2_flat
+description: Unnecessary braking (StVO §4(1)): vehicles must not brake abruptly without reason.
+sampling_rate_hz: 10
+horizon: 8
+constants:
+  MAX_DECEL: 2.0
+  MAX_GAP: 20.0
+  GAP_ERROR: 2.0
+  ACCEL_ERROR: 0.5
+environment:
+  signals:
+    - {name: gap, sort: real}
+    - {name: commanded_deceleration, sort: real}
+    - {name: preceding_vehicle_in_front, sort: bool}
+formula: "G((commanded_deceleration > MAX_DECEL) -> (preceding_vehicle_in_front -> F[0,1](gap <= MAX_GAP - GAP_ERROR)))"

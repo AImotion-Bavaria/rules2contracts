@@ -1,0 +1,22 @@
+rule_id: R_G2_flat
+description: >
+  StVO §4(1) unnecessary/abrupt braking: a commanded (or actually realized)
+  deceleration stronger than 2.0 m/s^2 is only permitted while the gap to the
+  preceding vehicle is critical (below 20.0 m). Perception's gap estimate has
+  a bounded error of 2.0 m and the plant tracks the commanded acceleration
+  within 0.5 m/s^2, so both the deceleration trigger and the gap criterion
+  are evaluated with their respective tolerance margins.
+sampling_rate_hz: 20
+horizon: 0
+constants:
+  A_THRESH: 2.0
+  PLANT_TOL: 0.5
+  GAP_CRIT: 20.0
+  GAP_ERR: 2.0
+environment:
+  signals:
+    - {name: accel_cmd, sort: real}
+    - {name: accel_true, sort: real}
+    - {name: gap_true, sort: real}
+    - {name: gap_meas, sort: real}
+formula: "G(((accel_cmd <= -(A_THRESH - PLANT_TOL)) or (accel_true <= -(A_THRESH - PLANT_TOL))) -> ((gap_meas <= (GAP_CRIT + GAP_ERR)) or (gap_true <= (GAP_CRIT + GAP_ERR))))"

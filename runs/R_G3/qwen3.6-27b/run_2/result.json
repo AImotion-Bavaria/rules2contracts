@@ -1,0 +1,17 @@
+{
+  "rule": "R_G3",
+  "attempts": 2,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V1] C_Planning: assumption references non-input ports: ['v_true']"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": []
+    }
+  ]
+}

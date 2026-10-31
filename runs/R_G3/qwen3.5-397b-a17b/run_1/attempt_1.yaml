@@ -1,0 +1,41 @@
+rule_id: R_G3_llm
+description: >
+  Maximum speed limit adherence: The vehicle must not exceed the posted speed
+  limit of the current lane. The planning component must command velocities
+  that respect the limit minus a tracking error margin to ensure the true
+  velocity remains compliant.
+source_text: >
+  StVO §3(1) / §18: "Der Fahrzeugführer darf nur so schnell fahren, dass er
+  sein Fahrzeug ständig beherrscht... Die Geschwindigkeit ist insbesondere den
+  Sicht- und Straßenverhältnissen... anzupassen." (Implicit speed limit
+  adherence via signage and general duty).
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  EPS_TRACK: 1.0      # Plant tracking error bound [m/s]
+  EPS_LOC: 0.5        # Localization velocity error bound [m/s]
+  V_LIMIT_MAX: 100.0  # Maximum expected speed limit [m/s]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}   # True ego velocity [m/s]
+    - {name: v_limit, sort: real}  # Current lane speed limit [m/s]
+
+system_contract:
+  interface: {inputs: [v_true, v_limit], outputs: [v_cmd]}
+  assumption: "G(v_true >= 0 and v_limit >= 0 and v_limit <= V_LIMIT_MAX and abs(v_true - v_cmd) <= EPS_TRACK)"
+  guarantee: "G(v_true <= v_limit)"
+
+decomposition:
+  discharge_order: [Localization, Planning]
+  contracts:
+    - service: Localization
+      interface: {inputs: [v_true], outputs: [v_ego]}
+      assumption: "G(v_true >= 0)"
+      guarantee: "G(abs(v_ego - v_true) <= EPS_LOC)"
+
+    - service: Planning
+      interface: {inputs: [v_ego, v_limit], outputs: [v_cmd]}
+      assumption: "G(v_ego >= 0 and v_limit >= 0)"
+      guarantee: "G(v_cmd <= v_limit - EPS_TRACK)"

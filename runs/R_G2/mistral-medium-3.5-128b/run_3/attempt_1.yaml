@@ -1,0 +1,52 @@
+rule_id: R_G2_llm
+description: >
+  Unnecessary braking prohibition (StVO §4(1)): A commanded deceleration
+  stronger than 2.0 m/s² is only permitted when the gap to the preceding
+  vehicle is critical (below 20.0 m). Perception estimates the gap with a
+  bounded error of 2.0 m, and the plant tracks the commanded acceleration
+  within 0.5 m/s².
+source_text: >
+  StVO §4(1): "Es darf nicht ohne triftigen Grund gebremst werden."
+  Interpreted as: abrupt braking (a_cmd < -2.0 m/s²) is only allowed if
+  the true gap to the lead vehicle is below 20.0 m.
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  A_BRAKE_THRESH: -2.0    # deceleration threshold [m/s²]
+  GAP_CRITICAL: 20.0     # critical gap threshold [m]
+  EPS_GAP: 2.0           # perception gap estimation error bound [m]
+  EPS_ACCEL: 0.5         # plant tracking error bound [m/s²]
+
+environment:
+  signals:
+    - {name: d_lead_true, sort: real}  # true longitudinal gap to lead vehicle [m]
+    - {name: a_ego_true, sort: real}   # true ego acceleration [m/s²]
+
+system_contract:
+  interface: {inputs: [d_lead_true, a_ego_true], outputs: [a_cmd]}
+  assumption: "G(d_lead_true >= 0 and a_ego_true >= -10.0 and a_ego_true <= 5.0)"
+  guarantee: "G((a_cmd <= A_BRAKE_THRESH) -> (d_lead_true <= GAP_CRITICAL))"
+
+decomposition:
+  discharge_order: [Perception, Localization, Planning, Control]
+  contracts:
+    - service: Perception
+      interface: {inputs: [d_lead_true], outputs: [d_lead]}
+      assumption: "G(d_lead_true >= 0)"
+      guarantee: "G(abs(d_lead - d_lead_true) <= EPS_GAP)"
+
+    - service: Localization
+      interface: {inputs: [a_ego_true], outputs: [a_ego]}
+      assumption: "G(a_ego_true >= -10.0 and a_ego_true <= 5.0)"
+      guarantee: "G(abs(a_ego - a_ego_true) <= 0.1)"  # negligible for this rule
+
+    - service: Planning
+      interface: {inputs: [d_lead, v_ego, a_ego], outputs: [a_plan]}
+      assumption: "G(d_lead >= 0 - EPS_GAP and v_ego >= 0 and a_ego >= -10.0 and a_ego <= 5.0)"
+      guarantee: "G((a_plan <= A_BRAKE_THRESH + EPS_ACCEL) -> (d_lead <= GAP_CRITICAL - EPS_GAP))"
+
+    - service: Control
+      interface: {inputs: [a_plan, v_ego], outputs: [a_cmd]}
+      assumption: "G(a_plan >= -10.0 and a_plan <= 5.0 and v_ego >= 0)"
+      guarantee: "G(abs(a_cmd - a_plan) <= EPS_ACCEL)"

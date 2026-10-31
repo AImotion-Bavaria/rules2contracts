@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this artifact, please cite the paper (reference to be added after review) and this package."
+title: "rules2contracts: replication package for 'From Traffic Rules to Service Contracts'"
+authors:
+  - name: "Anonymous (double-blind review)"
+version: "1.0.0-review"
+date-released: "2026-11-04"
+license: MIT
+repository-code: "https://anonymous.4open.science/r/XXXX"
+keywords:
+  - service-oriented architecture
+  - assume/guarantee contracts
+  - signal temporal logic
+  - large language models
+  - automotive software
+  - traffic rules

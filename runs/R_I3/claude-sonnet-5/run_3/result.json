@@ -1,0 +1,24 @@
+{
+  "rule": "R_I3",
+  "attempts": 3,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SCHEMA] horizon 1 too small: must be at least max future depth (0) + 4"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V3a] assumption of C_Control not discharged",
+        "    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4\n      gear_rev_cmd    True     True     True    False     True\n      v_cmd       -1       -1       -1       -1       -1\n      v_true  -13/10   -13/10   -13/10        0   -13/10"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": []
+    }
+  ]
+}

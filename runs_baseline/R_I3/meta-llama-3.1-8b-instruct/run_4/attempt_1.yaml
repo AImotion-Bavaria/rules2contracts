@@ -1,0 +1,12 @@
+rule_id: R_I3_flat
+description: No reversing manoeuvres are prohibited on the interstate.
+sampling_rate_hz: 10
+horizon: 8
+constants:
+  V_MIN: -0.3
+environment:
+  signals:
+    - {name: reverse_gear_cmd, sort: bool}
+    - {name: reverse_gear_state, sort: bool}
+    - {name: true_longitudinal_velocity, sort: real}
+formula: "G((reverse_gear_cmd -> reverse_gear_state) & !F[0,8](true_longitudinal_velocity <= V_MIN))"

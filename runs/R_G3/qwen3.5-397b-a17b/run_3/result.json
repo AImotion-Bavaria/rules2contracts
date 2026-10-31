@@ -1,0 +1,19 @@
+{
+  "rule": "R_G3",
+  "attempts": 2,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V3a] assumption of C_Localization not discharged",
+        "[V3a] assumption of C_Control not discharged",
+        "    Counterexample trace (A_Localization not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd        0        0        0        0        0        0        0        0        0\n      v_cmd        0        0        0        0        0        0        0        0        0\n      v_ego        0        0        0        0        0        0        0        0        0\n      v_limit       0        0        0        0        0        0        0        0        0\n      v_true    -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4\n    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd        0        0        0        0        0        0        0        0        0\n      v_cmd     -9/8     -9/8     -9/8     -9/8     -9/8     -9/8     -9/8     -9/8     -9/8\n      v_ego    -11/8     -3/4    -11/8     -3/4    -11/8   -19/16    -11/8    -11/8    -11/8\n      v_limit       0        0        0        0        0        0        0        0        0\n      v_true    -5/4     -5/4     -5/4     -5/4     -5/4     -5/4     -5/4     -5/4     -5/4"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": []
+    }
+  ]
+}

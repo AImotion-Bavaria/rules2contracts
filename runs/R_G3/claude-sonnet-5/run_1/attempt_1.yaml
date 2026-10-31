@@ -1,0 +1,36 @@
+rule_id: R_G3_llm
+description: >
+  Maximum speed limit (StVO §3(1) general, §18 for Autobahn/Kraftfahrstraßen
+  numeric limits): a vehicle must never travel faster than the speed limit
+  in force on its current lane. The commanded velocity is tracked by the
+  vehicle plant within a bounded tracking error, so Planning must cap its
+  commanded velocity below the lane limit by at least that tracking-error
+  margin to guarantee the true velocity never exceeds the limit.
+source_text: >
+  StVO §3(1): "Wer ein Fahrzeug führt, darf nur so schnell fahren, dass das
+  Fahrzeug ständig beherrscht wird." / §18: numeric speed limits for
+  Kraftfahrstraßen/Autobahnen must not be exceeded.
+sampling_rate_hz: 10
+horizon: 1
+
+constants:
+  EPS_TRACK: 1.0        # plant velocity-tracking error bound [m/s]
+  V_LIMIT_MAX: 50.0      # max plausible lane speed limit considered [m/s]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}    # true ego velocity [m/s]
+    - {name: v_limit, sort: real}   # true lane speed limit [m/s]
+
+system_contract:
+  interface: {inputs: [v_true, v_limit], outputs: [v_cmd]}
+  assumption: "G(v_limit >= 0 and v_limit <= V_LIMIT_MAX and abs(v_true - v_cmd) <= EPS_TRACK)"
+  guarantee: "G(v_true <= v_limit)"
+
+decomposition:
+  discharge_order: [Planning]
+  contracts:
+    - service: Planning
+      interface: {inputs: [v_limit], outputs: [v_cmd]}
+      assumption: "G(v_limit >= 0 and v_limit <= V_LIMIT_MAX)"
+      guarantee: "G(v_cmd <= v_limit - EPS_TRACK)"

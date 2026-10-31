@@ -1,0 +1,59 @@
+rule_id: R_G2_llm
+description: >
+  Unnecessary braking (StVO §4(1)): a commanded deceleration stronger than
+  2.0 m/s² is only allowed when the true gap to the preceding vehicle is
+  below 20.0 m. Perception estimates the gap with an error bound of 2.0 m,
+  and the vehicle plant tracks the commanded acceleration within 0.5 m/s².
+  The contract compensates these margins in the planning threshold.
+source_text: >
+  StVO §4(1) – “Fahrzeuge dürfen nicht ohne Grund abrupt bremsen.”  Interpreted
+  at feature level: a commanded deceleration stronger than 2.0 m/s² is only
+  permitted when the gap to the preceding vehicle is below 20.0 m.  The
+  perception module estimates the gap with an error bound of 2.0 m, and the
+  vehicle plant tracks the commanded acceleration within 0.5 m/s².
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  A_DEC: 2.0        # deceleration threshold (positive) [m/s²]
+  GAP_CRIT: 20.0    # critical gap [m]
+  EPS_D: 2.0        # perception gap error bound [m]
+  EPS_A: 0.5        # plant acceleration tracking error bound [m/s²]
+  EPS_V_LOC: 0.5    # localization velocity error bound [m/s]
+  EPS_A_LOC: 0.5    # localization acceleration error bound [m/s²]
+  EPS_V_LEAD: 0.5   # perception lead‑vehicle velocity error bound [m/s]
+
+environment:
+  signals:
+    - {name: d_true, sort: real}        # true longitudinal gap to lead vehicle [m]
+    - {name: v_lead_true, sort: real}   # true velocity of lead vehicle [m/s]
+    - {name: v_true, sort: real}        # true ego velocity [m/s]
+    - {name: a_true, sort: real}        # true ego acceleration [m/s²]
+
+system_contract:
+  interface: {inputs: [d_true, v_lead_true, v_true, a_true], outputs: [a_cmd]}
+  assumption: "G((d_true >= 0) and (abs(a_true - a_cmd) <= EPS_A))"
+  guarantee: "G((a_cmd <= -A_DEC) -> d_true < GAP_CRIT)"
+
+decomposition:
+  discharge_order: [Perception, Localization, Planning, Control]
+  contracts:
+    - service: Perception
+      interface: {inputs: [d_true, v_lead_true], outputs: [d_lead, v_lead]}
+      assumption: "G(d_true >= 0)"
+      guarantee: "G((abs(d_lead - d_true) <= EPS_D) and (abs(v_lead - v_lead_true) <= EPS_V_LEAD))"
+
+    - service: Localization
+      interface: {inputs: [v_true, a_true], outputs: [v_ego, a_ego]}
+      assumption: "G(v_true >= 0)"
+      guarantee: "G((abs(v_ego - v_true) <= EPS_V_LOC) and (abs(a_ego - a_true) <= EPS_A_LOC))"
+
+    - service: Planning
+      interface: {inputs: [v_ego, a_ego, d_lead, v_lead], outputs: [a_plan, v_cmd]}
+      assumption: "G(v_ego >= 0) and G(a_ego >= -10 and a_ego <= 10) and G(d_lead >= 0)"
+      guarantee: "G((a_plan <= -A_DEC) -> d_lead < GAP_CRIT - EPS_D)"
+
+    - service: Control
+      interface: {inputs: [v_ego, v_cmd, a_plan], outputs: [a_cmd]}
+      assumption: "G(v_ego >= 0) and G(v_cmd >= 0) and G(a_plan >= -10 and a_plan <= 10)"
+      guarantee: "G(a_cmd = a_plan)"

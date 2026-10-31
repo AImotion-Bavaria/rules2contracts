@@ -1,0 +1,14 @@
+rule_id: R_G2_flat
+description: StVO §4(1) unnecessary braking prohibition. Commanded deceleration exceeding threshold requires critical gap. Constants include perception and tracking error bounds for context.
+sampling_rate_hz: 10
+horizon: 1
+constants:
+  DEC_THRESH: 2.0
+  GAP_THRESH: 20.0
+  GAP_ERROR: 2.0
+  DEC_TRACK_ERROR: 0.5
+environment:
+  signals:
+    - {name: dec_cmd, sort: real}
+    - {name: gap_dist, sort: real}
+formula: "G((dec_cmd > DEC_THRESH) -> (gap_dist < GAP_THRESH))"

@@ -1,0 +1,11 @@
+rule_id: R_I3_flat
+description: StVO §18(7) No reversing on interstate; velocity must not drop below -0.3 m/s, with gear tracking assumption.
+sampling_rate_hz: 10
+horizon: 8
+constants:
+  V_MIN_REV: -0.3
+environment:
+  signals:
+    - {name: velocity_ego_long, sort: real}
+    - {name: gear_reverse_cmd, sort: bool}
+formula: "G((velocity_ego_long >= V_MIN_REV) and (velocity_ego_long < 0 -> gear_reverse_cmd))"

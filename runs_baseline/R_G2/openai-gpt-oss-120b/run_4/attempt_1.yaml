@@ -1,0 +1,14 @@
+rule_id: R_G2_flat
+description: Vehicles must not apply abrupt braking; a commanded deceleration stronger than 2.0 m/s² is allowed only when the estimated gap to the preceding vehicle is critical, accounting for perception and actuation errors.
+sampling_rate_hz: 10
+horizon: 5
+constants:
+  DECEL_THR: 2.0
+  ACC_ERR: 0.5
+  GAP_THR: 20.0
+  GAP_ERR: 2.0
+environment:
+  signals:
+    - {name: accel_cmd, sort: real}
+    - {name: gap_est, sort: real}
+formula: "G((accel_cmd <= -1.5) -> (gap_est < 18.0))"

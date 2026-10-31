@@ -1,0 +1,54 @@
+rule_id: R_G1_llm
+description: >
+  Safe distance to the preceding vehicle (StVO §4(1)), time-gap
+  interpretation: whenever the true longitudinal gap to the preceding
+  vehicle is smaller than TAU = 1.8 s times the true ego velocity, the
+  vehicle must raise a hazard notification within 300 ms (3 steps at
+  10 Hz). Perception estimates the gap with a bounded error of EPS_D =
+  2.0 m and Localization estimates the ego velocity with a bounded error
+  of EPS_V = 0.5 m/s; therefore the Planning trigger threshold must be
+  relaxed (made easier to fire) by MARGIN = EPS_D + TAU * EPS_V so that
+  every true violation is detected despite worst-case estimation error.
+source_text: >
+  StVO §4 Absatz 1: "Der Abstand zu einem vorausfahrenden Fahrzeug muss in
+  der Regel so groß sein, dass auch dann hinter ihm gehalten werden kann,
+  wenn es plötzlich gebremst wird." Operationalised as a 1.8 s time gap
+  with a 300 ms notification deadline.
+sampling_rate_hz: 10
+horizon: 10
+
+constants:
+  TAU: 1.8       # required time gap [s]
+  EPS_D: 2.0     # perception gap error bound [m]
+  EPS_V: 0.5     # localization velocity error bound [m/s]
+  MARGIN: 2.9    # EPS_D + TAU * EPS_V = 2.0 + 1.8*0.5 [m]
+  V_MAX: 70.0    # max considered ego velocity [m/s]
+  D_MAX: 300.0   # max considered gap [m]
+
+environment:
+  signals:
+    - {name: d_true, sort: real}   # true longitudinal gap to preceding vehicle [m]
+    - {name: v_true, sort: real}   # true ego velocity [m/s]
+
+system_contract:
+  interface: {inputs: [d_true, v_true], outputs: [d_lead, v_ego, hazard_on]}
+  assumption: "G(v_true >= 0 and v_true <= V_MAX and d_true >= 0 and d_true <= D_MAX)"
+  guarantee: "G((d_true - TAU * v_true < 0) -> F[0,3](hazard_on))"
+
+decomposition:
+  discharge_order: [Perception, Localization, Planning]
+  contracts:
+    - service: Perception
+      interface: {inputs: [d_true], outputs: [d_lead]}
+      assumption: "G(d_true >= 0 and d_true <= D_MAX)"
+      guarantee: "G(abs(d_lead - d_true) <= EPS_D)"
+
+    - service: Localization
+      interface: {inputs: [v_true], outputs: [v_ego]}
+      assumption: "G(v_true >= 0 and v_true <= V_MAX)"
+      guarantee: "G(abs(v_ego - v_true) <= EPS_V)"
+
+    - service: Planning
+      interface: {inputs: [d_lead, v_ego], outputs: [hazard_on]}
+      assumption: "G(d_lead >= 0 - EPS_D and d_lead <= D_MAX + EPS_D and v_ego >= 0 - EPS_V and v_ego <= V_MAX + EPS_V)"
+      guarantee: "G((d_lead - TAU * v_ego < MARGIN) -> F[0,3](hazard_on))"

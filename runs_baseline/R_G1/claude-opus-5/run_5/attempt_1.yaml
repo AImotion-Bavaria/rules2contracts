@@ -1,0 +1,20 @@
+rule_id: R_G1_flat
+description: >-
+  StVO §4(1), time-gap interpretation: whenever the true gap to the preceding
+  vehicle falls below TAU_MIN (1.8 s) times the true ego velocity, a hazard
+  notification must be raised within 300 ms (3 steps at 10 Hz). The trigger is
+  stated conservatively: the bounded perception gap error (2.0 m) and the
+  bounded localization velocity error (0.5 m/s) are subtracted/added so that any
+  world state that could be a true violation already obliges the notification.
+sampling_rate_hz: 10
+horizon: 3
+constants:
+  TAU_MIN: 1.8
+  EPS_GAP: 2.0
+  EPS_V: 0.5
+environment:
+  signals:
+    - {name: gap_true, sort: real}
+    - {name: v_ego_true, sort: real}
+    - {name: hazard_notification, sort: bool}
+formula: "G(((gap_true - EPS_GAP) - TAU_MIN * (v_ego_true + EPS_V) < 0) -> F[0,3](hazard_notification))"

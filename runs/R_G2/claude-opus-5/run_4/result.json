@@ -1,0 +1,18 @@
+{
+  "rule": "R_G2",
+  "attempts": 2,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V3a] assumption of C_Control not discharged",
+        "    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8        9       10\n      a_cmd      1/4        0        0        0      1/4      1/4      1/4      1/4        0        0      1/4\n      a_plan    41/4     41/4     41/4     41/4     41/4     41/4     41/4     41/4     41/4     41/4     41/4\n      a_true       0     -1/4     -1/4     -1/4        0        0        0        0     -1/4     -1/4        0\n      d_lead    73/4     73/4     73/4     73/4     73/4     73/4     73/4     73/4     73/4     73/4     73/4\n      d_true    37/2     37/2     37/2    145/8     37/2     37/2     37/2     37/2     37/2     37/2     37/2\n      v_ego     -3/4     -3/4     -3/4     -3/4     -3/4     -3/4     -3/4     -3/4     -3/4     -3/4     -3/4\n      v_true       0        0        0        0        0        0        0        0        0        0        0"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": []
+    }
+  ]
+}

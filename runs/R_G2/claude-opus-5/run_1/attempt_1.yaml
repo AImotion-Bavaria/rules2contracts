@@ -1,0 +1,62 @@
+rule_id: R_G2_llm
+description: >
+  Unnecessary/abrupt braking (StVO §4(1)): the vehicle must not decelerate
+  more strongly than A_BRAKE = 2.0 m/s^2 unless the true longitudinal gap to
+  the preceding vehicle is critical (at most D_CRIT = 20.0 m). At feature
+  level the chain is: Perception estimates the gap with error bound EPS_D =
+  2.0 m, Planning decides the commanded acceleration a_plan, Control realizes
+  it as a_cmd within EPS_C, and the plant tracks a_cmd within EPS_A = 0.5
+  m/s^2. Because the true deceleration may be up to EPS_A stronger than the
+  command and the command up to EPS_C stronger than the plan, the Planning
+  trigger threshold is relaxed (less negative) by EPS_A + EPS_C; because the
+  estimated gap may exceed the true gap by up to EPS_D, the gap threshold used
+  by Planning is tightened to D_CRIT - EPS_D.
+source_text: >
+  StVO §4 Abs. 1 Satz 2: "Wer vorausfährt, darf nicht ohne zwingenden Grund
+  stark bremsen." (A driver ahead must not brake abruptly without a compelling
+  reason.) Feature-level interpretation: a commanded deceleration stronger
+  than 2.0 m/s^2 is only permitted when the gap to the preceding vehicle is
+  critical (below 20.0 m).
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  A_BRAKE: 2.0    # abrupt-braking threshold on true deceleration [m/s^2]
+  D_CRIT: 20.0    # critical true gap [m]
+  EPS_D: 2.0      # perception gap error bound [m]
+  EPS_A: 0.5      # plant tracking error: |a_true - a_cmd| [m/s^2]
+  EPS_C: 0.1      # control realization slack: a_cmd not below a_plan - EPS_C [m/s^2]
+  A_LIM: 10.0     # magnitude bound on planned/commanded acceleration [m/s^2]
+  D_MAX: 300.0    # max considered gap [m]
+  V_MAX: 70.0     # max considered velocity [m/s]
+
+environment:
+  signals:
+    - {name: d_true, sort: real}   # true longitudinal gap to lead vehicle [m]
+    - {name: v_true, sort: real}   # true ego velocity [m/s]
+    - {name: a_true, sort: real}   # true ego longitudinal acceleration [m/s^2]
+
+system_contract:
+  interface:
+    inputs: [d_true, v_true, a_true]
+    outputs: [d_lead, a_plan, a_cmd]
+  assumption: "G(d_true >= 0 and d_true <= D_MAX and v_true >= 0 and v_true <= V_MAX and abs(a_true - a_cmd) <= EPS_A)"
+  guarantee: "G((a_true <= 0 - A_BRAKE) -> d_true <= D_CRIT)"
+
+decomposition:
+  discharge_order: [Perception, Planning, Control]
+  contracts:
+    - service: Perception
+      interface: {inputs: [d_true, v_true], outputs: [d_lead]}
+      assumption: "G(d_true >= 0 and d_true <= D_MAX and v_true >= 0 and v_true <= V_MAX)"
+      guarantee: "G(abs(d_lead - d_true) <= EPS_D)"
+
+    - service: Planning
+      interface: {inputs: [d_lead], outputs: [a_plan]}
+      assumption: "G(d_lead >= 0 - EPS_D and d_lead <= D_MAX + EPS_D)"
+      guarantee: "G((a_plan <= 0 - A_BRAKE + EPS_A + EPS_C) -> d_lead <= D_CRIT - EPS_D)"
+
+    - service: Control
+      interface: {inputs: [a_plan, v_ego], outputs: [a_cmd]}
+      assumption: "G(a_plan >= 0 - A_LIM and a_plan <= A_LIM and v_ego >= 0 - EPS_A)"
+      guarantee: "G(a_cmd - a_plan >= 0 - EPS_C)"

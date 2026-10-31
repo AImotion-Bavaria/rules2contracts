@@ -1,0 +1,11 @@
+rule_id: R_G3_flat
+description: Vehicles must not drive faster than the speed limit of their current lane, allowing for commanded-velocity tracking tolerance.
+sampling_rate_hz: 10
+horizon: 0
+constants:
+  V_TOL: 1.0
+environment:
+  signals:
+    - {name: velocity, sort: real}
+    - {name: lane_speed_limit, sort: real}
+formula: "G(velocity <= lane_speed_limit + V_TOL)"

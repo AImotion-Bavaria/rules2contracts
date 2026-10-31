@@ -1,0 +1,34 @@
+{
+  "rule": "R_I1",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V1] C_Planning: guarantee references ports outside the service signature: ['congestion']",
+        "[V1] C_Control: guarantee references ports outside the service signature: ['v_true']"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V0] Control: environment signal 'v_true' declared as output"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[V1] C_Control: guarantee references ports outside the service signature: ['v_true']"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[V3a] assumption of C_Control not discharged",
+        "[V3b] composition of guarantees does NOT entail the system-level guarantee",
+        "    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      congestion    True     True     True     True     True    False     True    False     True\n      v_cmd     -1/8     -1/8     -1/8     -1/8     -1/8      3/2     -1/8      3/2     -1/8\n      v_lead     9/8      9/8      9/8      9/8      9/8      9/8      9/8      9/8      9/8\n      v_lead_true     5/4      5/4      5/4      5/4      5/4      5/4      5/4      5/4      5/4\n      v_true       0        0        0        0        0        0        0        0        0\n    Counterexample trace (system rule violated despite all sub-contracts):\n      t            0        1        2        3        4        5        6        7        8\n      congestion   False    False    False    False     True    False    False    False    False\n      v_cmd     1/12     1/12     1/12    17/12     1/12     1/12     1/12    17/12      3/2\n      v_lead     1/2      1/2      5/8        1    13/12      1/2      1/2        1    13/12\n      v_lead_true    7/12     7/12     7/12    13/12      7/6     7/12     7/12    13/12      7/6\n      v_true       0        0        0     5/12        0        0        0     5/12      1/2"
+      ]
+    }
+  ]
+}

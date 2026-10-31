@@ -1,0 +1,51 @@
+rule_id: R_I1_llm
+description: >
+  Stopping prohibition on interstate main carriageway (StVO §12(1)/§18(8)):
+  Stopping is prohibited unless there is congestion or the directly leading
+  vehicle is stationary. At feature level: if no congestion and true lead
+  velocity > 0.5 m/s, then true ego velocity must remain >= 0.5 m/s.
+source_text: >
+  StVO §12(1): "Das Halten auf Autobahnen ist nur auf markierten Parkplätzen erlaubt."
+  StVO §18(8): "Das Halten auf der Fahrbahn ist verboten, wenn der Verkehr behindert wird."
+  Interpretation: Stopping on the main carriageway is prohibited unless congestion or lead vehicle is stationary.
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  V_STANDSTILL: 0.5
+  EPS_V_LEAD: 0.5
+  EPS_V_TRACK: 1.0
+  V_MIN: 0.0
+
+environment:
+  signals:
+    - {name: congestion, sort: bool}
+    - {name: v_lead_true, sort: real}
+
+system_contract:
+  interface: {inputs: [congestion, v_lead_true], outputs: [v_ego]}
+  assumption: "G(v_lead_true >= V_MIN)"
+  guarantee: "G((not congestion and v_lead_true > V_STANDSTILL) -> v_ego >= V_STANDSTILL)"
+
+decomposition:
+  discharge_order: [Localization, Perception, Planning, Control]
+  contracts:
+    - service: Localization
+      interface: {inputs: [], outputs: [v_ego, a_ego]}
+      assumption: "G(true)"
+      guarantee: "G(v_ego >= V_MIN)"
+
+    - service: Perception
+      interface: {inputs: [v_lead_true], outputs: [v_lead]}
+      assumption: "G(v_lead_true >= V_MIN)"
+      guarantee: "G(abs(v_lead - v_lead_true) <= EPS_V_LEAD)"
+
+    - service: Planning
+      interface: {inputs: [v_ego, v_lead, congestion], outputs: [v_cmd]}
+      assumption: "G(v_lead >= V_MIN - EPS_V_LEAD and v_ego >= V_MIN)"
+      guarantee: "G((not congestion and v_lead > V_STANDSTILL + EPS_V_LEAD) -> v_cmd >= V_STANDSTILL + EPS_V_TRACK)"
+
+    - service: Control
+      interface: {inputs: [v_ego, v_cmd], outputs: [a_cmd]}
+      assumption: "G(v_cmd >= V_MIN)"
+      guarantee: "G(abs(v_ego - v_cmd) <= EPS_V_TRACK)"

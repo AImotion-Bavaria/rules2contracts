@@ -1,0 +1,21 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You formalize German traffic rules as temporal-logic formulae over the physical state of the world.\n\nOUTPUT FORMAT: exactly one YAML document (no surrounding prose, no code fences) with keys: rule_id, description, sampling_rate_hz, horizon, constants, environment (signals with name/sort), formula.\n\nFORMULA LANGUAGE (strict fragment \u2014 anything else is rejected):\n- outermost operator must be G( ... )\n- Boolean: and, or, not, ->\n- temporal: F[a,b](...), H[a,b](...), O[a,b](...) with integer step bounds\n- atoms: linear comparisons (<=, >=, <, >) over declared signals, declared\n  constants, numbers, abs(...); NO signal*signal products, NO nested G,\n  NO unbounded operators.\n- bare boolean signals are atoms.\n\nDeclare every quantity you use (true gap, true velocity, hazard-light\nstate, ...) as an environment signal; name numeric parameters as constants.\nThe formula ranges over the state of the world, not over any software\narchitecture."
+    },
+    {
+      "role": "user",
+      "content": "Formalize the following rule as a single formula document.\nRule: Safe distance to the preceding vehicle (StVO \u00a74(1)): 'Der Abstand zu einem vorausfahrenden Fahrzeug muss in der Regel so gro\u00df sein, dass auch dann hinter ihm gehalten werden kann, wenn es pl\u00f6tzlich gebremst wird.' Use the time-gap interpretation: whenever the true gap to the preceding vehicle falls below 1.8 s times the true ego velocity, a hazard notification must be raised within 300 ms (3 steps at 10 Hz).\nContext: Perception estimates the gap with a bounded error of 2.0 m; Localization estimates the ego velocity with a bounded error of 0.5 m/s.\nUse rule_id: R_G1_flat. Output only the YAML document."
+    },
+    {
+      "role": "assistant",
+      "content": "\n\nrule_id: R_G1_flat\ndescription: \"StVO \u00a74(1) Safe Distance: Hazard notification within 300ms if true time gap < 1.8s.\"\nsampling_rate_hz: 10\nhorizon: 3\nconstants:\n  - name: TIME_GAP_THRESHOLD\n    value: 1.8\n  - name: GAP_ERROR_BOUND\n    value: 2.0\n  - name: VEL_ERROR_BOUND\n    value: 0.5\n  - name: NOTIFICATION_DEADLINE_STEPS\n    value: 3\nenvironment:\n  - name: true_gap\n    sort: real\n  - name: true_ego_velocity\n    sort: real\n  - name: hazard_notification\n    sort: bool\nformula: \"G( (true_gap < TIME_GAP_THRESHOLD * true_ego_velocity) -> F[0,3](hazard_notification) )\""
+    },
+    {
+      "role": "user",
+      "content": "Your rule document was rejected by the formal checker. Fix the document and output the complete corrected YAML document (again: YAML only). Checker errors:\n- [CRASH] baseline checker raised AttributeError: 'list' object has no attribute 'items'"
+    }
+  ],
+  "content": "\n\nrule_id: R_G1_flat\ndescription: \"StVO \u00a74(1) Safe Distance: Hazard notification within 300ms if true time gap < 1.8s.\"\nsampling_rate_hz: 10\nhorizon: 3\nconstants:\n  TIME_GAP_THRESHOLD: 1.8\n  NOTIFICATION_DEADLINE_STEPS: 3\nenvironment:\n  true_gap: real\n  true_ego_velocity: real\n  hazard_notification: bool\nformula: \"G( (true_gap < TIME_GAP_THRESHOLD * true_ego_velocity) -> F[0,3](hazard_notification) )\""
+}

@@ -1,0 +1,31 @@
+rule_id: R_G3_llm
+description: >
+  Maximum speed limit (StVO §3(1)/§18): vehicles must not drive faster
+  than the speed limit of their current lane. The plant tracks the
+  commanded velocity within a bounded error, so the planning command
+  must be tightened by this tracking bound to guarantee compliance.
+source_text: >
+  StVO §3(1)/§18: "Fahrzeuge dürfen nicht schneller fahren als die
+  zulässige Höchstgeschwindigkeit der befahrenen Fahrbahn."
+sampling_rate_hz: 10
+horizon: 8
+constants:
+  EPS_TRACK: 1.0
+environment:
+  signals:
+    - {name: v_limit, sort: real}
+system_contract:
+  interface: {inputs: [v_limit], outputs: [v_ego]}
+  assumption: "G(v_limit >= 0)"
+  guarantee: "G(v_ego <= v_limit)"
+decomposition:
+  discharge_order: [Planning, Control]
+  contracts:
+    - service: Planning
+      interface: {inputs: [v_limit], outputs: [v_cmd]}
+      assumption: "G(v_limit >= 0)"
+      guarantee: "G(v_cmd <= v_limit - EPS_TRACK)"
+    - service: Control
+      interface: {inputs: [v_ego, v_cmd], outputs: [a_cmd]}
+      assumption: "G(v_cmd >= 0)"
+      guarantee: "G(abs(v_ego - v_cmd) <= EPS_TRACK)"

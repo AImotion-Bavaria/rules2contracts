@@ -1,0 +1,32 @@
+{
+  "rule": "R_I3",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SYNTAX] expected '(', got 'true' in: G(true)"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[SYNTAX] expected '(', got 'true' in: G(true)"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[SYNTAX] expected '(', got 'true' in: G(true)"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[V0] Control: input 'gear_rev_cmd' \u2014 Control does not consume topic of Control.gear_cmd per the documented architecture",
+        "[SCHEMA] discharge_order ['Control'] must list exactly the services of the decomposition ['Control', 'Localization']"
+      ]
+    }
+  ]
+}

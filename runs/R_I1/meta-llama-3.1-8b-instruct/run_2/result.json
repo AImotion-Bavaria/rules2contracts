@@ -1,0 +1,35 @@
+{
+  "rule": "R_I1",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SYNTAX] expected '(', got 'abs' in: G(abs(v_ego - v_true_ego) <= EPS_V)"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V0] Localization: input 'v_ego' \u2014 Localization does not consume topic of Localization.kinematic_state per the documented architecture",
+        "[V0] Control: output 'v_cmd' is computed by Planning, not Control",
+        "[V0] Control: input 'v_lead' \u2014 Control does not consume topic of Perception.predicted_objects per the documented architecture",
+        "[SCHEMA] horizon 8 too small: must be at least max future depth (8) + 4"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[V0] Control: output 'v_cmd' is computed by Planning, not Control",
+        "[SCHEMA] horizon 12 too small: must be at least max future depth (12) + 4"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[SCHEMA] horizon 16 too small: must be at least max future depth (16) + 4"
+      ]
+    }
+  ]
+}

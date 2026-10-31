@@ -1,0 +1,16 @@
+rule_id: R_G2_flat
+description: Unnecessary braking: commanded deceleration above 2.0 m/s^2 is only permitted when gap is critical.
+sampling_rate_hz: 10
+horizon: 8
+constants:
+  DECEL_MAX: 2.0
+  GAP_CRITICAL: 20.0
+  GAP_ERROR_MAX: 2.0
+  ACCEL_ERROR_MAX: 0.5
+environment:
+  signals:
+    - {name: decel_cmd, sort: real}
+    - {name: gap, sort: real}
+    - {name: gap_est, sort: real}
+    - {name: is_critical, sort: bool}
+formula: "G((decel_cmd > DECEL_MAX) -> F[0,3](is_critical))"

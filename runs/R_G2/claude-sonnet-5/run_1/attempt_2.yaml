@@ -1,0 +1,54 @@
+rule_id: R_G2_llm
+description: >
+  Unnecessary/abrupt braking (StVO §4(1)): a commanded deceleration
+  stronger than 2.0 m/s^2 is only permitted when the longitudinal gap to
+  the preceding vehicle is critical (below 20.0 m). Perception estimates
+  the gap with a bounded error, and the plant tracks the commanded
+  acceleration within a bounded tracking error, so the Planning-level
+  deceleration/gap thresholds must be tightened by these margins to make
+  the system-level guarantee (stated over the true gap and the actual
+  control command) provably hold.
+source_text: >
+  StVO §4(1): "Der Abstand von einem vorausfahrenden Fahrzeug muss in der
+  Regel so groß sein, dass auch dann hinter ihm gehalten werden kann, wenn
+  es plötzlich gebremst wird." Interpreted here as its converse
+  restriction: strong braking without a critical gap constitutes
+  unnecessary/abrupt braking and is prohibited.
+
+sampling_rate_hz: 10
+horizon: 4
+
+constants:
+  A_BRAKE: 2.0    # deceleration magnitude threshold classified as "abrupt" [m/s^2]
+  D_CRIT: 20.0    # critical gap threshold [m]
+  EPS_D: 2.0      # perception gap estimation error bound [m]
+  EPS_A: 0.5      # control/plant acceleration tracking error bound [m/s^2]
+  D_MAX: 300.0    # max plausible gap [m]
+  A_MAX: 10.0     # max plausible commanded acceleration magnitude [m/s^2]
+
+environment:
+  signals:
+    - {name: d_true, sort: real}   # true longitudinal gap to lead vehicle [m]
+
+system_contract:
+  interface: {inputs: [d_true], outputs: [a_cmd]}
+  assumption: "G(d_true >= 0 and d_true <= D_MAX)"
+  guarantee: "G((a_cmd <= 0 - A_BRAKE) -> d_true <= D_CRIT)"
+
+decomposition:
+  discharge_order: [Perception, Planning, Control]
+  contracts:
+    - service: Perception
+      interface: {inputs: [d_true], outputs: [d_lead]}
+      assumption: "G(d_true >= 0 and d_true <= D_MAX)"
+      guarantee: "G(abs(d_lead - d_true) <= EPS_D)"
+
+    - service: Planning
+      interface: {inputs: [d_lead], outputs: [a_plan]}
+      assumption: "G(d_lead >= 0 - EPS_D and d_lead <= D_MAX + EPS_D)"
+      guarantee: "G((a_plan <= 0 - (A_BRAKE - EPS_A)) -> d_lead <= D_CRIT - EPS_D)"
+
+    - service: Control
+      interface: {inputs: [a_plan], outputs: [a_cmd]}
+      assumption: "G(a_plan >= 0 - A_MAX and a_plan <= A_MAX)"
+      guarantee: "G(abs(a_cmd - a_plan) <= EPS_A)"

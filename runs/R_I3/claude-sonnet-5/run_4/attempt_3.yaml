@@ -1,0 +1,37 @@
+rule_id: R_I3_llm
+description: >
+  StVO §18(7): reversing manoeuvres are prohibited on the interstate.
+  At feature level this is interpreted as a bound on the true longitudinal
+  ego velocity: it must never drop below -0.3 m/s (small tolerance for
+  sensor/creep noise). Since the vehicle can only move backwards if the
+  reverse gear is actually commanded, the system assumption encodes this
+  plant/tracking link between the gear command and the true velocity.
+  The decomposition reduces the rule to Control never issuing the reverse
+  gear command, unconditionally (independent of any velocity estimate),
+  so its component assumption is a trivial tautology over its own input
+  and needs no upstream discharge.
+source_text: >
+  StVO §18(7): "Wenden und Rückwärtsfahren sind auf der Autobahn und der
+  Kraftfahrstraße verboten."
+sampling_rate_hz: 10
+horizon: 4
+
+constants:
+  V_REV_THRESH: -0.3   # minimum permissible true longitudinal velocity [m/s]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}   # true longitudinal ego velocity [m/s]
+
+system_contract:
+  interface: {inputs: [v_true], outputs: [gear_rev_cmd]}
+  assumption: "G(not gear_rev_cmd -> v_true >= V_REV_THRESH)"
+  guarantee: "G(v_true >= V_REV_THRESH)"
+
+decomposition:
+  discharge_order: [Control]
+  contracts:
+    - service: Control
+      interface: {inputs: [v_ego], outputs: [gear_rev_cmd]}
+      assumption: "G(v_ego >= v_ego)"
+      guarantee: "G(not gear_rev_cmd)"

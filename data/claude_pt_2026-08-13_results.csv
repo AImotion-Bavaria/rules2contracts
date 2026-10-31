@@ -1,0 +1,51 @@
+rule,model,run,delta_ref,placement,anchors,redundant,delta_star,assumptions
+R_G1,claude-opus-5,1,0.00,exact,differ,,0.00,Localization:eq Perception:incomp Planning:stronger
+R_G1,claude-opus-5,2,0.00,exact,match,,0.00,Localization:eq Perception:weaker Planning:stronger
+R_G1,claude-opus-5,3,0.00,exact,match,,0.00,Localization:eq Perception:weaker Planning:eq
+R_G1,claude-opus-5,4,0.00,exact,differ,,0.00,Localization:eq Perception:incomp Planning:stronger
+R_G1,claude-opus-5,5,0.00,exact,differ,,0.00,Localization:eq Perception:incomp Planning:stronger
+R_G1,claude-sonnet-5,1,0.00,exact,match,,0.00,Localization:stronger Perception:eq Planning:stronger
+R_G1,claude-sonnet-5,2,0.00,exact,match,,0.00,Localization:eq Perception:weaker Planning:stronger
+R_G1,claude-sonnet-5,3,0.00,exact,match,,0.00,Localization:eq Perception:eq Planning:stronger
+R_G1,claude-sonnet-5,4,0.00,exact,match,,0.00,Localization:eq Perception:weaker Planning:eq
+R_G1,claude-sonnet-5,5,0.00,exact,match,,0.00,Localization:eq Perception:weaker Planning:eq
+R_G2,claude-opus-5,1,0.00,superset,match,,0.00,Perception:incomp Planning:stronger
+R_G2,claude-opus-5,2,0.00,superset,match,,0.00,Perception:incomp Planning:stronger
+R_G2,claude-opus-5,3,0.00,superset,match,,0.00,Perception:incomp Planning:stronger
+R_G2,claude-opus-5,4,0.00,superset,match,,0.00,Perception:incomp Planning:stronger
+R_G2,claude-opus-5,5,0.00,superset,match,,0.00,Perception:incomp Planning:stronger
+R_G2,claude-sonnet-5,1,0.00,superset,match,,0.00,Perception:incomp Planning:stronger
+R_G2,claude-sonnet-5,2,0.00,superset,match,,0.00,Perception:incomp Planning:stronger
+R_G2,claude-sonnet-5,3,0.00,superset,match,,0.00,Perception:incomp Planning:stronger
+R_G2,claude-sonnet-5,4,0.00,superset,match,,0.00,Perception:incomp Planning:stronger
+R_G2,claude-sonnet-5,5,0.00,superset,match,,0.00,Perception:incomp Planning:eq
+R_G3,claude-opus-5,1,0.00,superset,differ,Control,0.00,Planning:stronger
+R_G3,claude-opus-5,2,0.00,superset,differ,Control,0.00,Planning:stronger
+R_G3,claude-opus-5,3,0.00,superset,differ,Control,0.00,Planning:stronger
+R_G3,claude-opus-5,4,0.00,superset,differ,Control,0.00,Planning:stronger
+R_G3,claude-opus-5,5,0.00,superset,differ,Control,0.00,Planning:stronger
+R_G3,claude-sonnet-5,1,0.00,exact,match,,0.00,Planning:stronger
+R_G3,claude-sonnet-5,2,0.00,exact,match,,0.00,Planning:stronger
+R_G3,claude-sonnet-5,3,0.00,exact,match,,0.00,Planning:eq
+R_G3,claude-sonnet-5,4,0.00,exact,match,,0.00,Planning:weaker
+R_G3,claude-sonnet-5,5,0.00,exact,match,,0.00,Planning:weaker
+R_I1,claude-opus-5,1,0.00,superset,match,,0.00,Perception:eq Planning:stronger
+R_I1,claude-opus-5,2,0.00,exact,match,,0.00,Perception:eq Planning:stronger
+R_I1,claude-opus-5,3,0.00,superset,match,Control,0.00,Perception:eq Planning:stronger
+R_I1,claude-opus-5,4,0.00,exact,match,,0.00,Perception:eq Planning:stronger
+R_I1,claude-opus-5,5,0.00,superset,match,Control,0.00,Perception:eq Planning:stronger
+R_I1,claude-sonnet-5,1,0.00,exact,match,,0.00,Perception:weaker Planning:eq
+R_I1,claude-sonnet-5,2,0.00,exact,match,,0.00,Perception:weaker Planning:eq
+R_I1,claude-sonnet-5,3,0.00,exact,match,,0.00,Perception:eq Planning:stronger
+R_I1,claude-sonnet-5,4,0.00,exact,match,,0.00,Perception:eq Planning:stronger
+R_I1,claude-sonnet-5,5,0.00,exact,match,,0.00,Perception:eq Planning:eq
+R_I3,claude-opus-5,1,0.00,superset,match,,0.00,Control:stronger
+R_I3,claude-opus-5,2,0.00,superset,match,,0.00,Control:stronger
+R_I3,claude-opus-5,3,0.00,superset,match,,0.00,Control:stronger
+R_I3,claude-opus-5,4,0.00,superset,match,,0.00,Control:stronger
+R_I3,claude-opus-5,5,0.00,superset,differ,,0.20,Control:stronger
+R_I3,claude-sonnet-5,1,0.00,superset,match,,0.00,Control:stronger
+R_I3,claude-sonnet-5,2,0.00,exact,match,,0.00,Control:eq
+R_I3,claude-sonnet-5,3,0.00,exact,match,,0.00,Control:eq
+R_I3,claude-sonnet-5,4,0.00,exact,match,,0.00,Control:eq
+R_I3,claude-sonnet-5,5,0.00,exact,match,,0.00,Control:eq

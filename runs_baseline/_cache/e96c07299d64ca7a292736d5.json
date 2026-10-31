@@ -1,0 +1,13 @@
+{
+  "messages": [
+    {
+      "role": "system",
+      "content": "You formalize German traffic rules as temporal-logic formulae over the physical state of the world.\n\nOUTPUT FORMAT: exactly one YAML document (no surrounding prose, no code fences) with keys: rule_id, description, sampling_rate_hz, horizon, constants, environment (signals with name/sort), formula.\n\nFORMULA LANGUAGE (strict fragment \u2014 anything else is rejected):\n- outermost operator must be G( ... )\n- Boolean: and, or, not, ->\n- temporal: F[a,b](...), H[a,b](...), O[a,b](...) with integer step bounds\n- atoms: linear comparisons (<=, >=, <, >) over declared signals, declared\n  constants, numbers, abs(...); NO signal*signal products, NO nested G,\n  NO unbounded operators.\n- bare boolean signals are atoms.\n\nDeclare every quantity you use (true gap, true velocity, hazard-light\nstate, ...) as an environment signal; name numeric parameters as constants.\nThe formula ranges over the state of the world, not over any software\narchitecture.\n\nEXAMPLE (synthetic watchdog rule -- study the exact YAML shape):\nrule_id: SYN_watchdog_flat\ndescription: A warning shall follow a sustained runaway torque command.\nsampling_rate_hz: 10\nhorizon: 8\nconstants:\n  T_MAX: 3.0\nenvironment:\n  signals:\n    - {name: torque_cmd, sort: real}\n    - {name: warn, sort: bool}\nformula: \"G((torque_cmd >= T_MAX) -> F[0,3](warn))\"\n"
+    },
+    {
+      "role": "user",
+      "content": "Formalize the following rule as a single formula document.\nRule: Unnecessary braking (StVO \u00a74(1)): vehicles must not brake abruptly without reason. Interpret at feature level: a commanded deceleration stronger than 2.0 m/s^2 is only permitted when the gap to the preceding vehicle is critical (below 20.0 m).\nContext: Perception estimates the gap with a bounded error of 2.0 m; the plant tracks the commanded acceleration within 0.5 m/s^2.\nUse rule_id: R_G2_flat. Output only the YAML document."
+    }
+  ],
+  "content": "\n\nrule_id: R_G2_flat\ndescription: Unnecessary braking (StVO \u00a74(1)): vehicles must not brake abruptly without reason. A commanded deceleration stronger than 2.0 m/s^2 is only permitted when the true gap to the preceding vehicle is critical (below 20.0 m).\nsampling_rate_hz: 10\nhorizon: 8\nconstants:\n  DECEL_THRESH: 2.0\n  GAP_CRIT: 20.0\n  ERR_GAP: 2.0\n  ERR_ACCEL: 0.5\nenvironment:\n  signals:\n    - {name: accel_cmd, sort: real}\n    - {name: gap_true, sort: real}\n    - {name: gap_est, sort: real}\n    - {name: accel_true, sort: real}\nformula: \"G((accel_cmd <= -DECEL_THRESH) -> (gap_true < GAP_CRIT))\""
+}

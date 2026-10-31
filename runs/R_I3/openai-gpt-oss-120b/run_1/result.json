@@ -1,0 +1,33 @@
+{
+  "rule": "R_I3",
+  "attempts": 4,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V3a] assumption of C_Control not discharged",
+        "    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      gear_rev_cmd    True     True     True     True     True     True     True     True     True\n      v_ego     -6/5     -6/5     -6/5     -6/5     -6/5     -6/5     -6/5     -6/5     -6/5\n      v_true      -1       -1       -1       -1       -1       -1       -1       -1       -1"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[SYNTAX] trailing tokens ['and', 'G', '(', 'gear_rev_cmd', '->', 'v_true', '>=', 'V_NEG_LIMIT', ')'] in: G((not gear_rev_cmd) -> v_true >= 0) and G(gear_rev_cmd -> v_true >= V_NEG_LIMIT)"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[V3a] assumption of C_Localization not discharged",
+        "[V3a] assumption of C_Control not discharged",
+        "[V3b] composition of guarantees does NOT entail the system-level guarantee",
+        "    Counterexample trace (A_Localization not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      gear_rev_cmd   False    False    False    False    False    False    False    False    False\n      v_ego        0        0        0        0        0        0        0        0        0\n      v_true  -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10\n    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      gear_rev_cmd   False    False    False    False    False    False    False    False    False\n      v_ego    -7/10    -7/10    -7/10    -7/10    -7/10    -7/10    -7/10    -7/10    -7/10\n      v_true    -1/2     -1/2     -1/2     -4/5     -1/2     -4/5     -1/2     -4/5     -1/2\n    Counterexample trace (system rule violated despite all sub-contracts):\n      t            0        1        2        3        4        5        6        7        8\n      gear_rev_cmd   False    False    False    False    False    False    False    False    False\n      v_ego    -7/10    -7/10    -7/10    -7/10    -7/10    -7/10    -7/10    -7/10    -7/10\n      v_true    -1/2     -1/2     -1/2     -4/5     -1/2     -1/2     -1/2     -1/2     -1/2"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": []
+    }
+  ]
+}

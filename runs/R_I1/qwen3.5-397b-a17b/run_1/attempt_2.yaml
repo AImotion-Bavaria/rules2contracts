@@ -1,0 +1,46 @@
+rule_id: R_I1_llm
+description: >
+  Interstate stopping prohibition (StVO §12(1)/§18(8)): Stopping on the main
+  carriageway is prohibited unless congested or the lead vehicle is stationary.
+  Formalized as a velocity maintenance requirement: if not congested and the
+  lead vehicle is moving (>0.5 m/s), the ego vehicle must maintain motion
+  (>=0.5 m/s). Margins compensate for perception and tracking errors.
+source_text: >
+  StVO §12(1) / §18(8): "Stopping on the main carriageway of an interstate is
+  prohibited unless there is congestion or the directly leading vehicle is
+  stationary." Interpretation: If no congestion and lead velocity > 0.5 m/s,
+  ego velocity must be >= 0.5 m/s.
+sampling_rate_hz: 10
+horizon: 5
+
+constants:
+  V_STOP_THR: 0.5
+  EPS_V_LEAD: 0.5
+  EPS_V_TRACK: 1.0
+  V_CMD_SAFE: 1.5
+  V_LEAD_SAFE: 1.0
+  V_LEAD_DIST: 1.5
+
+environment:
+  signals:
+    - {name: congestion, sort: bool}
+    - {name: v_lead_true, sort: real}
+    - {name: v_ego_true, sort: real}
+
+system_contract:
+  interface: {inputs: [congestion, v_lead_true], outputs: [v_cmd]}
+  assumption: "G(v_lead_true >= 0 and abs(v_ego_true - v_cmd) <= EPS_V_TRACK and (v_lead_true <= V_STOP_THR or v_lead_true >= V_LEAD_DIST))"
+  guarantee: "G((not congestion and v_lead_true > V_STOP_THR) -> v_cmd >= V_CMD_SAFE)"
+
+decomposition:
+  discharge_order: [Perception, Planning]
+  contracts:
+    - service: Perception
+      interface: {inputs: [v_lead_true], outputs: [v_lead]}
+      assumption: "G(v_lead_true >= 0)"
+      guarantee: "G(abs(v_lead - v_lead_true) <= EPS_V_LEAD)"
+
+    - service: Planning
+      interface: {inputs: [v_lead, congestion], outputs: [v_cmd]}
+      assumption: "G(true)"
+      guarantee: "G((not congestion and v_lead >= V_LEAD_SAFE) -> v_cmd >= V_CMD_SAFE)"

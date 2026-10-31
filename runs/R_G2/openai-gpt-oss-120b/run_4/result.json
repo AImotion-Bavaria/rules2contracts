@@ -1,0 +1,33 @@
+{
+  "rule": "R_G2",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V3b] composition of guarantees does NOT entail the system-level guarantee",
+        "    Counterexample trace (system rule violated despite all sub-contracts):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd     -5/2     -5/2     -5/2     -5/2     -5/2     -5/2     -1/4     -5/2     -5/2\n      a_true    -9/4     -9/4     -9/4     -9/4     -9/4     -9/4        0     -9/4     -9/4\n      d_lead    73/4     73/4     73/4     73/4     73/4     73/4     73/4     73/4     73/4\n      d_true   145/8     37/2     37/2     37/2     37/2     37/2     37/2     37/2     37/2"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[SYNTAX] trailing tokens ['and', 'G', '(', 'd_true', '>=', '0', ')'] in: G((a_true <= -A_BRK) -> d_true <= GAP_CRIT) and G(d_true >= 0)"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[V3a] assumption of C_Control not discharged",
+        "    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd        0        0        0        0        0        0        0        0        0\n      a_true     1/4      1/4      1/4      1/4      1/4      1/4      1/4      1/4      1/4\n      d_lead      20       20       20       20       20       20       20       20       20\n      d_true    81/4     81/4     81/4     81/4     81/4     81/4     81/4     81/4     81/4"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[SYNTAX] trailing tokens [')'] in: G(((a_true <= -A_BRK) -> d_true <= GAP_CRIT) and d_true >= 0))"
+      ]
+    }
+  ]
+}

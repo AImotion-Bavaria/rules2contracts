@@ -1,0 +1,51 @@
+rule_id: R_I1_llm
+description: >
+  Stopping on the main carriageway of an interstate is prohibited unless there is
+  congestion or the directly leading vehicle is stationary. Formally, when there
+  is no congestion and the true lead‑vehicle velocity is clearly above the
+  standstill threshold (0.5 m/s), the ego vehicle must keep moving (true ego
+  velocity ≥ 0.5 m/s). Perception estimates the lead velocity with a bounded
+  error of 0.5 m/s and the vehicle plant tracks the commanded velocity within
+  1.0 m/s.
+source_text: >
+  StVO §12(1)/§18(8): “Stopping on the main carriageway of an interstate is
+  prohibited unless there is congestion or the directly leading vehicle is
+  stationary.”
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  V_LEAD_STAND: 0.5      # standstill threshold for lead vehicle [m/s]
+  V_EGO_MIN: 0.5         # minimum ego speed to avoid stopping [m/s]
+  EPS_LEAD: 0.5          # perception lead‑velocity error bound [m/s]
+  PLANT_EPS: 1.0         # plant tracking error bound between v_cmd and v_true [m/s]
+  V_MAX: 70.0            # maximum considered speed [m/s]
+
+environment:
+  signals:
+    - {name: congestion, sort: bool}
+    - {name: v_lead_true, sort: real}   # true lead‑vehicle velocity [m/s]
+    - {name: v_true, sort: real}        # true ego velocity [m/s]
+
+system_contract:
+  interface: {inputs: [congestion, v_lead_true, v_true], outputs: [v_cmd]}
+  assumption: "G(v_lead_true >= 0 and v_lead_true <= V_MAX and v_true >= 0 and v_true <= V_MAX and abs(v_true - v_cmd) <= PLANT_EPS)"
+  guarantee: "G((not congestion and v_lead_true > V_LEAD_STAND) -> v_true >= V_EGO_MIN)"
+
+decomposition:
+  discharge_order: [Perception, Planning, Control]
+  contracts:
+    - service: Perception
+      interface: {inputs: [v_lead_true], outputs: [v_lead]}
+      assumption: "G(v_lead_true >= 0 and v_lead_true <= V_MAX)"
+      guarantee: "G(abs(v_lead - v_lead_true) <= EPS_LEAD)"
+
+    - service: Planning
+      interface: {inputs: [v_lead, congestion], outputs: [v_cmd]}
+      assumption: "G(v_lead >= 0 and v_lead <= V_MAX and (congestion == true or congestion == false))"
+      guarantee: "G((not congestion and v_lead > V_LEAD_STAND + EPS_LEAD) -> v_cmd >= V_EGO_MIN - PLANT_EPS)"
+
+    - service: Control
+      interface: {inputs: [v_cmd], outputs: [v_true]}
+      assumption: "G(v_cmd >= 0 and v_cmd <= V_MAX)"
+      guarantee: "G(abs(v_true - v_cmd) <= PLANT_EPS)"

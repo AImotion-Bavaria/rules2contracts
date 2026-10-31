@@ -1,0 +1,23 @@
+rule_id: R_G3_llm
+description: Maximum speed limit (StVO §3(1)/§18): vehicles must not drive faster than the speed limit of their current lane.
+source_text: StVO §3(1)/§18
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  V_MAX: 100.0   # max speed limit [m/s]
+  EPS_V: 1.0     # tracking error bound on commanded velocity [m/s]
+
+environment:
+  signals:
+    - {name: v_cmd, sort: real}   # commanded velocity [m/s]
+    - {name: lane_speed_limit, sort: real}   # lane speed limit [m/s]
+
+system_contract:
+  interface: {inputs: [v_cmd, lane_speed_limit], outputs: []}
+  assumption: "G(v_cmd >= 0 and v_cmd <= V_MAX and lane_speed_limit >= 0 and lane_speed_limit <= V_MAX)"
+  guarantee: "G(v_cmd <= lane_speed_limit)"
+
+decomposition:
+  discharge_order: []
+  contracts: []

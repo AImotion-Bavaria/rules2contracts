@@ -1,0 +1,41 @@
+rule_id: R_I3_llm
+description: >
+  No reversing manoeuvres (StVO §18(7)): the true longitudinal ego velocity
+  must never drop below -0.3 m/s.
+source_text: >
+  StVO §18(7): "Auf Autobahnen ist das Rückwärtsfahren verboten."
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  V_MIN_REVERSE: -0.3   # minimum longitudinal ego velocity [m/s]
+  V_MAX: 70.0   # max considered velocity [m/s]
+  EPS_V: 0.5    # localization velocity error bound [m/s]
+  DV: 5.0       # implausibility threshold on v_cmd - v_true [m/s]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}   # true ego velocity [m/s]
+
+system_contract:
+  interface: {inputs: [v_true], outputs: [v_ego]}
+  assumption: "G(v_true >= 0 and v_true <= V_MAX)"
+  guarantee: "G((v_true >= V_MIN_REVERSE) and (not hazard_on))"
+
+decomposition:
+  discharge_order: [Localization, Planning, Control]
+  contracts:
+    - service: Localization
+      interface: {inputs: [v_true], outputs: [v_ego]}
+      assumption: "G(v_true >= 0 and v_true <= V_MAX)"
+      guarantee: "G(abs(v_ego - v_true) <= EPS_V)"
+
+    - service: Planning
+      interface: {inputs: [v_ego], outputs: [v_cmd, hazard_on]}
+      assumption: "G(v_ego >= 0 - EPS_V)"
+      guarantee: "G(F[0,2]((v_cmd - v_ego >= DV - EPS_V) -> hazard_on))"
+
+    - service: Control
+      interface: {inputs: [v_ego, a_plan, gear_rev_cmd], outputs: [a_cmd]}
+      assumption: "G(gear_rev_cmd -> a_plan < 0)"
+      guarantee: "G(a_cmd >= a_plan)"

@@ -1,0 +1,42 @@
+rule_id: R_I1_llm
+description: >
+  StVO §12(1)/§18(8) stopping prohibition on interstate main carriageway:
+  unless congestion exists or the lead vehicle is stationary, the ego
+  vehicle must maintain motion above the standstill threshold.
+source_text: >
+  StVO §12(1)/§18(8): stopping on the main carriageway of an interstate is
+  prohibited unless there is congestion or the directly leading vehicle is
+  stationary. Interpret at feature level: whenever there is no congestion
+  and the true lead-vehicle velocity is clearly above the standstill
+  threshold of 0.5 m/s, the ego vehicle must keep moving (true ego velocity
+  at least 0.5 m/s).
+sampling_rate_hz: 10
+horizon: 8
+constants:
+  V_STANDSTILL: 0.5
+  EPS_V_LEAD: 0.5
+  EPS_V_PLANT: 1.0
+environment:
+  signals:
+    - {name: congestion, sort: bool}
+    - {name: v_lead_true, sort: real}
+    - {name: v_ego_true, sort: real}
+system_contract:
+  interface: {inputs: [congestion, v_lead_true], outputs: [v_ego_true]}
+  assumption: "G(v_lead_true >= 0)"
+  guarantee: "G((not congestion and v_lead_true > 1.0) -> v_ego_true >= 0.5)"
+decomposition:
+  discharge_order: [Perception, Planning, Plant]
+  contracts:
+    - service: Perception
+      interface: {inputs: [v_lead_true], outputs: [v_lead]}
+      assumption: "G(v_lead_true >= 0)"
+      guarantee: "G(abs(v_lead - v_lead_true) <= EPS_V_LEAD)"
+    - service: Planning
+      interface: {inputs: [v_lead, congestion], outputs: [v_cmd]}
+      assumption: "G(v_lead >= 0)"
+      guarantee: "G((not congestion and v_lead > 0.5) -> v_cmd >= 1.5)"
+    - service: Plant
+      interface: {inputs: [v_cmd], outputs: [v_ego_true]}
+      assumption: "G(v_cmd >= 0)"
+      guarantee: "G(abs(v_ego_true - v_cmd) <= EPS_V_PLANT)"

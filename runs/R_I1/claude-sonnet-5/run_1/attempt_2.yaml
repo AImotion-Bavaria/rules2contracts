@@ -1,0 +1,49 @@
+rule_id: R_I1_llm
+description: >
+  StVO §12(1)/§18(8): stopping on the main carriageway of an interstate is
+  prohibited unless there is congestion or the directly leading vehicle is
+  stationary. Formalized at feature level: whenever there is no congestion
+  and the true lead-vehicle velocity is clearly above the standstill
+  threshold (0.5 m/s), the true ego velocity must stay at or above that
+  same threshold, i.e. the ego vehicle must keep moving. Perception's lead
+  velocity estimate carries a bounded error, and the plant tracks the
+  commanded velocity within a bounded error; both margins are compensated
+  in the sub-contract thresholds.
+source_text: >
+  "Wer auf der Fahrbahn ... hält, muss ... (StVO §12 Abs. 1); Halten auf
+  der Fahrbahn der Autobahn ... ist unzulässig" (StVO §18 Abs. 8),
+  außer bei Stau oder wenn das unmittelbar vorausfahrende Fahrzeug hält.
+
+sampling_rate_hz: 10
+horizon: 4
+
+constants:
+  V_STOP: 0.5     # standstill threshold [m/s]
+  EPS_VL: 0.5     # perception lead-velocity error bound [m/s]
+  EPS_PLANT: 1.0  # plant tracking error bound for commanded velocity [m/s]
+
+environment:
+  signals:
+    - {name: congestion, sort: bool}     # true traffic-congestion state
+    - {name: v_lead_true, sort: real}    # true longitudinal velocity of lead vehicle [m/s]
+    - {name: v_ego_true, sort: real}     # true ego velocity [m/s]
+
+system_contract:
+  interface:
+    inputs: [congestion, v_lead_true, v_ego_true]
+    outputs: [v_cmd]
+  assumption: "G(v_lead_true >= 0 and abs(v_ego_true - v_cmd) <= EPS_PLANT)"
+  guarantee: "G((not congestion and v_lead_true > V_STOP) -> v_ego_true >= V_STOP)"
+
+decomposition:
+  discharge_order: [Perception, Planning]
+  contracts:
+    - service: Perception
+      interface: {inputs: [v_lead_true], outputs: [v_lead]}
+      assumption: "G(v_lead_true >= 0)"
+      guarantee: "G(abs(v_lead - v_lead_true) <= EPS_VL)"
+
+    - service: Planning
+      interface: {inputs: [congestion, v_lead], outputs: [v_cmd]}
+      assumption: "G(v_lead >= 0 - EPS_VL)"
+      guarantee: "G((not congestion and v_lead > V_STOP - EPS_VL) -> v_cmd >= V_STOP + EPS_PLANT)"

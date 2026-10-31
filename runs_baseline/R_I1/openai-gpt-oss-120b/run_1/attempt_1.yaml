@@ -1,0 +1,12 @@
+rule_id: R_I1_flat
+description: Stopping on the main carriageway of an interstate is prohibited unless there is congestion or the directly leading vehicle is stationary; thus when there is no congestion and the true lead‑vehicle velocity exceeds 0.5 m/s, the ego vehicle must keep moving with true velocity at least 0.5 m/s.
+sampling_rate_hz: 10
+horizon: 5
+constants:
+  V_STANDSTILL: 0.5
+environment:
+  signals:
+    - {name: congestion, sort: bool}
+    - {name: lead_vel_true, sort: real}
+    - {name: ego_vel_true, sort: real}
+formula: "G((not congestion and lead_vel_true > V_STANDSTILL) -> (ego_vel_true >= V_STANDSTILL))"

@@ -1,0 +1,39 @@
+rule_id: R_I3_llm
+description: >
+  StVO §18(7): reversing manoeuvres are prohibited on the interstate.
+  At feature level this is interpreted as a bound on the true longitudinal
+  ego velocity, which must never drop below -0.3 m/s (a small negative
+  tolerance to absorb sensor/actuator noise around standstill). The plant
+  only moves backwards if the reverse gear is actually commanded, so this
+  is captured as a system-level tracking assumption linking gear_rev_cmd
+  to v_true; the system guarantee is discharged by showing that Control
+  never issues the reverse gear command while on the interstate. Control's
+  obligation to never command reverse holds unconditionally (it does not
+  depend on any upstream estimate), so its assumption is a trivial
+  tautology and is discharged without further preconditions.
+source_text: >
+  "Wer ... auf Autobahnen ... nicht zurückstoßen, wenden oder rückwärts
+  fahren darf." (StVO §18 Abs. 7: reversing, turning and driving backwards
+  are prohibited on interstates.)
+sampling_rate_hz: 10
+horizon: 4
+
+constants:
+  V_MIN_REV: -0.3   # minimal tolerated true longitudinal velocity [m/s]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}   # true (ground-truth) longitudinal ego velocity [m/s]
+
+system_contract:
+  interface: {inputs: [v_true], outputs: [gear_rev_cmd]}
+  assumption: "G(not gear_rev_cmd -> v_true >= V_MIN_REV)"
+  guarantee: "G(v_true >= V_MIN_REV)"
+
+decomposition:
+  discharge_order: [Control]
+  contracts:
+    - service: Control
+      interface: {inputs: [v_ego, v_cmd, a_plan], outputs: [gear_rev_cmd]}
+      assumption: "G(1 >= 1)"
+      guarantee: "G(not gear_rev_cmd)"

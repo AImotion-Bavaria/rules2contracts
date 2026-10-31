@@ -1,0 +1,45 @@
+rule_id: R_G2_llm
+description: >
+  Unnecessary braking (StVO §4(1)): Vehicles must not brake abruptly without
+  reason. At feature level: commanded deceleration stronger than 2.0 m/s^2 is
+  only permitted when the gap to the preceding vehicle is critical (below 20.0 m).
+  Perception and Control error bounds must be compensated in the Planning thresholds.
+source_text: >
+  StVO §4(1): "Vehicles must not brake abruptly without reason." Interpretation
+  for automated driving: A longitudinal acceleration command <= -2.0 m/s^2
+  implies the true longitudinal gap to the lead vehicle is < 20.0 m.
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  A_THRESH: 2.0       # deceleration threshold [m/s^2]
+  D_THRESH: 20.0      # critical gap threshold [m]
+  EPS_D: 2.0          # perception gap error bound [m]
+  EPS_A: 0.5          # control tracking error bound [m/s^2]
+
+environment:
+  signals:
+    - {name: d_true, sort: real}   # true longitudinal gap to lead vehicle [m]
+
+system_contract:
+  interface: {inputs: [d_true], outputs: [a_cmd]}
+  assumption: "G(d_true >= 0)"
+  guarantee: "G((a_cmd <= -A_THRESH) -> (d_true < D_THRESH))"
+
+decomposition:
+  discharge_order: [Perception, Planning, Control]
+  contracts:
+    - service: Perception
+      interface: {inputs: [d_true], outputs: [d_lead]}
+      assumption: "G(d_true >= 0)"
+      guarantee: "G(abs(d_lead - d_true) <= EPS_D)"
+
+    - service: Planning
+      interface: {inputs: [d_lead], outputs: [a_plan]}
+      assumption: "G(d_lead >= 0)"
+      guarantee: "G((a_plan <= -A_THRESH + EPS_A) -> (d_lead < D_THRESH - EPS_D))"
+
+    - service: Control
+      interface: {inputs: [a_plan], outputs: [a_cmd]}
+      assumption: "G(a_plan >= -5.0)"
+      guarantee: "G(abs(a_cmd - a_plan) <= EPS_A)"

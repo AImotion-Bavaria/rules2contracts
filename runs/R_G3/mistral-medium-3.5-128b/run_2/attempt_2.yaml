@@ -1,0 +1,34 @@
+rule_id: R_G3_llm
+description: >
+  Maximum speed limit compliance (StVO §3(1)/§18): the vehicle must not exceed the speed limit of its current lane.
+source_text: >
+  StVO §3(1): "Wer ein Fahrzeug führt, darf nur so schnell fahren, dass das Fahrzeug ständig beherrscht wird."
+  StVO §18: Lane-specific speed limits must be obeyed.
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  TRACKING_ERROR: 1.0   # plant tracking error bound [m/s]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}   # true ego velocity [m/s]
+    - {name: speed_limit, sort: real}   # current lane speed limit [m/s]
+
+system_contract:
+  interface: {inputs: [v_true, speed_limit], outputs: [v_cmd]}
+  assumption: "G(v_true >= 0 and speed_limit >= 0)"
+  guarantee: "G(v_true <= speed_limit + TRACKING_ERROR)"
+
+decomposition:
+  discharge_order: [Planning, Control]
+  contracts:
+    - service: Planning
+      interface: {inputs: [v_ego, speed_limit], outputs: [v_cmd]}
+      assumption: "G(v_ego >= 0 and speed_limit >= 0)"
+      guarantee: "G(v_cmd <= speed_limit)"
+
+    - service: Control
+      interface: {inputs: [v_cmd, v_ego], outputs: [a_cmd]}
+      assumption: "G(v_cmd >= 0)"
+      guarantee: "G(abs(v_ego - v_cmd) <= TRACKING_ERROR)"

@@ -1,0 +1,120 @@
+rule,model,run,delta_ref,placement,anchors,redundant,delta_star,assumptions
+R_G1,openai-gpt-oss-120b,1,0.00,exact,match,,0.00,Localization:weaker Perception:weaker Planning:eq
+R_G1,openai-gpt-oss-120b,2,0.00,exact,match,,0.00,Localization:weaker Perception:weaker Planning:eq
+R_G1,openai-gpt-oss-120b,3,0.00,exact,match,,0.00,Localization:weaker Perception:weaker Planning:eq
+R_G1,openai-gpt-oss-120b,4,0.00,exact,match,,0.00,Localization:eq Perception:weaker Planning:incomp
+R_G1,openai-gpt-oss-120b,5,0.00,exact,match,,0.00,Localization:weaker Perception:weaker Planning:eq
+R_G1,qwen3.5-397b-a17b,1,0.00,exact,match,,0.00,Localization:eq Perception:eq Planning:eq
+R_G1,qwen3.5-397b-a17b,2,0.00,exact,match,,0.00,Localization:eq Perception:weaker Planning:eq
+R_G1,qwen3.5-397b-a17b,3,0.00,exact,match,,0.00,Localization:eq Perception:weaker Planning:eq
+R_G1,qwen3.5-397b-a17b,4,0.00,exact,match,,0.00,Localization:weaker Perception:weaker Planning:eq
+R_G1,qwen3.5-397b-a17b,5,0.00,exact,match,,0.00,Localization:eq Perception:weaker Planning:eq
+R_G1,qwen3.6-27b,1,0.00,exact,match,,0.00,Localization:weaker Perception:weaker Planning:eq
+R_G1,qwen3.6-27b,2,0.00,exact,match,,0.00,Localization:weaker Perception:weaker Planning:eq
+R_G1,qwen3.6-27b,3,0.00,exact,match,,0.00,Localization:weaker Perception:weaker Planning:eq
+R_G1,qwen3.6-27b,4,0.00,exact,match,,0.00,Localization:eq Perception:weaker Planning:eq
+R_G1,qwen3.6-27b,5,0.00,exact,match,,0.00,Localization:eq Perception:weaker Planning:eq
+R_G2,openai-gpt-oss-120b,2,0.00,superset,match,,0.00,Perception:incomp Planning:eq
+R_G2,openai-gpt-oss-120b,5,0.00,superset,match,,0.00,Perception:incomp Planning:eq
+R_G2,qwen3.5-397b-a17b,1,0.00,superset,match,,0.00,Perception:incomp Planning:eq
+R_G2,qwen3.5-397b-a17b,2,0.00,superset,match,,0.00,Perception:incomp Planning:weaker
+R_G2,qwen3.5-397b-a17b,3,0.00,superset,match,,0.00,Perception:incomp Planning:eq
+R_G2,qwen3.5-397b-a17b,4,0.00,superset,match,,0.00,Perception:incomp Planning:eq
+R_G2,qwen3.5-397b-a17b,5,0.00,superset,match,,0.00,Perception:incomp Planning:eq
+R_G2,qwen3.6-27b,1,0.00,superset,match,,0.00,Perception:incomp Planning:eq
+R_G2,qwen3.6-27b,2,0.00,superset,match,,0.00,Perception:incomp Planning:eq
+R_G2,qwen3.6-27b,3,0.00,superset,match,,0.00,Perception:incomp Planning:eq
+R_G2,qwen3.6-27b,4,0.00,exact,match,,0.00,Perception:incomp Planning:eq
+R_G2,qwen3.6-27b,5,0.00,exact,match,,0.00,Perception:incomp Planning:eq
+R_G3,mistral-medium-3.5-128b,1,0.00,superset,match,,0.00,Planning:incomp
+R_G3,mistral-medium-3.5-128b,3,0.00,superset,match,,0.00,Planning:incomp
+R_G3,openai-gpt-oss-120b,1,0.00,superset,match,,0.00,Planning:incomp
+R_G3,openai-gpt-oss-120b,2,0.00,exact,match,,0.00,Planning:eq
+R_G3,openai-gpt-oss-120b,4,0.00,superset,differ,,0.00,Planning:weaker
+R_G3,openai-gpt-oss-120b,5,0.00,exact,match,,0.00,Planning:weaker
+R_G3,qwen3.5-397b-a17b,1,0.00,superset,match,,0.00,Planning:incomp
+R_G3,qwen3.5-397b-a17b,2,0.00,superset,match,,0.00,Planning:incomp
+R_G3,qwen3.5-397b-a17b,3,0.00,superset,match,,0.00,Planning:incomp
+R_G3,qwen3.5-397b-a17b,4,0.00,superset,match,Localization,0.50,Planning:weaker
+R_G3,qwen3.5-397b-a17b,5,0.00,superset,match,,0.00,Planning:incomp
+R_G3,qwen3.6-27b,1,0.00,superset,match,,0.00,Planning:incomp
+R_G3,qwen3.6-27b,2,0.00,superset,match,,0.00,Planning:incomp
+R_G3,qwen3.6-27b,3,0.00,exact,match,,0.00,Planning:incomp
+R_G3,qwen3.6-27b,4,0.00,superset,match,,0.00,Planning:incomp
+R_G3,qwen3.6-27b,5,0.00,exact,match,,0.00,Planning:incomp
+R_I1,openai-gpt-oss-120b,1,0.00,superset,match,,0.00,Perception:weaker Planning:stronger
+R_I1,openai-gpt-oss-120b,2,0.00,superset,match,,0.00,Perception:weaker Planning:incomp
+R_I1,qwen3.5-397b-a17b,1,0.00,exact,match,,0.00,Perception:weaker Planning:weaker
+R_I1,qwen3.5-397b-a17b,2,0.00,superset,match,,0.00,Perception:weaker Planning:stronger
+R_I1,qwen3.5-397b-a17b,3,0.00,exact,match,,0.00,Perception:eq Planning:eq
+R_I1,qwen3.5-397b-a17b,4,0.00,superset,match,,0.00,Perception:weaker Planning:stronger
+R_I1,qwen3.5-397b-a17b,5,0.00,exact,match,,0.00,Perception:eq Planning:stronger
+R_I1,qwen3.6-27b,1,0.00,exact,match,,0.00,Perception:weaker Planning:eq
+R_I1,qwen3.6-27b,2,0.00,exact,match,,0.00,Perception:weaker Planning:eq
+R_I1,qwen3.6-27b,3,0.00,exact,match,,0.00,Perception:weaker Planning:eq
+R_I1,qwen3.6-27b,4,0.00,exact,match,,0.00,Perception:weaker Planning:eq
+R_I1,qwen3.6-27b,5,0.00,exact,match,,0.00,Perception:weaker Planning:eq
+R_I3,openai-gpt-oss-120b,1,0.00,superset,match,Control,0.00,Control:stronger
+R_I3,openai-gpt-oss-120b,2,0.00,superset,match,Control,0.29,Control:stronger
+R_I3,openai-gpt-oss-120b,3,0.00,superset,match,Localization,20.00,Control:eq
+R_I3,openai-gpt-oss-120b,5,0.00,exact,match,,0.29,Control:eq
+R_I3,qwen3.5-397b-a17b,1,0.00,superset,match,,0.29,Control:stronger
+R_I3,qwen3.5-397b-a17b,2,0.00,superset,match,,0.20,Control:stronger
+R_I3,qwen3.5-397b-a17b,3,0.00,superset,match,,0.29,Control:stronger
+R_I3,qwen3.5-397b-a17b,4,0.00,superset,match,,0.29,Control:stronger
+R_I3,qwen3.5-397b-a17b,5,0.00,superset,match,,0.29,Control:stronger
+R_I3,qwen3.6-27b,1,0.00,superset,match,,0.00,Control:stronger
+R_I3,qwen3.6-27b,2,0.00,exact,match,,0.00,Control:eq
+R_I3,qwen3.6-27b,3,0.00,exact,match,,0.00,Control:eq
+R_I3,qwen3.6-27b,4,0.00,superset,match,,0.29,Control:stronger
+R_I3,qwen3.6-27b,5,0.00,exact,match,,0.29,Control:eq
+R_G1,claude-opus-5,1,0.00,exact,differ,,0.00,Localization:eq Perception:incomp Planning:stronger
+R_G1,claude-opus-5,2,0.00,exact,match,,0.00,Localization:eq Perception:weaker Planning:stronger
+R_G1,claude-opus-5,3,0.00,exact,match,,0.00,Localization:eq Perception:weaker Planning:eq
+R_G1,claude-opus-5,4,0.00,exact,differ,,0.00,Localization:eq Perception:incomp Planning:stronger
+R_G1,claude-opus-5,5,0.00,exact,differ,,0.00,Localization:eq Perception:incomp Planning:stronger
+R_G1,claude-sonnet-5,1,0.00,exact,match,,0.00,Localization:stronger Perception:eq Planning:stronger
+R_G1,claude-sonnet-5,2,0.00,exact,match,,0.00,Localization:eq Perception:weaker Planning:stronger
+R_G1,claude-sonnet-5,3,0.00,exact,match,,0.00,Localization:eq Perception:eq Planning:stronger
+R_G1,claude-sonnet-5,4,0.00,exact,match,,0.00,Localization:eq Perception:weaker Planning:eq
+R_G1,claude-sonnet-5,5,0.00,exact,match,,0.00,Localization:eq Perception:weaker Planning:eq
+R_G2,claude-opus-5,1,0.00,superset,match,,0.00,Perception:incomp Planning:stronger
+R_G2,claude-opus-5,2,0.00,superset,match,,0.00,Perception:incomp Planning:stronger
+R_G2,claude-opus-5,3,0.00,superset,match,,0.00,Perception:incomp Planning:stronger
+R_G2,claude-opus-5,4,0.00,superset,match,,0.00,Perception:incomp Planning:stronger
+R_G2,claude-opus-5,5,0.00,superset,match,,0.00,Perception:incomp Planning:stronger
+R_G2,claude-sonnet-5,1,0.00,superset,match,,0.00,Perception:incomp Planning:stronger
+R_G2,claude-sonnet-5,2,0.00,superset,match,,0.00,Perception:incomp Planning:stronger
+R_G2,claude-sonnet-5,3,0.00,superset,match,,0.00,Perception:incomp Planning:stronger
+R_G2,claude-sonnet-5,4,0.00,superset,match,,0.00,Perception:incomp Planning:stronger
+R_G2,claude-sonnet-5,5,0.00,superset,match,,0.00,Perception:incomp Planning:eq
+R_G3,claude-opus-5,1,0.00,superset,differ,Control,0.00,Planning:stronger
+R_G3,claude-opus-5,2,0.00,superset,differ,Control,0.00,Planning:stronger
+R_G3,claude-opus-5,3,0.00,superset,differ,Control,0.00,Planning:stronger
+R_G3,claude-opus-5,4,0.00,superset,differ,Control,0.00,Planning:stronger
+R_G3,claude-opus-5,5,0.00,superset,differ,Control,0.00,Planning:stronger
+R_G3,claude-sonnet-5,1,0.00,exact,match,,0.00,Planning:stronger
+R_G3,claude-sonnet-5,2,0.00,exact,match,,0.00,Planning:stronger
+R_G3,claude-sonnet-5,3,0.00,exact,match,,0.00,Planning:eq
+R_G3,claude-sonnet-5,4,0.00,exact,match,,0.00,Planning:weaker
+R_G3,claude-sonnet-5,5,0.00,exact,match,,0.00,Planning:weaker
+R_I1,claude-opus-5,1,0.00,superset,match,,0.00,Perception:eq Planning:stronger
+R_I1,claude-opus-5,2,0.00,exact,match,,0.00,Perception:eq Planning:stronger
+R_I1,claude-opus-5,3,0.00,superset,match,Control,0.00,Perception:eq Planning:stronger
+R_I1,claude-opus-5,4,0.00,exact,match,,0.00,Perception:eq Planning:stronger
+R_I1,claude-opus-5,5,0.00,superset,match,Control,0.00,Perception:eq Planning:stronger
+R_I1,claude-sonnet-5,1,0.00,exact,match,,0.00,Perception:weaker Planning:eq
+R_I1,claude-sonnet-5,2,0.00,exact,match,,0.00,Perception:weaker Planning:eq
+R_I1,claude-sonnet-5,3,0.00,exact,match,,0.00,Perception:eq Planning:stronger
+R_I1,claude-sonnet-5,4,0.00,exact,match,,0.00,Perception:eq Planning:stronger
+R_I1,claude-sonnet-5,5,0.00,exact,match,,0.00,Perception:eq Planning:eq
+R_I3,claude-opus-5,1,0.00,superset,match,,0.00,Control:stronger
+R_I3,claude-opus-5,2,0.00,superset,match,,0.00,Control:stronger
+R_I3,claude-opus-5,3,0.00,superset,match,,0.00,Control:stronger
+R_I3,claude-opus-5,4,0.00,superset,match,,0.00,Control:stronger
+R_I3,claude-opus-5,5,0.00,superset,differ,,0.20,Control:stronger
+R_I3,claude-sonnet-5,1,0.00,superset,match,,0.00,Control:stronger
+R_I3,claude-sonnet-5,2,0.00,exact,match,,0.00,Control:eq
+R_I3,claude-sonnet-5,3,0.00,exact,match,,0.00,Control:eq
+R_I3,claude-sonnet-5,4,0.00,exact,match,,0.00,Control:eq
+R_I3,claude-sonnet-5,5,0.00,exact,match,,0.00,Control:eq

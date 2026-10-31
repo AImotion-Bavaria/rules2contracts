@@ -1,0 +1,18 @@
+{
+  "rule": "R_G1",
+  "attempts": 2,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SYNTAX] temporal bound 'REACTION_STEPS' is not an integer step literal \u2014 the fragment requires numeric bounds, e.g. F[0,3] in: G((abs(perceived_gap - true_gap) <= PERCEPTION_ERROR_M and abs(perceived_ego_velocity - true_ego_velocity) <= LOCALIZATION_ERROR_MPS and true_gap < MIN_GAP_S * true_ego_velocity) -> F[0,REACTION_STEPS](hazard_notification))"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": []
+    }
+  ],
+  "baseline": true
+}

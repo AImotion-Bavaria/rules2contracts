@@ -1,0 +1,33 @@
+{
+  "rule": "R_I3",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SYNTAX] expected '(', got 'v_true' in: G(v_true >= -V_MAX and v_true <= V_MAX)"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V0] Control: output 'v_cmd' is computed by Planning, not Control",
+        "[V0] Control: input 'gear_rev_cmd' \u2014 Control does not consume topic of Control.gear_cmd per the documented architecture",
+        "[V0] Control: input 'a_cmd' \u2014 Control does not consume topic of Control.control_cmd per the documented architecture"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[SYNTAX] expected '(', got 'v_cmd' in: G((v_cmd - v_ego >= DV - EPS_V) -> F[0,2](hazard_on))"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[V0] Control: input 'gear_rev_cmd' \u2014 Control does not consume topic of Control.gear_cmd per the documented architecture"
+      ]
+    }
+  ]
+}

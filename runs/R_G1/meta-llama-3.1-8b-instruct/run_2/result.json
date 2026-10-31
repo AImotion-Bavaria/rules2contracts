@@ -1,0 +1,31 @@
+{
+  "rule": "R_G1",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SYNTAX] expected '(', got 'd_true' in: G((d_true / v_true < T_MIN) -> F[0,3](hazard_on))"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[SYNTAX] expected '(', got 'd_true' in: G(F[0,3]((d_true / v_true < T_MIN) -> hazard_on))"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[SYNTAX] expected '(', got 'd_true' in: G(F[0,3]((d_true / v_true < T_MIN) -> O[0,3](hazard_on)))"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[SYNTAX] expected '(', got 'd_true' in: G(F[0,3]((d_true / v_true < T_MIN) -> O[0,3](hazard_on)))"
+      ]
+    }
+  ]
+}

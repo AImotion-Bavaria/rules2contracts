@@ -1,0 +1,55 @@
+rule_id: R_I1_llm
+description: >
+  Stopping prohibition on the main carriageway of an interstate (StVO
+  §12(1)/§18(8)), interpreted at feature level: unless there is congestion
+  or the directly leading vehicle is (essentially) stationary, the ego
+  vehicle must keep moving. Perception estimates the lead vehicle's
+  velocity with a bounded error and the plant tracks the commanded
+  velocity within a bounded error, so both the triggering threshold and
+  the commanded-velocity floor must be compensated accordingly.
+source_text: >
+  StVO §12(1): "Wer ... halten will, ..."; §18(8): "Halten und Parken ...
+  ist auf der Fahrbahn unzulässig." Interpreted operationally: stopping on
+  the interstate carriageway is prohibited unless there is congestion or
+  the directly leading vehicle is stationary.
+
+sampling_rate_hz: 10
+horizon: 5
+
+constants:
+  V_STANDSTILL: 0.5   # standstill threshold [m/s]
+  EPS_LEAD: 0.5       # perception lead-velocity estimation error bound [m/s]
+  EPS_TRACK: 1.0      # plant tracking error bound: |v_ego_true - v_cmd| [m/s]
+  V_MAX: 70.0         # max plausible velocity considered [m/s]
+
+environment:
+  signals:
+    - {name: congestion, sort: bool}    # true congestion state
+    - {name: v_lead_true, sort: real}   # true longitudinal velocity of lead vehicle
+    - {name: v_ego_true, sort: real}    # true ego velocity (plant state)
+
+system_contract:
+  interface:
+    inputs: [congestion, v_lead_true, v_ego_true]
+    outputs: [v_cmd]
+  assumption: >
+    G(v_lead_true >= 0 and v_lead_true <= V_MAX and
+      abs(v_ego_true - v_cmd) <= EPS_TRACK)
+  guarantee: >
+    G((not congestion and v_lead_true > V_STANDSTILL) ->
+      v_ego_true >= V_STANDSTILL)
+
+decomposition:
+  discharge_order: [Perception, Planning]
+  contracts:
+    - service: Perception
+      interface: {inputs: [v_lead_true], outputs: [v_lead]}
+      assumption: "G(v_lead_true >= 0 and v_lead_true <= V_MAX)"
+      guarantee: "G(abs(v_lead - v_lead_true) <= EPS_LEAD)"
+
+    - service: Planning
+      interface: {inputs: [congestion, v_lead], outputs: [v_cmd]}
+      assumption: "G(v_lead >= 0 - EPS_LEAD and v_lead <= V_MAX + EPS_LEAD)"
+      guarantee: >
+        G((not congestion and v_lead > V_STANDSTILL - EPS_LEAD) ->
+          v_cmd >= V_STANDSTILL + EPS_TRACK)

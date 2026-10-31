@@ -1,0 +1,52 @@
+rule_id: R_I3_llm
+description: >
+  No reversing on the interstate (StVO §18(7)). At feature level the rule is
+  interpreted as a bound on the true longitudinal ego velocity: it must never
+  drop below -0.3 m/s. The plant only moves backwards when the reverse gear is
+  commanded; residual roll-back while the forward gear is engaged is bounded by
+  V_ROLL. The obligation is therefore discharged by Control never commanding the
+  reverse gear, which in turn is guaranteed because Planning never commands a
+  negative velocity, based on the Localization velocity estimate (whose error
+  bound EPS_V is compensated in the Planning trigger threshold).
+source_text: >
+  StVO §18(7): "Wenden und Rückwärtsfahren sind verboten." (Turning around and
+  reversing are prohibited on the Autobahn and on Kraftfahrstraßen.)
+sampling_rate_hz: 10
+horizon: 20
+
+constants:
+  V_REV_TOL: 0.3    # tolerated backward velocity magnitude [m/s]
+  V_ROLL: 0.1       # bounded roll-back with forward gear engaged [m/s]
+  EPS_V: 0.5        # localization velocity error bound [m/s]
+  V_MAX: 70.0       # max considered forward velocity [m/s]
+  A_MIN: -8.0       # min plausible commanded acceleration [m/s^2]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}       # true longitudinal ego velocity [m/s]
+    - {name: on_interstate, sort: bool} # ego is on an Autobahn / Kraftfahrstraße
+
+system_contract:
+  interface: {inputs: [v_true, on_interstate], outputs: [v_cmd, a_plan, gear_rev_cmd]}
+  assumption: >
+    G(v_true <= V_MAX and on_interstate and
+      (H[0,2](not gear_rev_cmd) -> v_true >= 0 - V_ROLL))
+  guarantee: "G(v_true >= 0 - V_REV_TOL)"
+
+decomposition:
+  discharge_order: [Localization, Planning, Control]
+  contracts:
+    - service: Localization
+      interface: {inputs: [v_true], outputs: [v_ego, a_ego]}
+      assumption: "G(v_true <= V_MAX and v_true >= 0 - V_REV_TOL)"
+      guarantee: "G(abs(v_ego - v_true) <= EPS_V and v_ego <= V_MAX + EPS_V)"
+
+    - service: Planning
+      interface: {inputs: [v_ego, a_ego, d_lead, v_lead], outputs: [v_cmd, a_plan]}
+      assumption: "G(v_ego >= 0 - V_REV_TOL - EPS_V and v_ego <= V_MAX + EPS_V)"
+      guarantee: "G(v_cmd >= 0 and a_plan >= A_MIN)"
+
+    - service: Control
+      interface: {inputs: [v_ego, v_cmd, a_plan], outputs: [a_cmd, gear_rev_cmd]}
+      assumption: "G(v_cmd >= 0 and a_plan >= A_MIN)"
+      guarantee: "G((v_cmd >= 0) -> not gear_rev_cmd)"

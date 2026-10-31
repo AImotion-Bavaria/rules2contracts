@@ -1,0 +1,12 @@
+rule_id: R_I3_flat
+description: No reversing on interstate; velocity must remain above -0.3 m/s, assuming backward motion implies reverse gear command.
+sampling_rate_hz: 10
+horizon: 10
+constants:
+  V_MIN_REVERSE: -0.3
+environment:
+  signals:
+    - {name: velocity_ego_long, sort: real}
+    - {name: gear_reverse_cmd, sort: bool}
+    - {name: on_interstate, sort: bool}
+formula: "G(((velocity_ego_long < 0) -> gear_reverse_cmd) -> ((on_interstate) -> (velocity_ego_long >= V_MIN_REVERSE)))"

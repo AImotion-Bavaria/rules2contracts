@@ -1,0 +1,11 @@
+rule_id: R_G3_flat
+description: Maximum speed limit (StVO §3(1)/§18); vehicle must not exceed the speed limit of its current lane, accounting for a 1 m/s tracking error between commanded and actual velocity.
+sampling_rate_hz: 10
+horizon: 5
+constants:
+  ERR: 1.0
+environment:
+  signals:
+    - {name: v_cmd, sort: real}
+    - {name: v_limit, sort: real}
+formula: "G(v_cmd <= v_limit - ERR)"

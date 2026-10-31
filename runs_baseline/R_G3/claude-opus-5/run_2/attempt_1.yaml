@@ -1,0 +1,19 @@
+rule_id: R_G3_flat
+description: >
+  StVO Sec. 3(1)/18 maximum speed: the true longitudinal speed of the ego vehicle
+  must never exceed the posted (or otherwise applicable) speed limit of the lane it
+  currently occupies. Because the plant tracks the commanded velocity only within
+  1.0 m/s, a hard bound of limit + tracking tolerance must hold at all times, and any
+  excursion above the nominal limit must be corrected back below the limit within 1 s.
+  The obligation is conditioned on a valid, known lane speed limit being in force.
+sampling_rate_hz: 10
+horizon: 20
+constants:
+  V_TRACK_TOL: 1.0
+  T_RECOVER_STEPS: 10
+environment:
+  signals:
+    - {name: v_ego, sort: real}
+    - {name: v_limit_lane, sort: real}
+    - {name: limit_valid, sort: bool}
+formula: "G((limit_valid -> (v_ego - v_limit_lane <= V_TRACK_TOL)) and ((limit_valid and (v_ego - v_limit_lane > 0)) -> F[0,10](v_ego - v_limit_lane <= 0)))"

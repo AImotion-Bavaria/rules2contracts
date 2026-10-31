@@ -1,0 +1,12 @@
+{
+  "rule": "R_G3",
+  "attempts": 1,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": []
+    }
+  ],
+  "baseline": true
+}

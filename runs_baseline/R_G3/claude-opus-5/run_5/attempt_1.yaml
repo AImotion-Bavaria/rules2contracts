@@ -1,0 +1,20 @@
+rule_id: R_G3_flat
+description: >
+  StVO §3(1)/§18 maximum speed: the true longitudinal speed of the ego vehicle must
+  never exceed the speed limit applicable to the lane it currently occupies. A
+  tolerance band of V_TRACK_TOL accounts for the plant's velocity tracking error
+  (commanded velocity is tracked within 1.0 m/s). Any excursion above the tolerated
+  band is admissible only as a transient immediately after the applicable lane limit
+  has been lowered (e.g. entering a slower lane or a new sign becoming valid), and
+  must be resolved by decelerating back into the band within N_ADAPT steps.
+sampling_rate_hz: 10
+horizon: 50
+constants:
+  V_TRACK_TOL: 1.0
+  N_ADAPT: 40
+environment:
+  signals:
+    - {name: v_ego, sort: real}
+    - {name: v_limit_lane, sort: real}
+    - {name: lane_limit_decreased, sort: bool}
+formula: "G(((v_ego - v_limit_lane) > V_TRACK_TOL) -> (O[0,40](lane_limit_decreased) and F[0,40]((v_ego - v_limit_lane) <= V_TRACK_TOL)))"

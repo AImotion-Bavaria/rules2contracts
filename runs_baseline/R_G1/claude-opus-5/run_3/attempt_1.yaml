@@ -1,0 +1,4 @@
+rule_id: R_G1_flat
+description: >-
+  StVO §4(1) safe-distance duty, time-gap interpretation: whenever the true
+  gap to the preceding vehicle is smaller than TAU_SAFE times the true ego

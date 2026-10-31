@@ -1,0 +1,46 @@
+rule_id: R_G2_llm
+description: >
+  StVO §4(1) Unnecessary braking: Vehicles must not brake abruptly without
+  reason. Feature-level interpretation: Commanded deceleration stronger than
+  2.0 m/s^2 is only permitted when the gap to the preceding vehicle is
+  critical (below 20.0 m). Perception and plant tracking errors are
+  compensated in the service contracts.
+source_text: >
+  StVO §4(1): "Vehicles must not brake abruptly without reason." Interpretation
+  constraint: Hard braking (a_cmd < -2.0 m/s^2) requires critical gap
+  (d_true < 20.0 m).
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  D_CRITICAL: 20.0
+  A_BRAKE_STRONG: 2.0
+  EPS_D: 2.0
+  EPS_A: 0.5
+
+environment:
+  signals:
+    - {name: d_true, sort: real}
+
+system_contract:
+  interface: {inputs: [d_true], outputs: [a_cmd]}
+  assumption: "G(d_true >= 0)"
+  guarantee: "G(d_true >= D_CRITICAL -> a_cmd >= -A_BRAKE_STRONG)"
+
+decomposition:
+  discharge_order: [Perception, Planning, Control]
+  contracts:
+    - service: Perception
+      interface: {inputs: [d_true], outputs: [d_lead]}
+      assumption: "G(d_true >= 0)"
+      guarantee: "G(abs(d_lead - d_true) <= EPS_D)"
+
+    - service: Planning
+      interface: {inputs: [d_lead], outputs: [a_plan]}
+      assumption: "G(true)"
+      guarantee: "G(d_lead >= D_CRITICAL - EPS_D -> a_plan >= -A_BRAKE_STRONG + EPS_A)"
+
+    - service: Control
+      interface: {inputs: [a_plan], outputs: [a_cmd]}
+      assumption: "G(true)"
+      guarantee: "G(abs(a_cmd - a_plan) <= EPS_A)"

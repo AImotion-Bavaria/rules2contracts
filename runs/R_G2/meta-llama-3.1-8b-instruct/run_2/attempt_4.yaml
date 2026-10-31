@@ -1,0 +1,56 @@
+rule_id: R_G2_llm
+description: Unnecessary braking (StVO §4(1)): vehicles must not brake abruptly without reason.
+source_text: StVO §4(1)
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  a_max: 2.0       # max permitted deceleration [m/s^2]
+  d_critical: 20.0 # critical gap to preceding vehicle [m]
+  EPS_D: 2.0       # perception gap error bound [m]
+  EPS_A: 0.5       # plant acceleration error bound [m/s^2]
+
+environment:
+  signals:
+    - name: d_true
+      sort: real
+      description: true gap to preceding vehicle [m]
+    - name: a_true
+      sort: real
+      description: true deceleration [m/s^2]
+
+system_contract:
+  interface:
+    inputs:
+      - d_true
+      - a_true
+    outputs:
+      - a_cmd
+  assumption: "G(d_true >= 0 and d_true <= d_critical and a_true >= 0)"
+  guarantee: "G((a_cmd >= a_max) -> F[0,2](d_true <= d_critical - EPS_D))"
+
+decomposition:
+  discharge_order:
+    - Perception
+    - Control
+  contracts:
+    - service: Perception
+      interface:
+        inputs: []
+        outputs:
+          - d_lead
+      assumption: "G(d_true >= 0 and d_true <= d_critical)"
+      guarantee: "G(abs(d_lead - d_true) <= EPS_D)"
+    - service: Control
+      interface:
+        inputs:
+          - d_lead
+        outputs:
+          - a_cmd
+      assumption: "G(d_lead >= d_critical - EPS_D)"
+      guarantee: "G((a_cmd >= a_max) -> F[0,2](d_true <= d_critical - EPS_D))"
+
+# Added a newline character to separate the last contract
+# from the rest of the document. This is a common issue in YAML
+# parsing, where the parser gets confused by the lack of a newline
+# character between two adjacent mappings.

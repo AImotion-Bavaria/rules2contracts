@@ -1,0 +1,15 @@
+rule_id: R_G1_flat
+description: Safe distance to the preceding vehicle (StVO §4(1))
+sampling_rate_hz: 10
+horizon: 3
+constants:
+  T_MIN: 1.8
+  T_ERROR_GAP: 2.0
+  T_ERROR_VEL: 0.5
+  T_HAZARD: 0.3
+environment:
+  signals:
+    - {name: gap, sort: real}
+    - {name: vel, sort: real}
+    - {name: hazard, sort: bool}
+formula: "G((gap <= (T_MIN * vel - T_ERROR_VEL - T_ERROR_GAP)) -> F[0,3](hazard))"

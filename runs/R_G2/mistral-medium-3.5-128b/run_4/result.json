@@ -1,0 +1,39 @@
+{
+  "rule": "R_G2",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[SCHEMA] discharge_order ['Perception', 'Localization', 'Control'] must list exactly the services of the decomposition ['Perception', 'Localization', 'Control', 'Planning']"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V3a] assumption of C_Planning not discharged",
+        "[V3a] assumption of C_Control not discharged",
+        "[V3b] composition of guarantees does NOT entail the system-level guarantee",
+        "    Counterexample trace (A_Planning not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd        0        0        0        0        0        0        0        0        0\n      a_ego     21/2     21/2    -21/2    -21/2    -21/2    -21/2    -21/2    -21/2    -21/2\n      a_plan       0        0        0        0        0        0        0        0        0\n      a_true       0        0        0        0        0        0        0        0        0\n      d_lead     1/4     -1/2       -2     -1/2       -2      1/4       -2       -2       -2\n      d_true       0        0        0        0        0        0        0        0        0\n      v_ego     -1/2     -1/2     -1/2     -1/2     -1/2     -1/2     -1/2     -1/2     -1/2\n    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd        0        0        0        0        0        0        0        0        0\n      a_ego        0        0        0        0        0        0        0        0        0\n      a_plan    41/4     41/4     41/4    -41/4     41/4     41/4     41/4     41/4     41/4\n      a_true       0        0        0        0        0        0        0        0        0\n      d_lead    73/4     73/4     73/4     -1/4     73/4     73/4     73/4     73/4     73/4\n      d_true    65/4     37/2     37/2        0     37/2     37/2     37/2     37/2     37/2\n      v_ego        0        0        0        0        0        0        0        0        0\n    Counterexample trace (system rule violated despite all sub-contracts):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd       -2       -2       -2       -2       -2       -2       -2       -2       -2\n      a_ego        0        0        0        0        0        0        0        0        0\n      a_plan    -7/4     -7/4     -7/4     -7/4     -7/4     -7/4     -7/4     -7/4     -7/4\n      a_true       0        0        0        0        0        0        0        0        0\n      d_lead    79/4     79/4    161/8     79/4     79/4     79/4     79/4     79/4     79/4\n      d_true      20       20       20       20       20       20       20       20       20\n      v_ego        0        0        0        0        0        0        0        0        0"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[V3a] assumption of C_Planning not discharged",
+        "[V3a] assumption of C_Control not discharged",
+        "[V3b] composition of guarantees does NOT entail the system-level guarantee",
+        "    Counterexample trace (A_Planning not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd        0        0        0        0        0        0        0        0        0\n      a_ego        0      -10       10        0      -10       10       10        0       10\n      a_plan       0        0        0        0        0        0        0        0        0\n      a_true       0      -10       10        0      -10       10       10        0       10\n      d_lead      -2      1/4       -2       -2       -2      1/4     -1/2       -2       -2\n      d_true       0        0        0        0        0        0        0        0        0\n      v_ego    141/2     -1/2    141/2    141/2    141/2     -1/2     -1/2    141/2    141/2\n    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd        0        0        0        0        0        0        0        0        0\n      a_ego        0        0        0        0        0        0        0        0        0\n      a_plan   -41/4    -41/4     41/4     41/4     41/4    -41/4     41/4    -41/4     41/4\n      a_true       0        0        0        0        0        0        0        0        0\n      d_lead       0     -1/4     73/4     73/4     73/4        0     73/4     -1/4     73/4\n      d_true     1/4        0    145/8     37/2     37/2      1/4     37/2        0     37/2\n      v_ego     -1/4     -1/4    281/4     -1/4     -1/4     -1/4    281/4     -1/4    281/4\n    Counterexample trace (system rule violated despite all sub-contracts):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd     -1/3       -2       -2        0       -2       -2       -2       -2       -2\n      a_ego        0        0        0        0        0        0        0        0        0\n      a_plan       0     -5/3     -5/3     -1/6     -5/3     -5/3    -13/6     -5/3     -5/3\n      a_true       0        0        0        0        0        0        0        0        0\n      d_lead    55/3     59/3     59/3     55/3     59/3     59/3     59/3     59/3     59/3\n      d_true    56/3       20       20     49/3       20       20       20       20       20\n      v_ego        0        0        0        0        0        0        0        0        0"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[V3a] assumption of C_Control not discharged",
+        "[V3b] composition of guarantees does NOT entail the system-level guarantee",
+        "    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd        0        0        0        0        0        0        0        0        0\n      a_ego     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4      1/8\n      a_plan   -41/4    -41/4    -41/4    -41/4    -41/4    -41/4    -41/4    -41/4    -41/4\n      a_true    -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4     -1/4      1/8\n      d_lead     1/8       18       18     -1/4     -1/4      1/8        0     -1/4     -1/4\n      d_true       0     73/4     73/4        0        0        0      1/4        0        0\n      v_ego        0        0        0        0        0        0        0        0        0\n    Counterexample trace (system rule violated despite all sub-contracts):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd     -1/3       -2       -2       -2       -2       -2     -1/3       -2       -2\n      a_ego     -1/3     -1/3     -1/3      1/6     -1/3     -1/3     -1/3     -1/3     -1/3\n      a_plan       0     -5/3    -13/6     -5/3     -5/3    -13/6        0    -13/6     -5/3\n      a_true    -1/3     -1/3     -1/3      1/6     -1/3     -1/3     -1/3     -1/3     -1/3\n      d_lead    55/3     59/3     59/3     59/3     59/3     59/3     55/3     59/3     59/3\n      d_true    56/3       20       20       20       20       20     56/3       20       20\n      v_ego        0        0        0        0        0        0        0        0        0"
+      ]
+    }
+  ]
+}

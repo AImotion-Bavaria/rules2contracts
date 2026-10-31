@@ -1,0 +1,18 @@
+{
+  "rule": "R_I3",
+  "attempts": 2,
+  "valid": true,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V3a] assumption of C_Localization not discharged",
+        "    Counterexample trace (A_Localization not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      gear_rev_cmd    True    False    False     True    False    False     True    False    False\n      on_interstate    True     True     True     True     True     True     True     True     True\n      v_cmd        0        0        0        0        0        0        0        0        0\n      v_ego        0        0        0        0        0        0        0        0        0\n      v_true  -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10   -13/10"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": []
+    }
+  ]
+}

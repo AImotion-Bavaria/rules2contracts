@@ -1,0 +1,17 @@
+rule_id: R_I3_flat
+description: >
+  StVO §18(7): reversing manoeuvres are prohibited on the interstate.
+  The true longitudinal ego velocity must never fall below a small
+  negative tolerance, and (as a system-level tracking assumption)
+  the plant only moves backwards if the reverse gear is actually
+  commanded — i.e. absent a reverse-gear command, the true velocity
+  must remain within the non-reversing bound.
+sampling_rate_hz: 20
+horizon: 0
+constants:
+  V_MIN_REV: -0.3
+environment:
+  signals:
+    - {name: v_x_true, sort: real}
+    - {name: gear_cmd_reverse, sort: bool}
+formula: "G( (v_x_true >= V_MIN_REV) and (not(gear_cmd_reverse) -> (v_x_true >= V_MIN_REV)) )"

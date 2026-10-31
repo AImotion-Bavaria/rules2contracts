@@ -1,0 +1,33 @@
+rule_id: R_I1_llm
+description: Stopping on the main carriageway of an interstate is prohibited unless there is congestion or the directly leading vehicle is stationary.
+source_text: StVO §12(1)/§18(8)
+sampling_rate_hz: 10
+horizon: 12
+
+constants:
+  V_STANDSTILL: 0.5  # standstill threshold [m/s]
+  EPS_V: 0.5        # perception velocity error bound [m/s]
+  V_MAX: 70.0       # max considered velocity [m/s]
+
+environment:
+  signals:
+    - {name: congestion, sort: bool}  # congestion boolean
+    - {name: v_true_lead, sort: real}  # true lead-vehicle velocity [m/s]
+
+system_contract:
+  interface: {inputs: [congestion, v_true_lead], outputs: [v_cmd]}
+  assumption: "G(congestion or v_true_lead <= V_STANDSTILL)"
+  guarantee: "G(v_true_lead > V_STANDSTILL -> F[0,12](v_cmd > V_STANDSTILL))"
+
+decomposition:
+  discharge_order: [Perception, Planning]
+  contracts:
+    - service: Perception
+      interface: {inputs: [v_true_lead], outputs: [v_lead]}
+      assumption: "G(v_true_lead >= 0 and v_true_lead <= V_MAX)"
+      guarantee: "G(abs(v_lead - v_true_lead) <= EPS_V)"
+
+    - service: Planning
+      interface: {inputs: [v_lead], outputs: [v_cmd]}
+      assumption: "G(v_lead >= 0 - EPS_V)"
+      guarantee: "G((v_cmd - v_lead >= -1.0) -> F[0,12](v_cmd > V_STANDSTILL))"

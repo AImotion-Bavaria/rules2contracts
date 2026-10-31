@@ -1,0 +1,37 @@
+{
+  "rule": "R_G2",
+  "attempts": 4,
+  "valid": false,
+  "history": [
+    {
+      "attempt": 1,
+      "errors": [
+        "[V3a] assumption of C_Planning not discharged",
+        "[V3a] assumption of C_Control not discharged",
+        "    Counterexample trace (A_Planning not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd        0        0        0        0        0        0        0        0        0\n      a_ego    49/10    49/10  -101/10  -101/10  -101/10  -101/10  -101/10  -101/10  -101/10\n      a_ego_true       5        5      -10      -10      -10      -10      -10      -10      -10\n      a_plan       0        0        0        0        0        0        0        0        0\n      d_lead   -1/10    -1/10    -1/10    -1/10     1/20       -2       -2       -2    -1/10\n      d_lead_true       0        0        0        0        0        0        0        0        0\n      v_ego    -1/10    -1/10    -1/10    -1/10    -1/10    -1/10    -1/10    -1/10    -1/10\n    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd        0        0        0        0        0        0        0        0        0\n      a_ego    -1/10    -1/10        0    -1/10        0    -1/10        0        0        0\n      a_ego_true       0        0     1/10        0     1/10        0     1/10    -1/20     1/10\n      a_plan   51/10    51/10    51/10  -101/10    51/10  -101/10    51/10    51/10    51/10\n      d_lead  181/10   181/10   181/10    -1/10   181/10    -1/10   181/10   181/10   181/10\n      d_lead_true    91/5     91/5   361/20        0     91/5        0     91/5     91/5     91/5\n      v_ego    -1/10    -1/10    -1/10    -1/10    -1/10    -1/10    -1/10    -1/10    -1/10"
+      ]
+    },
+    {
+      "attempt": 2,
+      "errors": [
+        "[V3a] assumption of C_Planning not discharged",
+        "[V3a] assumption of C_Control not discharged",
+        "    Counterexample trace (A_Planning not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd        0        0        0        0        0        0        0        0        0\n      a_ego   201/40   199/40  -401/40   201/40   201/40  -401/40  -401/40   201/40  -401/40\n      a_ego_true  197/40        5      -10   197/40        5      -10      -10        5      -10\n      a_plan       0        0        0        0        0        0        0        0        0\n      d_lead   -1/40    -1/40    -1/40    -1/40    -1/40    -1/40     1/80    -1/40    -1/40\n      d_lead_true       0        0        0        0        0        0        0        0        0\n      v_ego        0        0        0        0        0        0        0        0        0\n    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd        0        0        0        0        0        0        0        0        0\n      a_ego    -1/10    -1/10    -1/10        0    -1/10    -1/10    -1/10        0    -1/10\n      a_ego_true       0        0        0     1/10        0        0        0     1/10        0\n      a_plan -101/10    51/10  -101/10    51/10    51/10    51/10  -101/10  -101/10    51/10\n      d_lead    1/20   181/10        0   181/10   181/10   181/10        0    -1/10   181/10\n      d_lead_true       0     91/5     1/10     91/5     91/5     91/5     1/10        0     91/5\n      v_ego        0        0        0        0        0        0        0        0        0"
+      ]
+    },
+    {
+      "attempt": 3,
+      "errors": [
+        "[V3a] assumption of C_Control not discharged",
+        "    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd        0        0        0        0        0        0        0        0        0\n      a_ego        0        0        0    -1/40    -1/40        0        0        0    -1/40\n      a_ego_true    1/40     1/40     1/40        0        0     1/40     1/40     1/40        0\n      a_plan    41/8     41/8    -81/8     41/8    -81/8     41/8    -81/8     41/8     41/8\n      d_lead  721/40   721/40        0   721/40    -1/40   721/40    -1/40   721/40   721/40\n      d_lead_true 1441/80   361/20     1/40  1441/80        0   361/20        0   361/20   361/20\n      v_ego    -1/10    -1/10    -1/40    -1/10    -1/10    -1/10    -1/40    -1/40    -1/10\n      v_ego_true       0        0        0        0        0        0        0        0        0"
+      ]
+    },
+    {
+      "attempt": 4,
+      "errors": [
+        "[V3a] assumption of C_Control not discharged",
+        "    Counterexample trace (A_Control not discharged):\n      t            0        1        2        3        4        5        6        7        8\n      a_cmd        0        0        0        0        0        0        0        0        0\n      a_ego        0        0    -1/10        0    -1/10    -1/10    -1/10        0        0\n      a_ego_true    1/10     1/10        0     1/10        0        0        0     1/10     1/10\n      a_plan    26/5    -51/5     26/5     26/5    -51/5     26/5     26/5    -51/5     26/5\n      d_lead  181/10        0   181/10   181/10    -1/10   181/10   181/10        0   181/10\n      d_lead_true    91/5     1/10     91/5     91/5        0     91/5     91/5     1/10     91/5\n      v_ego        0     1/20        0        0        0        0        0     1/20        0\n      v_ego_true    1/10        0     1/10     1/10     1/10     1/10     1/10        0     1/10"
+      ]
+    }
+  ]
+}

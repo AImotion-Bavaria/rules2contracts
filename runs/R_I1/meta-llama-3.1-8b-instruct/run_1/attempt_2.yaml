@@ -1,0 +1,38 @@
+rule_id: R_I1_llm
+description: Stopping on the main carriageway of an interstate is prohibited unless there is congestion or the directly leading vehicle is stationary.
+source_text: StVO §12(1)/§18(8)
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  V_STANDSTILL: 0.5  # standstill threshold [m/s]
+  EPS_V: 0.5        # perception lead-velocity error bound [m/s]
+  V_TRACKING_ERROR: 1.0  # plant tracking error [m/s]
+
+environment:
+  signals:
+    - {name: congestion, sort: bool}  # congestion boolean
+    - {name: v_lead_true, sort: real}  # true lead-vehicle velocity [m/s]
+
+system_contract:
+  interface: {inputs: [congestion, v_lead_true], outputs: [v_ego]}
+  assumption: "G(congestion or v_lead_true <= V_STANDSTILL)"
+  guarantee: "G(v_ego >= V_STANDSTILL)"
+
+decomposition:
+  discharge_order: [Perception, Localization]
+  contracts:
+    - service: Perception
+      interface: {inputs: [v_lead_true], outputs: [v_lead]}
+      assumption: "G(v_lead_true >= 0)"
+      guarantee: "G(abs(v_lead - v_lead_true) <= EPS_V)"
+
+    - service: Localization
+      interface: {inputs: [v_ego], outputs: [v_ego]}
+      assumption: "G(v_ego >= 0)"
+      guarantee: "G(abs(v_ego - v_ego) <= 0)"
+
+    - service: Plant
+      interface: {inputs: [v_cmd, v_lead], outputs: [v_ego]}
+      assumption: "G(v_cmd >= 0 and abs(v_lead - v_lead_true) <= EPS_V)"
+      guarantee: "G(abs(v_ego - v_cmd) <= V_TRACKING_ERROR)"

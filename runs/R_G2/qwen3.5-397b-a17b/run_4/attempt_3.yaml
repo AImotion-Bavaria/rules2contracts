@@ -1,0 +1,44 @@
+rule_id: R_G2_llm
+description: >
+  Unnecessary braking prohibition (StVO §4(1)): Hard braking (a_cmd < -2.0 m/s^2)
+  is only permitted when the true gap to the lead vehicle is critical (d_true < 20.0 m).
+  Perception and Control errors are compensated in the Planning threshold.
+source_text: >
+  StVO §4(1): "Vehicles must not brake abruptly without reason." Interpretation:
+  Commanded deceleration stronger than 2.0 m/s^2 requires a critical gap below 20.0 m.
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  D_THRESH: 20.0    # critical gap threshold [m]
+  A_THRESH: -2.0    # braking deceleration threshold [m/s^2]
+  EPS_D: 2.0        # perception gap error bound [m]
+  EPS_A: 0.5        # control tracking error bound [m/s^2]
+  A_MIN: -8.0       # minimum physically achievable acceleration [m/s^2]
+
+environment:
+  signals:
+    - {name: d_true, sort: real}   # true longitudinal gap to lead vehicle [m]
+
+system_contract:
+  interface: {inputs: [d_true], outputs: [a_cmd]}
+  assumption: "G(d_true >= 0)"
+  guarantee: "G((d_true >= D_THRESH) -> (a_cmd >= A_THRESH))"
+
+decomposition:
+  discharge_order: [Perception, Planning, Control]
+  contracts:
+    - service: Perception
+      interface: {inputs: [d_true], outputs: [d_lead]}
+      assumption: "G(d_true >= 0)"
+      guarantee: "G(abs(d_lead - d_true) <= EPS_D)"
+
+    - service: Planning
+      interface: {inputs: [d_lead], outputs: [a_plan]}
+      assumption: "G(d_lead >= -EPS_D)"
+      guarantee: "G(((d_lead >= D_THRESH - EPS_D) -> (a_plan >= A_THRESH + EPS_A)) and (a_plan >= A_MIN))"
+
+    - service: Control
+      interface: {inputs: [a_plan], outputs: [a_cmd]}
+      assumption: "G(a_plan >= A_MIN)"
+      guarantee: "G(abs(a_cmd - a_plan) <= EPS_A)"

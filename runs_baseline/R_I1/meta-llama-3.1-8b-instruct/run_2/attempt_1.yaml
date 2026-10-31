@@ -1,0 +1,14 @@
+rule_id: R_I1_flat
+description: Stopping on the main carriageway of an interstate is prohibited unless there is congestion or the directly leading vehicle is stationary.
+sampling_rate_hz: 10
+horizon: 8
+constants:
+  V_STANDSTILL: 0.5
+  V_ERROR_BOUND: 0.5
+  V_TRACKING_ERROR_BOUND: 1.0
+environment:
+  signals:
+    - {name: ego_velocity, sort: real}
+    - {name: lead_velocity, sort: real}
+    - {name: congestion, sort: bool}
+formula: "G((not congestion) and (lead_velocity > V_STANDSTILL + V_ERROR_BOUND) -> F[0,8](ego_velocity >= V_STANDSTILL - V_TRACKING_ERROR_BOUND))"

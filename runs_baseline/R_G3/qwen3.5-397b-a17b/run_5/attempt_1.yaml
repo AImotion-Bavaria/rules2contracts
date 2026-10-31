@@ -1,0 +1,11 @@
+rule_id: R_G3_flat
+description: Vehicles must not exceed the lane speed limit, accounting for velocity tracking tolerance.
+sampling_rate_hz: 10
+horizon: 8
+constants:
+  V_TOL: 1.0
+environment:
+  signals:
+    - {name: velocity_cmd, sort: real}
+    - {name: lane_speed_limit, sort: real}
+formula: "G(abs(velocity_cmd) + V_TOL <= lane_speed_limit)"

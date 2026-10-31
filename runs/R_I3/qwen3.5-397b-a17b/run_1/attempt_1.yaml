@@ -1,0 +1,43 @@
+rule_id: R_I3_llm
+description: >
+  No reversing on interstate (StVO §18(7)): The true longitudinal ego velocity
+  must never drop below -0.3 m/s. The system ensures this by prohibiting reverse
+  gear commands, relying on the plant assumption that backward motion only occurs
+  when reverse gear is engaged. Localization error bounds are documented but the
+  primary safety mechanism is the gear interlock.
+source_text: >
+  StVO §18(7): "Reversing and turning are prohibited on the interstate."
+  Interpretation: The vehicle's true longitudinal velocity must remain
+  non-negative (with small tolerance for sensor noise/drift), enforced by
+  prohibiting reverse gear commands.
+sampling_rate_hz: 10
+horizon: 8
+
+constants:
+  V_REV_LIMIT: 0.3    # Maximum allowed backward velocity [m/s]
+  V_DRIFT: 0.0        # Assumed plant drift without reverse gear [m/s]
+  EPS_V: 0.5          # Localization velocity error bound [m/s]
+  V_MIN: -10.0        # Minimum physical velocity [m/s]
+  V_MAX: 70.0         # Maximum physical velocity [m/s]
+
+environment:
+  signals:
+    - {name: v_true, sort: real}
+
+system_contract:
+  interface: {inputs: [v_true], outputs: [gear_rev_cmd]}
+  assumption: "G(not gear_rev_cmd -> v_true >= -V_DRIFT)"
+  guarantee: "G(v_true >= -V_REV_LIMIT)"
+
+decomposition:
+  discharge_order: [Localization, Control]
+  contracts:
+    - service: Localization
+      interface: {inputs: [v_true], outputs: [v_ego]}
+      assumption: "G(v_true >= V_MIN and v_true <= V_MAX)"
+      guarantee: "G(abs(v_ego - v_true) <= EPS_V)"
+
+    - service: Control
+      interface: {inputs: [v_ego], outputs: [gear_rev_cmd]}
+      assumption: "G(v_ego >= V_MIN and v_ego <= V_MAX)"
+      guarantee: "G(not gear_rev_cmd)"

@@ -1,0 +1,52 @@
+rule_id: R_I1_llm
+description: >
+  Stopping ban on interstate main carriageways (StVO §12(1)/§18(8)): the
+  ego vehicle may not come to a stop on the carriageway unless there is
+  congestion or the directly leading vehicle is (nearly) stationary.
+  Formalized at feature level: whenever there is no congestion and the
+  true lead-vehicle velocity clearly exceeds the standstill threshold of
+  0.5 m/s, the ego vehicle must keep moving at at least 0.5 m/s. Since
+  Perception estimates the lead velocity with a bounded error and the
+  plant tracks the commanded velocity with a bounded error, both margins
+  must be absorbed into the Planning trigger threshold.
+source_text: >
+  StVO §12 Abs. 1: "Das Halten ... ist unzulässig ...". §18 Abs. 8: "Auf
+  Autobahnen ... ist das Halten auf der Fahrbahn ... verboten, ausgenommen
+  bei durch die Verkehrslage bedingtem Anhalten (Stau) oder wenn das
+  unmittelbar vorausfahrende Fahrzeug hält."
+sampling_rate_hz: 10
+horizon: 4
+
+constants:
+  V0: 0.5          # standstill / must-keep-moving threshold [m/s]
+  EPS_VL: 0.5      # perception error bound on lead velocity [m/s]
+  EPS_TRACK: 1.0   # plant tracking error bound between v_cmd and v_ego [m/s]
+  V_MAX: 70.0      # max plausible lead velocity [m/s]
+
+environment:
+  signals:
+    - {name: congestion, sort: bool}     # true congestion condition ("Stau")
+    - {name: v_lead_true, sort: real}    # true longitudinal velocity of the directly leading vehicle
+
+system_contract:
+  interface:
+    inputs: [congestion, v_lead_true]
+    outputs: [v_ego, v_cmd]
+  assumption: >
+    G(v_lead_true >= 0 and v_lead_true <= V_MAX and
+      abs(v_ego - v_cmd) <= EPS_TRACK)
+  guarantee: >
+    G((not congestion and v_lead_true > V0 + EPS_VL) -> v_ego >= V0)
+
+decomposition:
+  discharge_order: [Perception, Planning]
+  contracts:
+    - service: Perception
+      interface: {inputs: [v_lead_true], outputs: [v_lead]}
+      assumption: "G(v_lead_true >= 0 and v_lead_true <= V_MAX)"
+      guarantee: "G(abs(v_lead - v_lead_true) <= EPS_VL)"
+
+    - service: Planning
+      interface: {inputs: [congestion, v_lead], outputs: [v_cmd]}
+      assumption: "G(v_lead >= 0 - EPS_VL and v_lead <= V_MAX + EPS_VL)"
+      guarantee: "G((not congestion and v_lead > V0) -> v_cmd >= V0 + EPS_TRACK)"
