@@ -9,8 +9,8 @@ rtamt 0.3.5); a laptop is comparable.
 ## 0. Environment
 
 ```bash
-python3.12 -m venv .venv && . .venv/bin/activate
-pip install -r requirements.txt            # ~30 s
+python3.12 -m venv .venv
+.venv/bin/pip install -r requirements.txt  # ~30 s; no activation needed
 ```
 The Makefile uses `.venv/bin/python` automatically when that directory
 exists, so the targets work without activating the venv; any other
