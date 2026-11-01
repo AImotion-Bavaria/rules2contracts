@@ -1,0 +1,3 @@
+REFUSAL
+The serving stack declined this request (finish_reason content_filter / refusal), so the loop ended without a verdict.
+Tabulated as REFUSAL by analyze_runs.py; cf. Sect. V-G of the paper.
