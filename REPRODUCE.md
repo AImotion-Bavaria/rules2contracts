@@ -12,6 +12,9 @@ rtamt 0.3.5); a laptop is comparable.
 python3.12 -m venv .venv && . .venv/bin/activate
 pip install -r requirements.txt            # ~30 s
 ```
+The Makefile uses `.venv/bin/python` automatically when that directory
+exists, so the targets work without activating the venv; any other
+interpreter can be given as `make PY=/path/to/python …`.
 or `docker build -t rules2contracts . && docker run --rm rules2contracts`
 (the image runs `make replay`, step 7).
 
