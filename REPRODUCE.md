@@ -46,9 +46,9 @@ differences), then regenerates `results_macros.tex` (every `\res…` number in
 the paper), `fig_error_classes.dat` (Fig. 5a) and `fig_repair_dynamics.dat`
 (Fig. 5b). Expected: `OK … identical` three times.
 
-Run directories without `result.json` (19 under `runs_baseline/*/claude-opus-5/`)
-are requests the serving stack declined; they are tabulated as `REFUSAL`
-(Sect. V-G).
+The 19 run directories under `runs_baseline/*/claude-opus-5/` that hold a
+`REFUSAL` marker instead of `result.json` are requests the serving stack
+declined; they are tabulated as `REFUSAL` (Sect. V-G).
 
 ## 4. Fidelity (RQ3) and placement/tightness (RQ2) — `make pt` (≈1 min)
 

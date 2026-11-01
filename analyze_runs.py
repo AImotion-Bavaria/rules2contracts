@@ -66,7 +66,8 @@ def collect(runs_dir: pathlib.Path = RUNS) -> list[dict]:
         })
     # Run directories without result.json are requests the serving stack
     # declined (finish_reason 'content_filter'/'refusal'); the loop aborted
-    # before a verdict. They are reported as REFUSAL (cf. Sect. V-G).
+    # before a verdict. They are reported as REFUSAL (cf. Sect. V-G). Each
+    # such directory carries a REFUSAL marker file so that git keeps it.
     for run_dir in sorted(runs_dir.glob("*/*/run_*")):
         if (run_dir / "result.json").exists() or run_dir.parent.name == "mock":
             continue

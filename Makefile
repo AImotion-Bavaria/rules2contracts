@@ -53,7 +53,7 @@ figs:
 
 ## 6. Replay the 250 recorded open-weight runs (synthesis + baseline) from the response cache
 replay-synthesis:
-	OUT=$(OUT) PY=$(PY) ./replay_synthesis.sh
+	OUT=$(OUT) PY=$(PY) sh replay_synthesis.sh
 
 ## Everything that can be checked offline
 replay: check-all diff-data pt rq4 figs replay-synthesis
