@@ -9,3 +9,5 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 CMD ["make", "replay"]
+FROM scratch AS export
+COPY --from=builder /artifact/out /out

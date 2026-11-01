@@ -110,8 +110,8 @@ evaluable online as is.
 
 ```bash
 # Python 3.12 (rtamt does not import on 3.13)
-python3.12 -m venv .venv && . .venv/bin/activate
-pip install -r requirements.txt
+python3.12 -m venv .venv
+.venv/bin/pip install -r requirements.txt   # no activation needed; make uses .venv automatically
 
 make examples   # check the reference, faulty and illegal R_G1 documents; monitor demo
 make replay     # everything offline: re-check 500+ candidates, regenerate the paper's numbers, RQ2/RQ3/RQ4
