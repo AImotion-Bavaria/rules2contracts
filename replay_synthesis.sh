@@ -14,10 +14,12 @@ for kind in synthesis baseline; do
   if [ "$kind" = baseline ]; then flag=--baseline; src=runs_baseline; else flag=--replay; src=runs; fi
   for r in $RULES; do for m in $MODELS; do for k in 1 2 3 4 5; do
     echo "=== $kind $r $m run_$k" >> "$log"
-    $PY llm_pipeline.py --rule $r --model $m --run $k $flag --out-root "$OUT/replay_$kind" >> "$log" 2>&1
+    $PY llm_pipeline.py --rule $r --model $m --run $k $flag --replay-only --out-root "$OUT/replay_$kind" >> "$log" 2>&1
     n=$((n+1))
-    if ! diff -rq "$src/$r/$m/run_$k" "$OUT/replay_$kind/$r/$m/run_$k" >/dev/null; then
-      echo "DIFF $kind $r $m run_$k"; fail=$((fail+1)); fi
+    if diff -rq "$src/$r/$m/run_$k" "$OUT/replay_$kind/$r/$m/run_$k" >/dev/null; then
+      printf '[%3d/250] %-9s %-5s %-26s run_%s  identical\n' "$n" "$kind" "$r" "$m" "$k"
+    else
+      printf '[%3d/250] %-9s %-5s %-26s run_%s  DIFF\n' "$n" "$kind" "$r" "$m" "$k"; fail=$((fail+1)); fi
   done; done; done
 done
 echo "$n runs replayed from the cache, $((n-fail)) identical to the record, $fail differ (details: $log)"

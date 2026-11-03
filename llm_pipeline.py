@@ -351,6 +351,7 @@ class Client:
         # the check happens only when a request actually goes out.
         key = os.environ.get("LLM_API_KEY") or str(cfg.get("api_key") or "")
         self.api_key = "" if key.startswith("${") else key
+        self.replay_only = False   # set by --replay-only: a cache miss is an error
         self.model = model
         self.temperature = temperature
         self.max_tokens = max_tokens
@@ -375,6 +376,9 @@ class Client:
         consumes it entirely without emitting content."""
         import time
         import requests  # deferred: not needed in --mock mode
+        if self.replay_only:
+            raise SystemExit(f"cache miss in replay mode (no request sent): "
+                             f"{cache_file.name}")
         if not self.api_key:
             raise SystemExit("cache miss and no API key: set LLM_API_KEY to "
                              "query the endpoint (replays need no key)")
@@ -568,6 +572,9 @@ def main():
                          "response cache and repair prompts are built from "
                          "the recorded verifier reports (exact on any "
                          "platform); fresh verdicts are compared class-wise")
+    ap.add_argument("--replay-only", action="store_true",
+                    help="never contact the endpoint: a response missing from "
+                         "the cache is an error (used by replay_synthesis.sh)")
     ap.add_argument("--out-root", type=pathlib.Path, default=None,
                     help="write run directories under this root instead of "
                          "runs/ (or runs_baseline/); the response cache is "
@@ -591,6 +598,8 @@ def main():
         HERE / "llm_config.yaml", args.model, args.temperature,
         runs_root / "_cache", args.max_tokens, cache_salt=args.run)
 
+    if args.replay_only and not args.mock:
+        client.replay_only = True
     print(f"Rule {args.rule} -> model {tag}, run {args.run} "
           f"(max {args.rounds} rounds"
           + (", flat baseline)" if args.baseline else ")"))

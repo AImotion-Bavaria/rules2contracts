@@ -41,6 +41,7 @@ pt: rq2
 
 ## 4. Runtime monitoring and fault localisation (RQ4) on the NGSIM/CommonRoad scenarios
 rq4:
+	mkdir -p $(OUT) && rm -f $(OUT)/rq4_results.csv
 	$(PY) run_rq4.py scenarios/USA_US101-*.xml --rule contracts/R_G1.yaml --out $(OUT)/rq4_results.csv
 	$(PY) diff_csv.py data/rq4_2026-08-12_results.csv $(OUT)/rq4_results.csv scenario ego lead mode localisation
 
