@@ -14,11 +14,11 @@
 
 meta:
   source_urls:
-    perception: https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-interfaces/components/perception/
-    planning: https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-interfaces/components/planning/
-    vehicle_interface: https://autowarefoundation.github.io/autoware-documentation/main/design/autoware-interfaces/components/vehicle-interface/
-    control: https://tier4.github.io/autoware-documentation/latest/design/autoware-interfaces/components/control/
-    localization: https://tier4.github.io/autoware-documentation/latest/design/autoware-interfaces/components/localization/
+    perception: https://autowarefoundation.github.io/autoware-documentation/latest/design/autoware-interfaces/components/perception/
+    planning: https://autowarefoundation.github.io/autoware-documentation/latest/design/autoware-interfaces/components/planning/
+    vehicle_interface: https://autowarefoundation.github.io/autoware-documentation/latest/design/autoware-interfaces/components/vehicle-interface/
+    control: https://autowarefoundation.github.io/autoware-documentation/latest/design/autoware-interfaces/components/control/
+    localization: https://autowarefoundation.github.io/autoware-documentation/latest/design/autoware-interfaces/components/localization/
   accessed: "2026-08-07"
   granularity: component
   notes: >
