@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this artifact, please cite the paper (reference to be added after review) and this package."
-title: "rules2contracts: replication package for 'From Traffic Rules to Service Contracts: LLM-Assisted, Verifier-Gated Contract Synthesis for Automotive Service-Oriented Architectures'
+title: "rules2contracts: replication package for 'From Traffic Rules to Service Contracts: LLM-Assisted, Verifier-Gated Contract Synthesis for Automotive Service-Oriented Architectures'"
 authors:
   - name: "Anonymous (double-blind review)"
 version: "1.0.0-review"
