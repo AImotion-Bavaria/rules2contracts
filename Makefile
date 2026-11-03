@@ -1,7 +1,7 @@
 # rules2contracts — reproduction targets (all offline; no API key needed).
 # See REPRODUCE.md for what each target reproduces and the expected output.
 # Interpreter: the local venv if present (no activation needed), else python3.
-PY ?= $(if $(wildcard .venv/bin/python),.venv/bin/python,python3)
+PY ?= $(shell .venv/bin/python -c 'import yaml, z3' >/dev/null 2>&1 && echo .venv/bin/python || echo python3)
 OUT ?= out
 
 .PHONY: all replay check-all regen-data diff-data rq2 pt rq4 figs examples docker clean
