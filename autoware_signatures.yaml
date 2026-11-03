@@ -2,6 +2,8 @@
 # =========================================================
 # Extracted from the official Autoware interface documentation
 # (autowarefoundation.github.io / tier4.github.io mirrors), accessed 2026-08-07.
+# URLs updated 2026-11-03: the documentation moved to docs.autoware.org
+# (design/autoware-architecture-v1/interfaces/components/); content unchanged.
 #
 # Scope decision (2026-08-07): component granularity — the seven documented
 # top-level components. Topic-based data interfaces only; ROS services and
@@ -14,11 +16,11 @@
 
 meta:
   source_urls:
-    perception: https://autowarefoundation.github.io/autoware-documentation/latest/design/autoware-interfaces/components/perception/
-    planning: https://autowarefoundation.github.io/autoware-documentation/latest/design/autoware-interfaces/components/planning/
-    vehicle_interface: https://autowarefoundation.github.io/autoware-documentation/latest/design/autoware-interfaces/components/vehicle-interface/
-    control: https://autowarefoundation.github.io/autoware-documentation/latest/design/autoware-interfaces/components/control/
-    localization: https://autowarefoundation.github.io/autoware-documentation/latest/design/autoware-interfaces/components/localization/
+    perception: https://docs.autoware.org/main/design/autoware-architecture-v1/interfaces/components/perception/
+    planning: https://docs.autoware.org/main/design/autoware-architecture-v1/interfaces/components/planning/
+    vehicle_interface: https://docs.autoware.org/main/design/autoware-architecture-v1/interfaces/components/vehicle-interface/
+    control: https://docs.autoware.org/main/design/autoware-architecture-v1/interfaces/components/control/
+    localization: https://docs.autoware.org/main/design/autoware-architecture-v1/interfaces/components/localization/
   accessed: "2026-08-07"
   granularity: component
   notes: >
