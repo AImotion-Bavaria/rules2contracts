@@ -122,6 +122,7 @@ or, without installing anything:
 ```bash
 docker build -t rules2contracts .
 docker run --rm rules2contracts            # = make replay
+docker run --rm -v "$PWD/out:/artifact/out" rules2contracts   # same, with the outputs (out/) written to the host
 docker run --rm -it rules2contracts bash   # interactive
 ```
 

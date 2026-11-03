@@ -16,7 +16,8 @@ The Makefile uses `.venv/bin/python` automatically when that directory
 exists, so the targets work without activating the venv; any other
 interpreter can be given as `make PY=/path/to/python …`.
 or `docker build -t rules2contracts . && docker run --rm rules2contracts`
-(the image runs `make replay`, step 7).
+(the image runs `make replay`, step 7); add `-v "$PWD/out:/artifact/out"` to the
+`docker run` command to get the outputs (`out/`) on the host.
 
 Python 3.12 is required: rtamt 0.3.5 does not import on 3.13. z3 is pinned
 to 4.13.4; other versions give the same verdicts but may choose different
